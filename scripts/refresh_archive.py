@@ -1,6 +1,5 @@
 """Refresh the read-only Sepolia album. Requires Python 3.10+ and requests."""
 
-import base64
 import hashlib
 import json
 import os
@@ -10,10 +9,11 @@ import tempfile
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
-from urllib.parse import unquote_to_bytes
 from xml.etree import ElementTree
 
 import requests
+
+from svg_validation import decode_uri, validate_svg
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,7 +23,14 @@ RPCS = ("https://sepolia.gateway.tenderly.co", "https://rpc.sepolia.ethpandaops.
 CHAIN = 11155111
 HASH = re.compile(r"0x[0-9a-fA-F]{64}")
 ADDRESS = re.compile(r"0x[0-9a-fA-F]{40}")
-SVG_NS = "{http://www.w3.org/2000/svg}"
+RELEASE = "stream-game-sepolia-test-20261026-01"
+COLLECTION = "0xcb98349c134ab983da5bfd80527dfe2552bdb70f"
+STAKING = "0x4b67b739dfd832f4eac67a7aa3bc244fb74cea4f"
+TOPICS = {
+    "wallet": "0x8a9b1a009a32cc0082d2270e9033429b8e1aa3235e7b8198b013f603116a3c87",
+    "staking": "0x47dc7fa0b474cf75263255e0530e84606f909e3099ad0d06bd67883467333339",
+}
+UTC_TIME = re.compile(r"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{1,3})?Z")
 
 
 def require(condition, message):
@@ -51,13 +58,25 @@ def rpc(url, method, params):
     return body["result"]
 
 
-def canonical_providers(block, block_hash):
+def canonical_providers(block, block_hash, previous=None, counts=None, as_of=None):
     providers = []
     for url in RPCS:
         try:
             require(int(rpc(url, "eth_chainId", []), 16) == CHAIN, "wrong RPC chain")
             header = rpc(url, "eth_getBlockByNumber", [hex(block), False])
-            require(header["hash"].lower() == block_hash.lower(), "safe block hash differs")
+            require(int(header["number"], 16) == block and header["hash"].lower() == block_hash.lower(),
+                    "safe block differs")
+            if as_of is not None:
+                require(int(header["timestamp"], 16) == utc_time(as_of).timestamp(), "safe block time differs")
+            if previous is not None:
+                old = rpc(url, "eth_getBlockByNumber", [hex(previous["safeBlock"]), False])
+                require(int(old["number"], 16) == previous["safeBlock"]
+                        and old["hash"].lower() == previous["safeBlockHash"].lower(),
+                        "previous snapshot is on another fork")
+            if counts is not None:
+                for field, selector in (("live", "0x18160ddd"), ("burned", "0xd89135cd")):
+                    raw = rpc(url, "eth_call", [{"to": COLLECTION, "data": selector}, hex(block)])
+                    require(HASH.fullmatch(raw) and int(raw, 16) == int(counts[field]), "Onchain supply mismatch")
             providers.append(url)
         except (ValueError, KeyError, requests.RequestException) as exc:
             print(f"Skipping {url}: {exc}", file=sys.stderr)
@@ -65,11 +84,51 @@ def canonical_providers(block, block_hash):
     return providers
 
 
-def read_merges(snapshot):
+def utc_time(value):
+    require(isinstance(value, str) and UTC_TIME.fullmatch(value), "Invalid UTC timestamp")
+    return datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+
+def confirm_merge(event, custody, block_hash, receipt, header):
+    block, tx = event["block"], event["tx"]
+    require(custody in TOPICS and header["hash"].lower() == block_hash
+            and int(header["number"], 16) == block
+            and int(header["timestamp"], 16) == utc_time(event["at"]).timestamp(), "Canonical block mismatch")
+
+    def same_transaction(record):
+        return (record["transactionHash"].lower() == tx and int(record["blockNumber"], 16) == block
+                and record["blockHash"].lower() == block_hash)
+
+    require(int(receipt["status"], 16) == 1 and same_transaction(receipt), "Merge receipt mismatch")
+    logs = [log for log in receipt["logs"] if int(log["logIndex"], 16) == event["logIndex"]]
+    require(len(logs) == 1, "Missing or ambiguous merge log")
+    log = logs[0]
+    staked = custody == "staking"
+    topics, data = log["topics"], log["data"]
+    require(same_transaction(log) and not log.get("removed", False)
+            and log["address"].lower() == (STAKING if staked else COLLECTION)
+            and len(topics) == (4 if staked else 3) and all(HASH.fullmatch(t) for t in topics)
+            and topics[0].lower() == TOPICS[custody] and re.fullmatch(r"0x[\da-fA-F]+", data)
+            and len(data) == 2 + 64 * (3 if staked else 2), "Unexpected receipt log")
+    words = [int(data[i:i + 64], 16) for i in range(2, len(data), 64)]
+    if staked:
+        require(int(topics[2], 16) == int(COLLECTION, 16) and re.fullmatch(r"0x0{24}[\da-fA-F]{40}", topics[1]),
+                "Wrong staking event collection")
+        actual = (int(topics[3], 16), words[0], words[1])
+    else:
+        actual = (int(topics[1], 16), int(topics[2], 16), words[0])
+    require(actual == (event["survivor"], event["donor"], event["level"]), "Onchain merge IDs or level differ")
+
+
+def read_merges(snapshot, providers=None):
     release = snapshot["release"]["id"]
     collection = snapshot["identities"]["genesis"].lower()
     staking = snapshot["identities"]["staking"]["proxy"].lower()
     safe_block = int(snapshot["chain"]["safeThroughBlock"])
+    require((release, collection, staking) == (RELEASE, COLLECTION, STAKING), "Unrecognized merge deployment")
+    if providers is None:
+        providers = canonical_providers(safe_block, snapshot["chain"]["safeBlockHash"], counts=snapshot["nft"],
+                                        as_of=snapshot["chain"]["safeBlockTimestamp"])
     events = {}
     cursors = set()
     params = {"category": "players", "limit": 100}
@@ -98,17 +157,41 @@ def read_merges(snapshot):
                 "level": int(payload["level"]), "block": block, "logIndex": int(source["logIndex"]),
                 "tx": tx, "at": event["occurredAt"],
             }
-            datetime.fromisoformat(item["at"].replace("Z", "+00:00"))
+            utc_time(item["at"])
             key = (tx, item["logIndex"])
-            require(key not in events or events[key] == item, "Conflicting duplicate event")
-            events[key] = item
+            proof = (item, payload["custody"], source["blockHash"].lower())
+            require(key not in events or events[key] == proof, "Conflicting duplicate event")
+            events[key] = proof
         cursor = page["nextCursor"]
         if cursor is None:
             break
         require(cursor and cursor not in cursors, "Repeated or empty event cursor")
         cursors.add(cursor)
         params["cursor"] = cursor
-    return sorted(events.values(), key=lambda event: (event["block"], event["logIndex"]))
+    proofs = list(events.values())
+    for offset in range(0, len(proofs), 8):
+        group = proofs[offset:offset + 8]
+        calls = []
+        for item, _, _ in group:
+            for method, params in (("eth_getTransactionReceipt", [item["tx"]]),
+                                   ("eth_getBlockByNumber", [hex(item["block"]), False])):
+                calls.append({"jsonrpc": "2.0", "id": len(calls) + 1, "method": method, "params": params})
+        failure = None
+        for endpoint in providers:
+            try:
+                response = requests.post(endpoint, json=calls, timeout=25)
+                response.raise_for_status()
+                replies = response.json()
+                require(isinstance(replies, list) and len(replies) == len(calls), "Incomplete RPC batch")
+                results = {entry["id"]: entry["result"] for entry in replies}
+                for i, (item, custody, block_hash) in enumerate(group):
+                    confirm_merge(item, custody, block_hash, results[2 * i + 1], results[2 * i + 2])
+                break
+            except (ValueError, KeyError, TypeError, requests.RequestException) as exc:
+                failure = exc
+        else:
+            raise ValueError("No canonical RPC confirmed the merge batch") from failure
+    return sorted((p[0] for p in proofs), key=lambda event: (event["block"], event["logIndex"]))
 
 
 def validate_history(events, issued, burned, live, max_level):
@@ -130,30 +213,6 @@ def validate_history(events, issued, burned, live, max_level):
         burns[donor] = event["block"]
         positions.add(position)
     return burns
-
-
-def decode_uri(uri, media_type):
-    header, separator, body = uri.partition(",")
-    require(separator and header.split(";")[0].lower() == "data:" + media_type, f"Expected {media_type}")
-    return base64.b64decode(body, validate=True) if ";base64" in header.lower() else unquote_to_bytes(body)
-
-
-def validate_svg(svg, name):
-    require(0 < len(svg) <= 1_000_000 and b"<!" not in svg and b"<?" not in svg, "Invalid SVG document")
-    root = ElementTree.fromstring(svg)
-    require(root.tag == SVG_NS + "svg" and root.findtext(SVG_NS + "title") == name, "Wrong SVG token title")
-    elements = {"svg", "title", "desc", "metadata", "defs", "g", "path", "rect", "circle", "ellipse",
-                "polygon", "polyline", "line", "symbol", "use"}
-    attributes = {"id", "fill", "stroke", "stroke-width", "x", "y", "x1", "x2", "y1", "y2", "cx", "cy",
-                  "r", "rx", "ry", "width", "height", "aria-label", "opacity", "href", "role", "color",
-                  "transform", "d", "points", "viewBox", "fill-rule"}
-    for element in root.iter():
-        require(element.tag.startswith(SVG_NS) and element.tag[len(SVG_NS):] in elements,
-                f"Unexpected SVG element {element.tag}")
-        for key, value in element.attrib.items():
-            require(key in attributes and "url(" not in value.lower(), f"Unexpected SVG attribute {key}")
-            if key == "href":
-                require(re.fullmatch(r"#[A-Za-z0-9_.:-]+", value), "External SVG reference")
 
 
 def token_art(url, collection, token_id, block):
@@ -202,12 +261,15 @@ def refresh():
     require(ADDRESS.fullmatch(collection) and HASH.fullmatch(block_hash), "Invalid deployment or block hash")
     issued, burned, live = (int(snapshot["nft"][key]) for key in ("issued", "burned", "live"))
     manifest = DIST / "data" / "archive.json"
+    previous = None
     if manifest.exists():
         previous = json.loads(manifest.read_text(encoding="utf-8"))
         require(previous["collection"] == collection and previous["releaseId"] == release
                 and previous["safeBlock"] <= safe_block, "Refusing a deployment change or older snapshot")
-    providers = canonical_providers(safe_block, block_hash)
-    events = read_merges(snapshot)
+    utc_time(snapshot["chain"]["safeBlockTimestamp"])
+    providers = canonical_providers(safe_block, block_hash, previous, snapshot["nft"],
+                                    snapshot["chain"]["safeBlockTimestamp"])
+    events = read_merges(snapshot, providers)
     burns = validate_history(events, issued, burned, live, int(snapshot["nft"]["maximumLevel"]))
     tokens = sorted(set(burns) | {event["survivor"] for event in events} | {1})
     print(f"Verified {len(events)} unique merges. Reading {len(tokens)} original tokenURIs.", flush=True)

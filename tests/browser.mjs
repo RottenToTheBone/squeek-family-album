@@ -4,10 +4,17 @@ import { existsSync } from 'node:fs';
 import { mkdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { browserRegressions } from './browser-regressions.mjs';
+import { ARCHIVES } from '../dist/receipts.js';
 
 const qa = fileURLToPath(new URL('../.qa/', import.meta.url));
 await mkdir(qa, { recursive: true });
 const base = process.env.ALBUM_URL || 'http://127.0.0.1:4179/';
+const bundled = JSON.parse(await readFile(new URL('../dist/data/archive.json', import.meta.url), 'utf8'));
+const sampledBurn = bundled.events.find((event) => event.donor === 8925);
+const uncached = [42, ...Array.from({ length: bundled.issued }, (_, i) => i + 1)].find(
+  (id) => !bundled.portraits[id],
+);
 const executablePath = [
   process.env.CHROME_PATH,
   'C:/Program Files/Google/Chrome/Application/chrome.exe',
@@ -48,7 +55,7 @@ async function accessibility(page) {
     const result = await window.axe.run(document, {
       runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] },
     });
-    return result.violations.map(rule => [rule.id, rule.nodes.map(node => node.target.join(' '))]);
+    return result.violations.map((rule) => [rule.id, rule.nodes.map((node) => node.target.join(' '))]);
   });
   assert.deepEqual(violations, []);
 }
@@ -62,9 +69,10 @@ try {
   const p = watch(await ctx.newPage());
   await p.goto(base + '?id=8923&lang=en');
   await ready(p, 8923);
-  assert.equal(await p.locator('.tree-node').count(), 7);
-  assert.equal(await p.locator('.ledger-row').count(), 3);
-  assert.equal(await p.locator('#f-originals').textContent(), '4');
+  const originals = Number(await p.locator('#f-originals').textContent());
+  assert.ok(originals >= 4);
+  assert.equal(await p.locator('.tree-node').count(), 2 * originals - 1);
+  assert.equal(await p.locator('.ledger-row').count(), originals - 1);
   await fit(p);
   await accessibility(p);
   await p.screenshot({ path: path.join(qa, 'desktop.png'), fullPage: true });
@@ -73,8 +81,11 @@ try {
   await ready(p, 8924);
   await p.locator('.tree-node[data-key="o-8925"]').click();
   await ready(p, 8925);
-  assert.match(await p.locator('#art-source').textContent(), /Pre-burn block 12,051,304/);
-  assert.match(await p.locator('#token-source').getAttribute('href'), /0x2b1490a77b/);
+  assert.equal(
+    await p.locator('#art-source').textContent(),
+    'Pre-burn block ' + (sampledBurn.block - 1).toLocaleString('en-US'),
+  );
+  assert.ok((await p.locator('#token-source').getAttribute('href')).endsWith(sampledBurn.tx));
   await p.locator('#enlarge').click();
   assert.ok(await p.locator('#art-dialog').isVisible());
   await p.keyboard.press('Escape');
@@ -101,8 +112,9 @@ try {
   await deep.close();
   await find(p, '#1');
   await ready(p, 1);
-  assert.equal(await p.locator('#f-merges').textContent(), '0');
-  assert.equal(await p.locator('.tree-node').count(), 1);
+  const n1 = Number(await p.locator('#f-originals').textContent());
+  assert.equal(Number(await p.locator('#f-merges').textContent()), n1 - 1);
+  assert.equal(await p.locator('.tree-node').count(), 2 * n1 - 1);
   await find(p, '10000');
   assert.equal(await p.locator('#token-input').getAttribute('aria-invalid'), 'true');
   await p.goBack();
@@ -127,32 +139,68 @@ try {
       await p.keyboard.press('Escape');
     }
   }
-  // This ID is intentionally outside the bundled portraits and must resolve from the public service.
   if (process.env.ALBUM_LIVE === '1') {
-    await find(p, 42);
-    await ready(p, 42);
-    assert.match(await p.locator('#hero-art').getAttribute('src'), /^data:image\/svg/);
-    assert.match(await p.locator('#token-source').getAttribute('href'), /squeeks\/42/);
-    console.log('Live official NFT lookup passed for #42');
+    if (uncached) {
+      await find(p, uncached);
+      await ready(p, uncached);
+      assert.match(await p.locator('#hero-art').getAttribute('src'), /^data:image\/svg/);
+      console.log('Live public artwork lookup passed for #' + uncached);
+    }
     const stale = await browser.newContext();
-    const original = JSON.parse(
-      await readFile(new URL('../dist/data/archive.json', import.meta.url), 'utf8'),
-    );
-    const last = original.events.pop();
+    const original = structuredClone(bundled);
+    const last = original.events.at(-1);
     original.safeBlock = last.block - 1;
-    original.burned--;
-    original.live++;
+    original.events = original.events.filter((event) => event.block <= original.safeBlock);
+    original.burned = original.events.length;
+    original.live = original.issued - original.burned;
+    let header;
+    for (const endpoint of ARCHIVES) {
+      try {
+        const reply = await stale.request.post(endpoint, {
+          data: {
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'eth_getBlockByNumber',
+            params: ['0x' + original.safeBlock.toString(16), false],
+          },
+          timeout: 12000,
+        });
+        header = (await reply.json()).result;
+        if (header?.hash) break;
+      } catch {}
+    }
+    assert.ok(header?.hash, 'canonical header for the older test snapshot');
+    original.safeBlockHash = header.hash;
+    original.asOf = new Date(Number(BigInt(header.timestamp)) * 1000).toISOString();
     delete original.portraits[last.donor];
     await stale.route(
       (url) => url.pathname.endsWith('/data/archive.json'),
       (r) => r.fulfill({ json: original }),
     );
+    let releaseFeed;
+    const feedGate = new Promise((resolve) => {
+      releaseFeed = resolve;
+    });
+    await stale.route(
+      (url) => url.hostname === 'api.squeekchain.com' && url.pathname === '/v1/events',
+      async (route) => {
+        await feedGate;
+        await route.continue();
+      },
+    );
+    const stableId = Number(Object.keys(original.portraits)[0]);
     const newer = watch(await stale.newPage());
-    await newer.goto(base + '?id=' + last.donor + '&lang=en');
+    await newer.goto(base + '?id=' + stableId + '&lang=en');
+    await ready(newer, stableId);
+    await newer.locator('#share').click();
+    await newer.locator('#save-card:not([hidden])').waitFor();
+    releaseFeed();
+    await newer.locator('#share-dialog[open]').waitFor({ state: 'hidden', timeout: 60000 });
+    await find(newer, last.donor);
     await newer.waitForFunction(
       (data) =>
         document.querySelector('#art-source').textContent.includes('Pre-burn block') &&
-        document.querySelector('#record-code').textContent.includes(String(data.survivor).padStart(5, '0')) &&
+        document.querySelector('#token-source').href.endsWith(data.tx) &&
         document.querySelector('#hero-art').getAttribute('src')?.startsWith('data:image/svg'),
       last,
       { timeout: 40000 },
@@ -170,14 +218,17 @@ try {
   await op.goto(base + '?id=8925&lang=en');
   await ready(op, 8925);
   await op.waitForFunction(() => document.querySelector('#status').textContent.includes('archive time'));
-  await find(op, '42');
-  await op.waitForFunction(() =>
-    document.querySelector('#status').textContent.includes('could not be verified'),
-  );
-  assert.ok(await op.locator('#share').isDisabled());
+  if (uncached) {
+    await find(op, uncached);
+    await op.waitForFunction(() =>
+      document.querySelector('#status').textContent.includes('could not be verified'),
+    );
+    assert.ok(await op.locator('#share').isDisabled());
+  }
   await find(op, '1');
   await ready(op, 1);
   await offline.close();
+  await browserRegressions(browser, base, bundled);
   assert.deepEqual(errors, []);
   console.log(
     'Desktop, mobile, keyboard, original image, ledger, PNG, clipboard, deep link, language and offline checks passed',

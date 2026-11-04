@@ -3,9 +3,9 @@
   "chainId": 11155111,
   "collection": "0xcb98349c134ab983da5bfd80527dfe2552bdb70f",
   "releaseId": "stream-game-sepolia-test-20261026-01",
-  "asOf": "2026-11-04T16:07:24.000Z",
-  "safeBlock": 12063500,
-  "safeBlockHash": "0xeee82d66804979938c9210b323127d056535d155a2ad3bf4652bc78231d56f64",
+  "asOf": "2026-11-04T18:17:48.000Z",
+  "safeBlock": 12064149,
+  "safeBlockHash": "0x819e0c74cc7e2e677ecf0ec2a42fd5475dab9be405b8186e3127121030a8dd71",
   "issued": 9999,
   "burned": 33,
   "live": 9966,
@@ -311,7 +311,7 @@
   "portraits": {
     "1": {
       "file": "art/1.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "b193a167c8695e0f2c74b5b5e10294a177a6acd9937d9f8e830a5a004ac4e06c",
       "palette": "Acid Lime"
@@ -353,7 +353,7 @@
     },
     "8903": {
       "file": "art/8903.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "efc7660394ce372e90044b645e1ac8ca4c9f87305b8f37161614f94a50607f27",
       "palette": "Spectral Void Violet"
@@ -381,7 +381,7 @@
     },
     "8911": {
       "file": "art/8911.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "369daa26bf99198cd53af17193c8e5e4839de0054e64bf6b280e6766a1e6a2af",
       "palette": "Spectral Void Violet"
@@ -409,7 +409,7 @@
     },
     "8915": {
       "file": "art/8915.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "8fa6bd37e2bb66bd493a7daad9987a041a0450259f1b0896b617a93aba567af8",
       "palette": "Electric Cyan"
@@ -437,7 +437,7 @@
     },
     "8919": {
       "file": "art/8919.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "67c0d8eb883863bdf399be125d00ffe5d9ffabb1b8e9dc0b7117e2cfc9eb2cd5",
       "palette": "Ice White"
@@ -465,7 +465,7 @@
     },
     "8923": {
       "file": "art/8923.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "6b896755e1b3514078ff401043bbb9e5840ee097d9ac57f4e0735e4b26a29d83",
       "palette": "Acid Lime"
@@ -493,7 +493,7 @@
     },
     "8927": {
       "file": "art/8927.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "2343e38381fe7322354ced45dc996e5d69428a681586b243bdcfa5a21d9d3731",
       "palette": "Acid Lime"
@@ -507,7 +507,7 @@
     },
     "8929": {
       "file": "art/8929.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "a31c17c3a5a25b65b2af0bb92a8a4dec376c3c751b1adb3dc21815df59be8d95",
       "palette": "Hot Magenta"
@@ -521,35 +521,35 @@
     },
     "8931": {
       "file": "art/8931.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "9fb6804d00044ea48e440250e933e8e03f7109f3606761acb8a40b086c053c3b",
       "palette": "Hot Magenta"
     },
     "8932": {
       "file": "art/8932.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "cc34194740137a7259092654a40eb97508d95c62a2bab392860c63a21caef080",
       "palette": "Spectral Hot Magenta"
     },
     "8933": {
       "file": "art/8933.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "09aa6d7e8a5a5c722901dbea82cb6b2afae09353a856b63593c4da9c05e1eb1a",
       "palette": "Spectral Acid Lime"
     },
     "8935": {
       "file": "art/8935.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "ffd93d0e72753d88e08e4f309c54bd18afb6f2e8e98604bd23adc7b9b6734279",
       "palette": "Spectral Ice White"
     },
     "8936": {
       "file": "art/8936.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "7d627aaaf68fd236558c91f5ca69c54487a8846e3990dddcf3fb3d8be156d16e",
       "palette": "Gold"
@@ -563,14 +563,14 @@
     },
     "8938": {
       "file": "art/8938.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "e878acd2e2e8e665df4e95327d107a23a420d3fdfba1cd6ec0ed3fa5ceb0e493",
       "palette": "Electric Cyan"
     },
     "8939": {
       "file": "art/8939.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "e2057c3276f3d077bd38677f1292d3ff05107c48fad5dc652cd84a18c903f600",
       "palette": "Spectral Orange CRT"
@@ -584,7 +584,7 @@
     },
     "8941": {
       "file": "art/8941.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "354d385d9718346f69f9521374f2fd6b8c82c3cded9058805cc68a465f7122df",
       "palette": "Spectral Hot Magenta"
@@ -598,7 +598,7 @@
     },
     "8943": {
       "file": "art/8943.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "0a47ca6d1c47fe1c8b8e1db3aeaeb5b732671413faebc84b00eb70acfbffe258",
       "palette": "Hot Magenta"
@@ -612,7 +612,7 @@
     },
     "8945": {
       "file": "art/8945.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "2b588b338a414d809d530d35607ed12653c8c8d635612cea9a76764c1ccb85e2",
       "palette": "RGB"
@@ -626,7 +626,7 @@
     },
     "8947": {
       "file": "art/8947.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "26194aa701a092949b190a2d1cd9b4459258aa3a65665029e799e88b82fe02c7",
       "palette": "Void Violet"
@@ -640,7 +640,7 @@
     },
     "8949": {
       "file": "art/8949.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "d2a29769b58d81097356d7400a33a7b5ecfb786ef735c04b29e634900592a99e",
       "palette": "Spectral Electric Cyan"
@@ -654,7 +654,7 @@
     },
     "8951": {
       "file": "art/8951.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "6bf631acbfb68c581e7c5b94529aa240d940e84d64b37d96840e176cdef22abd",
       "palette": "Spectral Acid Lime"
@@ -668,7 +668,7 @@
     },
     "8953": {
       "file": "art/8953.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "18692e5dd424965339fa48f5fca10d969d5502b805c2b7df5e4734e155c1fae7",
       "palette": "Spectral Hot Magenta"
@@ -682,7 +682,7 @@
     },
     "8955": {
       "file": "art/8955.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "8e328ffab9b2289f0640dfbcda5dfef47a5f1736fbfc6a697421482ce1c2d2e4",
       "palette": "Spectral Reactor Red"
@@ -696,7 +696,7 @@
     },
     "8957": {
       "file": "art/8957.svg",
-      "block": 12063500,
+      "block": 12064149,
       "source": "chain",
       "sha256": "ccfb8718b7f6a7eb8f61d82c5311f777ef21a27f2bb8f45c8b81155bb538146a",
       "palette": "Orange CRT"

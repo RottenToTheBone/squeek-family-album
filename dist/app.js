@@ -1,4 +1,4 @@
-import { prepareIndex, tokenNumber, treeRows } from './lineage.js';
+import { snapshotIndex, tokenNumber, treeRows } from './lineage.js';
 import { livePortrait, lostPortrait, refreshIndex, tokenLink, txLink } from './chain.js';
 import { familyCard } from './share.js';
 
@@ -22,10 +22,12 @@ let archive,
   family,
   selected,
   selectedArt,
+  lookupPortrait,
   requestNo = 0,
   selectionNo = 0,
   shareNo = 0,
-  shareBlob = '';
+  shareBlob = '',
+  shareUrl = '';
 let connection = 'bundled',
   notice = '',
   inputError = '';
@@ -91,13 +93,16 @@ function localize() {
   renderNotices();
   renderFreshness();
 }
-function setRoute(id, key, method = 'replaceState') {
-  const url = new URL(location.href);
-  url.searchParams.set('id', id);
+function recordUrl(id, key) {
+  const url = new URL(location.origin);
+  url.pathname = location.pathname;
+  if (id != null) url.searchParams.set('id', id);
   if (key) url.searchParams.set('stage', key);
-  else url.searchParams.delete('stage');
   url.searchParams.set('lang', language);
-  history[method]({}, '', url);
+  return url.href;
+}
+function setRoute(id, key, method = 'replaceState') {
+  history[method]({}, '', recordUrl(id, key));
 }
 function renderFreshness() {
   if (!archive) return;
@@ -122,10 +127,12 @@ function artFor(id) {
   } else if (burn) {
     pending = lostPortrait(id, burn, archive);
   } else {
-    pending = verifiedLive.has(id)
-      ? Promise.resolve(verifiedLive.get(id))
+    const observation = verifiedLive.get(id) ?? (lookupPortrait?.id === id ? lookupPortrait.result : null);
+    const observedIndex = index;
+    pending = observation
+      ? Promise.resolve(observation)
       : livePortrait(id, archive).then((p) => {
-          verifiedLive.set(id, p);
+          if (p.url && index === observedIndex) verifiedLive.set(id, p);
           return p;
         });
   }
@@ -135,7 +142,7 @@ function artFor(id) {
       return p;
     })
     .catch((error) => {
-      artPromises.delete(id);
+      if (artPromises.get(id) === value) artPromises.delete(id);
       throw error;
     });
   artPromises.set(id, value);
@@ -166,7 +173,11 @@ function setSelected(node, changeURL = true, reveal = false) {
   selected = node;
   selectedArt = null;
   const call = ++selectionNo;
-  if (changeURL) setRoute(node.id, node.key);
+  document.title = 'Squeek #' + node.id + ' · Family Album';
+  if (changeURL) {
+    setRoute(node.id, node.key);
+    $('token-input').value = node.id;
+  }
   $('share').disabled = true;
   $('enlarge').disabled = true;
   $('hero-art').hidden = true;
@@ -329,7 +340,10 @@ function renderFamily() {
   drawTree();
 }
 function clearRecord() {
+  for (const id of ['share-dialog', 'art-dialog']) if ($(id).open) $(id).close();
+  document.title = 'Squeek Family Album — Squeekchain on Sepolia';
   family = null;
+  lookupPortrait = null;
   selected = null;
   selectedArt = null;
   selectionNo++;
@@ -360,7 +374,14 @@ function clearRecord() {
   $('enlarge').disabled = true;
 }
 async function openRecord(id, key, method) {
-  if (!archive) return;
+  if (!archive) {
+    if (method) setRoute(id, key, method);
+    $('token-input').value = id;
+    if (notice !== 'seed') notice = 'loading';
+    inputError = '';
+    renderNotices();
+    return;
+  }
   const ticket = ++requestNo;
   clearRecord();
   inputError = '';
@@ -375,7 +396,10 @@ async function openRecord(id, key, method) {
     try {
       const live = verifiedLive.get(id) ?? (await livePortrait(id, archive));
       if (ticket !== requestNo) return;
-      verifiedLive.set(id, live);
+      // Share one metadata result between this record and its thumbnail. An
+      // incomplete response is always requested anew on the next lookup.
+      if (live.url) verifiedLive.set(id, live);
+      else lookupPortrait = { id, result: live };
       resolved = index.family(id);
       if (!resolved.history.length && (live.burned || live.level !== 1)) {
         notice = 'incomplete';
@@ -400,7 +424,6 @@ async function openRecord(id, key, method) {
   renderNotices();
   setSelected(focus, false);
   renderFamily();
-  document.title = 'Squeek #' + id + ' · Family Album';
 }
 function navigateFromUrl() {
   if (!archive) return;
@@ -419,8 +442,7 @@ function navigateFromUrl() {
 }
 $('lookup-form').addEventListener('submit', (e) => {
   e.preventDefault();
-  if (!archive) return;
-  const id = tokenNumber($('token-input').value, archive.issued);
+  const id = tokenNumber($('token-input').value, archive?.issued ?? 9999);
   if (!id) {
     inputError = 'invalid';
     renderNotices();
@@ -448,9 +470,13 @@ $('lang').addEventListener('click', () => {
   try {
     localStorage.setItem('squeek-album-language', language);
   } catch {}
-  const url = new URL(location.href);
-  url.searchParams.set('lang', language);
-  history.replaceState({}, '', url);
+  const incoming = params();
+  const id = selected?.id ?? tokenNumber(incoming.get('id'), archive?.issued ?? 9999);
+  const pendingStage = incoming.get('stage');
+  const stage =
+    selected?.key ??
+    (id && (pendingStage === 'o-' + id || /^m-\d{1,16}-\d{1,12}$/.test(pendingStage)) ? pendingStage : null);
+  setRoute(id, stage);
   localize();
   if (family) {
     renderFamily();
@@ -481,6 +507,7 @@ $('share').addEventListener('click', async () => {
   if (!family || !selectedArt) return;
   const ticket = ++shareNo,
     id = selected.id;
+  shareUrl = recordUrl(id, selected.key);
   $('card-preview').hidden = true;
   $('save-card').hidden = true;
   $('card-status').textContent = tr('Drawing the original portraits…', '正在绘制家谱卡…');
@@ -506,22 +533,22 @@ $('share').addEventListener('click', async () => {
   }
 });
 $('share-dialog').addEventListener('close', () => {
+  if ($('share-dialog').open) return;
   shareNo++;
+  shareUrl = '';
   if (shareBlob) {
     URL.revokeObjectURL(shareBlob);
     shareBlob = '';
   }
 });
 $('copy-link').addEventListener('click', async () => {
-  const url = new URL(location.href);
-  url.searchParams.set('id', selected.id);
-  url.searchParams.set('stage', selected.key);
-  url.searchParams.set('lang', language);
+  const url = shareUrl;
+  if (!url) return;
   try {
-    await navigator.clipboard.writeText(url.href);
-    $('card-status').textContent = tr('Record link copied.', '档案链接已复制。');
+    await navigator.clipboard.writeText(url);
+    if (shareUrl === url) $('card-status').textContent = tr('Record link copied.', '档案链接已复制。');
   } catch {
-    $('card-status').textContent = url.href;
+    if (shareUrl === url) $('card-status').textContent = url;
   }
 });
 let lastWidth = 0;
@@ -536,18 +563,19 @@ localize();
 try {
   const response = await fetch('./data/archive.json');
   if (!response.ok) throw new Error('Archive unavailable');
-  archive = await response.json();
-  if (archive.schemaVersion !== 1 || archive.chainId !== 11155111) throw new Error('Unsupported archive');
-  index = prepareIndex(archive);
+  const bundled = await response.json();
+  index = snapshotIndex(bundled);
+  archive = bundled;
   renderFreshness();
   navigateFromUrl();
   refreshIndex(archive)
     .then((latest) => {
       const changed = latest.events.length !== archive.events.length;
+      const nextIndex = changed ? snapshotIndex(latest) : index;
       archive = latest;
+      index = nextIndex;
       connection = 'live';
       if (changed) {
-        index = prepareIndex(archive);
         artPromises.clear();
         verifiedLive.clear();
         navigateFromUrl();

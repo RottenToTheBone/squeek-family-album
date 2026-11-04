@@ -6,6 +6,7 @@
   "scripts": {
     "start": "python -m http.server 4179 --bind 127.0.0.1 --directory dist",
     "test": "node --test tests/lineage.test.mjs",
+    "verify:chain": "node scripts/verify_bundle.mjs",
     "test:browser": "node tests/browser.mjs"
   },
   "devDependencies": {

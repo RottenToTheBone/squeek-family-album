@@ -1,0 +1,15 @@
+{
+  "valid": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><title>Squeek #42</title><defs><path id=\"A\" d=\"M0 0h10v10z\"/></defs><use href=\"#A\" fill=\"currentColor\" color=\"#aabbcc\"/></svg>",
+  "invalid": [
+    "<?xml-stylesheet type=\"text/css\" href=\"https://example.invalid/proof.css\"?>@SVG@",
+    "@SVG@<?xml-stylesheet type=\"text/css\" href=\"https://example.invalid/proof.css\"?>",
+    "<!DOCTYPE svg>@SVG@",
+    "<rect fill=\"u&#92;72l(https://example.invalid/paint.svg#x)\"/>",
+    "<use href=\"https://example.invalid/art.svg#A\"/>",
+    "<g xml:base=\"https://example.invalid/\"><use href=\"#A\"/></g>",
+    "<g xmlns=\"urn:foreign\"/>",
+    "<style>@import 'https://example.invalid/proof.css';</style>",
+    "<foreignObject/>",
+    "<rect onload=\"void(0)\"/>"
+  ]
+}

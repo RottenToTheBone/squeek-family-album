@@ -7,7 +7,34 @@ export function tokenNumber(value, limit = 9999) {
 }
 
 export function eventKey(event) {
-  return event.tx + ':' + event.logIndex;
+  return String(event.tx).toLowerCase() + ':' + event.logIndex;
+}
+
+// The release API uses UTC timestamps. Round-trip calendar fields to reject dates
+// JavaScript otherwise normalizes, such as February 30.
+export function validUtc(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/.test(value))
+    return false;
+  const ms = Date.parse(value);
+  return Number.isFinite(ms) && new Date(ms).toISOString().slice(0, 19) === value.slice(0, 19);
+}
+
+export function snapshotIndex(snapshot) {
+  const { events, issued, burned, live, safeBlock, asOf } = snapshot;
+  if (
+    snapshot.schemaVersion !== 1 ||
+    snapshot.chainId !== 11155111 ||
+    !validUtc(asOf) ||
+    ![issued, burned, live, safeBlock].every((n) => Number.isSafeInteger(n) && n >= 0) ||
+    !Array.isArray(events) ||
+    issued !== burned + live ||
+    events.length !== burned ||
+    new Set(events.map(eventKey)).size !== events.length ||
+    events.some((event) => event.block > safeBlock || Date.parse(event.at) > Date.parse(asOf))
+  ) {
+    throw new Error('Invalid or incomplete snapshot');
+  }
+  return prepareIndex(snapshot);
 }
 
 export function prepareIndex(archive) {
@@ -32,6 +59,7 @@ export function prepareIndex(archive) {
       event.block < 1 ||
       !Number.isSafeInteger(event.logIndex) ||
       event.logIndex < 0 ||
+      !validUtc(event.at) ||
       !/^0x[0-9a-f]{64}$/i.test(event.tx) ||
       positions.has(position) ||
       !Number.isInteger(survivor) ||

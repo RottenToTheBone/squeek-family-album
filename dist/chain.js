@@ -1,7 +1,8 @@
-import { eventKey, prepareIndex } from './lineage.js';
+import { eventKey, snapshotIndex, validUtc } from './lineage.js';
+import { ARCHIVES, hash32, SEPOLIA, verifyMergeReceipts } from './receipts.js';
+import { svgImage } from './svg.js';
 
 export const API = 'https://api.squeekchain.com/v1';
-const ARCHIVES = ['https://sepolia.gateway.tenderly.co', 'https://rpc.sepolia.ethpandaops.io'];
 export const txLink = (hash) => 'https://sepolia.etherscan.io/tx/' + hash;
 export const tokenLink = (id) => API + '/squeeks/' + id;
 
@@ -24,7 +25,13 @@ function sameRelease(payload, seed) {
 // Apply only a complete contiguous interval above the bundled safe block. Leave the snapshot intact on any failure.
 export async function refreshIndex(seed) {
   const state = await json(API + '/economy/state');
-  if (!sameRelease(state, seed)) throw new Error('Release mismatch');
+  if (
+    !sameRelease(state, seed) ||
+    seed.releaseId !== SEPOLIA.release ||
+    seed.collection.toLowerCase() !== SEPOLIA.collection ||
+    state.identities.staking?.proxy?.toLowerCase() !== SEPOLIA.staking
+  )
+    throw new Error('Release mismatch');
   const through = Number(state.chain.safeThroughBlock);
   if (!Number.isSafeInteger(through) || through < seed.safeBlock) throw new Error('Stale projection');
   const expected = Number(state.nft.burned);
@@ -37,15 +44,20 @@ export async function refreshIndex(seed) {
     (through === seed.safeBlock && state.chain.safeBlockHash !== seed.safeBlockHash)
   )
     throw new Error('Unmatched snapshot');
+  const asOf = state.chain.safeBlockTimestamp;
+  if (!validUtc(asOf) || !hash32(state.chain.safeBlockHash)) throw new Error('Invalid safe block');
   const updatedStats = {
-    asOf: state.chain.safeBlockTimestamp ?? state.generatedAt,
+    asOf,
     safeBlock: through,
     safeBlockHash: state.chain.safeBlockHash,
     issued,
     burned: expected,
     live,
   };
-  if (expected === seed.events.length) return { ...seed, ...updatedStats };
+  if (expected === seed.events.length) {
+    await verifyMergeReceipts([], seed, state, ARCHIVES);
+    return { ...seed, ...updatedStats };
+  }
   const extra = new Map();
   const cursors = new Set();
   let cursor = '';
@@ -75,6 +87,8 @@ export async function refreshIndex(seed) {
         !contract ||
         p.collection.toLowerCase() !== seed.collection.toLowerCase() ||
         src.contractAddress?.toLowerCase() !== contract.toLowerCase() ||
+        !hash32(src.blockHash) ||
+        !validUtc(item.occurredAt) ||
         src.releaseId !== seed.releaseId ||
         src.target !== 'sepolia' ||
         Number(src.chainId) !== seed.chainId ||
@@ -92,14 +106,17 @@ export async function refreshIndex(seed) {
         at: item.occurredAt,
       };
       const key = eventKey(m);
-      if (extra.has(key) && JSON.stringify(extra.get(key)) !== JSON.stringify(m))
+      const proof = { merge: m, blockHash: src.blockHash.toLowerCase(), custody: p.custody };
+      if (extra.has(key) && JSON.stringify(extra.get(key)) !== JSON.stringify(proof))
         throw new Error('Conflicting merge');
-      extra.set(key, m);
+      extra.set(key, proof);
     }
     if (boundary || !feed.nextCursor) {
-      const updated = { ...seed, ...updatedStats, events: [...seed.events, ...extra.values()] };
+      const proofs = [...extra.values()];
+      const updated = { ...seed, ...updatedStats, events: [...seed.events, ...proofs.map((p) => p.merge)] };
       if (updated.events.length !== expected) throw new Error('Incomplete burn coverage');
-      prepareIndex(updated);
+      snapshotIndex(updated);
+      await verifyMergeReceipts(proofs, seed, state, ARCHIVES);
       return updated;
     }
     if (cursors.has(feed.nextCursor)) throw new Error('Repeated cursor');
@@ -109,39 +126,14 @@ export async function refreshIndex(seed) {
   throw new Error('Snapshot needs a full refresh');
 }
 
-function svgImage(uri, id) {
-  if (
-    typeof uri !== 'string' ||
-    uri.length > 2_000_000 ||
-    !/^data:image\/svg\+xml(?:;charset=[\w-]+)?(?:;base64)?,/i.test(uri)
-  ) {
-    throw new Error('No original SVG');
-  }
-  const comma = uri.indexOf(','),
-    payload = uri.slice(comma + 1);
-  const content = uri.slice(0, comma).includes(';base64') ? atob(payload) : decodeURIComponent(payload);
-  const doc = new DOMParser().parseFromString(content, 'image/svg+xml');
-  if (
-    doc.documentElement.localName !== 'svg' ||
-    doc.querySelector('title')?.textContent !== 'Squeek #' + id ||
-    doc.querySelector('parsererror,script,foreignObject,iframe,style,image,a,animate,set') ||
-    [...doc.querySelectorAll('*')].some((node) =>
-      [...node.attributes].some(
-        (a) =>
-          a.name.startsWith('on') ||
-          (a.localName === 'href' && !a.value.startsWith('#')) ||
-          /url\s*\(/i.test(a.value),
-      ),
-    )
-  )
-    throw new Error('Unexpected onchain image');
-  return uri;
-}
 export async function livePortrait(id, seed) {
   const info = await json(tokenLink(id));
   if (!sameRelease(info, seed) || Number(info.tokenId) !== id)
     throw new Error('Token projection unavailable');
-  if (info.metadata && info.metadata.name !== 'Squeek #' + id) throw new Error('Portrait mismatch');
+  if (info.metadata && info.metadata.status !== 'pending' && info.metadata.name !== 'Squeek #' + id)
+    throw new Error('Portrait mismatch');
+  if (info.metadata?.imageDataUri && info.metadata.name !== 'Squeek #' + id)
+    throw new Error('Portrait mismatch');
   const url = info.metadata?.imageDataUri ? svgImage(info.metadata.imageDataUri, id) : '';
   const palette = info.metadata?.attributes?.find((t) => t.traitType === 'Palette')?.value ?? '';
   return {

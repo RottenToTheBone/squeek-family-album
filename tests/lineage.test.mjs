@@ -2,12 +2,26 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-import { prepareIndex, tokenNumber, treeRows } from '../dist/lineage.js';
+import { prepareIndex, snapshotIndex, tokenNumber, treeRows, validUtc } from '../dist/lineage.js';
 import { refreshIndex } from '../dist/chain.js';
+import { confirmMerge, EVENT_TOPIC, SEPOLIA } from '../dist/receipts.js';
 
 const root = new URL('../dist/', import.meta.url);
 const seed = JSON.parse(await readFile(new URL('data/archive.json', root), 'utf8'));
-const idx = prepareIndex(seed);
+const idx = snapshotIndex(seed);
+const time = '2026-11-05T00:00:00.000Z';
+const word = (n) => BigInt(n).toString(16).padStart(64, '0');
+const hex = (n) => '0x' + n.toString(16);
+const historical = (survivor, donor, level, block) => ({
+  survivor,
+  donor,
+  level,
+  block,
+  logIndex: 1,
+  tx: '0x' + word(block),
+  at: time,
+});
+const example = [historical(8923, 8924, 2, 10), historical(8925, 8926, 2, 11), historical(8923, 8925, 3, 12)];
 
 test('accepted token input stays within the issued range', () => {
   for (const v of ['1', '#8925', ' 008923 ', '9999']) assert.ok(tokenNumber(v, 9999));
@@ -15,7 +29,8 @@ test('accepted token input stays within the issued range', () => {
     assert.equal(tokenNumber(v, 9999), null);
 });
 test('a burned donor resolves to the complete surviving family in leaf order', () => {
-  const f = idx.family(8925);
+  const frozen = prepareIndex({ issued: 9999, events: example });
+  const f = frozen.family(8925);
   assert.equal(f.root.id, 8923);
   assert.equal(f.root.level, 3);
   assert.deepEqual(
@@ -33,10 +48,48 @@ test('a burned donor resolves to the complete surviving family in leaf order', (
   assert.equal(treeRows(f.root).placed.length, 7);
   assert.equal(treeRows(f.root).rows, 4);
   assert.deepEqual(
-    idx.family(1).originals.map((n) => n.id),
+    frozen.family(1).originals.map((n) => n.id),
     [1],
   );
-  assert.equal(idx.family(1).history.length, 0);
+  assert.equal(frozen.family(1).history.length, 0);
+});
+test('future merges may extend or consume either example without invalidating the archive', () => {
+  const later = [
+    ...example,
+    historical(1, 2, 2, 13),
+    historical(3, 4, 2, 14),
+    historical(1, 3, 3, 15),
+    historical(1, 8923, 4, 16),
+  ];
+  const family = prepareIndex({ issued: 9999, events: later }).family(8925);
+  assert.equal(family.root.id, 1);
+  assert.equal(family.root.level, 4);
+  assert.equal(family.originals.length, 8);
+});
+test('invalid and impossible UTC dates never enter a family tree', () => {
+  for (const x of [null, '', 'tomorrow', '2026-02-30T00:00:00Z', '2026-11-05T25:00:00Z']) {
+    assert.equal(validUtc(x), false);
+    assert.throws(() => prepareIndex({ issued: 9999, events: [{ ...example[0], at: x }] }));
+  }
+  for (const x of [time, '2026-11-05T00:00:00Z', '2024-02-29T23:59:59.10Z']) assert.equal(validUtc(x), true);
+});
+test('a published snapshot counts distinct canonical logs through its own safe block', () => {
+  const record = example[0];
+  const fixture = {
+    schemaVersion: 1,
+    chainId: 11155111,
+    issued: 9999,
+    burned: 2,
+    live: 9997,
+    asOf: time,
+    safeBlock: 11,
+  };
+  assert.doesNotThrow(() => snapshotIndex({ ...fixture, events: example.slice(0, 2) }));
+  assert.throws(() => snapshotIndex({ ...fixture, events: [record, record] }), /snapshot/);
+  assert.throws(
+    () => snapshotIndex({ ...fixture, events: [record, { ...example[1], block: 12 }] }),
+    /snapshot/,
+  );
 });
 test('every archived family is complete and every portrait matches its indexed bytes and provenance', async () => {
   assert.equal(seed.events.length, seed.burned);
@@ -67,7 +120,7 @@ test('duplicates, missing generations and reuse of burned IDs are distinguished'
     /Invalid/,
   );
 });
-test('live catch-up applies a complete verified delta and rejects a missing merge', async (t) => {
+test('live catch-up requires a complete, correctly dated delta and independent RPC receipts', async (t) => {
   const synthetic = { ...seed, events: [], safeBlock: 100, safeBlockHash: '0x' + 'c'.repeat(64), issued: 4 };
   const common = {
     status: 'available',
@@ -76,9 +129,9 @@ test('live catch-up applies a complete verified delta and rejects a missing merg
       chainId: '11155111',
       safeThroughBlock: '115',
       safeBlockHash: '0x' + 'd'.repeat(64),
-      safeBlockTimestamp: '2026-11-05T00:00:00Z',
+      safeBlockTimestamp: time,
     },
-    identities: { genesis: seed.collection, staking: { proxy: '0x' + '2'.repeat(40) } },
+    identities: { genesis: seed.collection, staking: { proxy: SEPOLIA.staking } },
     release: { id: seed.releaseId },
   };
   const event = {
@@ -98,25 +151,106 @@ test('live catch-up applies a complete verified delta and rejects a missing merg
       releaseId: seed.releaseId,
       contractAddress: seed.collection,
       blockNumber: '109',
+      blockHash: '0x' + 'a'.repeat(64),
       logIndex: '3',
       confirmationStatus: 'safe',
       transactionHash: '0x' + '7'.repeat(64),
     },
   };
   let feed = [event];
-  t.mock.method(globalThis, 'fetch', async (url) =>
-    Response.json(
-      url.endsWith('/state')
-        ? { ...common, nft: { issued: '4', burned: '1', live: '3' } }
-        : { ...common, events: feed, nextCursor: null },
-    ),
-  );
+  const timestamp = hex(Date.parse(time) / 1000);
+  const receipt = {
+    transactionHash: event.source.transactionHash,
+    blockHash: event.source.blockHash,
+    blockNumber: hex(109),
+    status: '0x1',
+  };
+  const walletLog = {
+    ...receipt,
+    logIndex: '0x3',
+    address: SEPOLIA.collection,
+    removed: false,
+    topics: [EVENT_TOPIC.wallet, '0x' + word(1), '0x' + word(2)],
+    data: '0x' + word(2) + word(100),
+  };
+  const header = { hash: receipt.blockHash, number: receipt.blockNumber, timestamp };
+  let rpcAttempts = 0;
+  let reportedBurns = 1;
+  t.mock.method(globalThis, 'fetch', async (url, options) => {
+    if (options?.method !== 'POST')
+      return Response.json(
+        url.endsWith('/state')
+          ? {
+              ...common,
+              nft: { issued: '4', burned: String(reportedBurns), live: String(4 - reportedBurns) },
+            }
+          : { ...common, events: feed, nextCursor: null },
+      );
+    const batch = JSON.parse(options.body);
+    rpcAttempts++;
+    return Response.json(
+      batch
+        .map(({ id, method, params }) => {
+          let result;
+          if (method === 'eth_chainId') result = '0xaa36a7';
+          if (method === 'eth_call') result = '0x' + word(params[0].data === '0x18160ddd' ? 3 : 1);
+          if (method === 'eth_getTransactionReceipt') result = { ...receipt, logs: [walletLog] };
+          if (method === 'eth_getBlockByNumber')
+            result = {
+              number: params[0],
+              timestamp,
+              hash: {
+                '0x64': synthetic.safeBlockHash,
+                '0x73': common.chain.safeBlockHash,
+                '0x6d': header.hash,
+              }[params[0]],
+            };
+          return { id, jsonrpc: '2.0', result };
+        })
+        .reverse(),
+    );
+  });
   const result = await refreshIndex(synthetic);
   assert.equal(result.safeBlock, 115);
   assert.equal(result.burned, 1);
   assert.equal(result.events[0].donor, 2);
+  assert.ok(rpcAttempts >= 2);
+  reportedBurns = 0;
+  await assert.rejects(refreshIndex(synthetic), /canonical RPC/);
+  reportedBurns = 1;
+  feed = [{ ...event, payload: { ...event.payload, survivorTokenId: '3' } }];
+  await assert.rejects(refreshIndex(synthetic), /canonical RPC/);
+  for (const occurredAt of [null, '2026-02-30T00:00:00Z']) {
+    feed = [{ ...event, occurredAt }];
+    await assert.rejects(refreshIndex(synthetic), /Unexpected/);
+  }
   feed = [];
   await assert.rejects(refreshIndex(synthetic), /Incomplete/);
   feed = [{ ...event, source: { ...event.source, contractAddress: '0x' + '9'.repeat(40) } }];
   await assert.rejects(refreshIndex(synthetic), /Unexpected/);
+  const merge = { ...historical(1, 2, 2, 109), tx: event.source.transactionHash, logIndex: 3 };
+  const proof = { merge, custody: 'staking', blockHash: header.hash };
+  const stakingLog = {
+    ...walletLog,
+    address: SEPOLIA.staking,
+    topics: [EVENT_TOPIC.staking, '0x' + word(123), '0x' + word(SEPOLIA.collection), '0x' + word(1)],
+    data: '0x' + word(2) + word(2) + word(200),
+  };
+  assert.doesNotThrow(() => confirmMerge(proof, { ...receipt, logs: [stakingLog] }, header));
+  for (const changed of [
+    { address: SEPOLIA.collection },
+    { logIndex: '0x4' },
+    { removed: true },
+    { blockHash: synthetic.safeBlockHash },
+    { topics: [EVENT_TOPIC.wallet, ...stakingLog.topics.slice(1)] },
+    { data: '0x' + word(3) + word(2) + word(200) },
+  ]) {
+    assert.throws(() => confirmMerge(proof, { ...receipt, logs: [{ ...stakingLog, ...changed }] }, header));
+  }
+  assert.throws(() => confirmMerge(proof, { ...receipt, status: '0x0', logs: [stakingLog] }, header));
+  assert.throws(() =>
+    confirmMerge(proof, { ...receipt, logs: [stakingLog] }, { ...header, hash: synthetic.safeBlockHash }),
+  );
+  common.identities.staking.proxy = '0x' + 'f'.repeat(40);
+  await assert.rejects(refreshIndex(synthetic), /Release mismatch/);
 });
