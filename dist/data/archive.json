@@ -1,0 +1,712 @@
+{
+  "schemaVersion": 1,
+  "chainId": 11155111,
+  "collection": "0xcb98349c134ab983da5bfd80527dfe2552bdb70f",
+  "releaseId": "stream-game-sepolia-test-20261026-01",
+  "asOf": "2026-11-04T16:07:24.000Z",
+  "safeBlock": 12063500,
+  "safeBlockHash": "0xeee82d66804979938c9210b323127d056535d155a2ad3bf4652bc78231d56f64",
+  "issued": 9999,
+  "burned": 33,
+  "live": 9966,
+  "events": [
+    {
+      "survivor": 8903,
+      "donor": 8904,
+      "level": 2,
+      "block": 12022920,
+      "logIndex": 93,
+      "tx": "0xa0654681ba287fd6030f93ff0f6706a7bea69d7057628d3fa618ebf7c18e3f82",
+      "at": "2026-10-29T23:51:36.000Z"
+    },
+    {
+      "survivor": 8909,
+      "donor": 8910,
+      "level": 2,
+      "block": 12022922,
+      "logIndex": 48,
+      "tx": "0x68968722676368fb5e3d1123f9bf058bab64b860a880270d09ebbf7f0fa73982",
+      "at": "2026-10-29T23:52:00.000Z"
+    },
+    {
+      "survivor": 8911,
+      "donor": 8912,
+      "level": 2,
+      "block": 12022924,
+      "logIndex": 132,
+      "tx": "0x026a153d7ebf122f11a36df948daa3324918ae66f3d17f447baaa233091c80f1",
+      "at": "2026-10-29T23:52:24.000Z"
+    },
+    {
+      "survivor": 8913,
+      "donor": 8914,
+      "level": 2,
+      "block": 12022925,
+      "logIndex": 96,
+      "tx": "0x760c21bb548a6ed7e4b5baca1db00c7cd089ab4ac42f7e94600b0c365e5b1008",
+      "at": "2026-10-29T23:52:36.000Z"
+    },
+    {
+      "survivor": 8915,
+      "donor": 8916,
+      "level": 2,
+      "block": 12022926,
+      "logIndex": 39,
+      "tx": "0x420e92e99327e153d5366e4bd5a830504204e13e84ed251e07719e854b218eb7",
+      "at": "2026-10-29T23:52:48.000Z"
+    },
+    {
+      "survivor": 8917,
+      "donor": 8918,
+      "level": 2,
+      "block": 12023220,
+      "logIndex": 146,
+      "tx": "0x7d11da4fbb75f14bc94c1958a945fccf58217cecc1221fc37de64135f27d8c5d",
+      "at": "2026-10-30T00:52:00.000Z"
+    },
+    {
+      "survivor": 8919,
+      "donor": 8920,
+      "level": 2,
+      "block": 12023221,
+      "logIndex": 175,
+      "tx": "0x4fbb46b5cfa927e18ec09edcf98f9a8447f9ec3734a4ded50c6a4767bcc2a366",
+      "at": "2026-10-30T00:52:12.000Z"
+    },
+    {
+      "survivor": 8921,
+      "donor": 8922,
+      "level": 2,
+      "block": 12023222,
+      "logIndex": 113,
+      "tx": "0x39074712a818983f75e9c13686f903660c8efd18386738416cfa0c26aa3d4858",
+      "at": "2026-10-30T00:52:24.000Z"
+    },
+    {
+      "survivor": 8923,
+      "donor": 8924,
+      "level": 2,
+      "block": 12023518,
+      "logIndex": 130,
+      "tx": "0x18d87048274424b1a810212c1c5b85432bf57f60445d0d72119c09efaa5e05d5",
+      "at": "2026-10-30T01:52:00.000Z"
+    },
+    {
+      "survivor": 8925,
+      "donor": 8926,
+      "level": 2,
+      "block": 12023519,
+      "logIndex": 49,
+      "tx": "0x5728ab953312b330725930e41e49d0cb1785db2169ac4242f19c3601999f8035",
+      "at": "2026-10-30T01:52:12.000Z"
+    },
+    {
+      "survivor": 8927,
+      "donor": 8928,
+      "level": 2,
+      "block": 12023522,
+      "logIndex": 138,
+      "tx": "0x0f9e8b73a4b2c84da4fac440436bb9ba7d7b28fe9b7013baa2f0130f9798fd93",
+      "at": "2026-10-30T01:52:48.000Z"
+    },
+    {
+      "survivor": 8936,
+      "donor": 8930,
+      "level": 2,
+      "block": 12029163,
+      "logIndex": 26,
+      "tx": "0x8facf598b6abedd59d8ee6bc3f39b602a69d8d455e986ad048ec10f161e37479",
+      "at": "2026-10-30T20:49:24.000Z"
+    },
+    {
+      "survivor": 8939,
+      "donor": 8940,
+      "level": 2,
+      "block": 12033413,
+      "logIndex": 28,
+      "tx": "0x699f36a1edb483ba4ea3aa9cb35c5e7964d3f1d9b0a4d925b03f9b3f534e828e",
+      "at": "2026-10-31T11:03:24.000Z"
+    },
+    {
+      "survivor": 8933,
+      "donor": 8937,
+      "level": 2,
+      "block": 12034079,
+      "logIndex": 12,
+      "tx": "0xf2c3ab858ac8ac85208a3e8d0ade69df127f494f63cd8c4928cc55040b9b4902",
+      "at": "2026-10-31T13:17:00.000Z"
+    },
+    {
+      "survivor": 8941,
+      "donor": 8942,
+      "level": 2,
+      "block": 12035676,
+      "logIndex": 182,
+      "tx": "0x763e5c91530be1c076c47c98da9306aea406c370b2c584b2e899be330374ed27",
+      "at": "2026-10-31T18:38:12.000Z"
+    },
+    {
+      "survivor": 8951,
+      "donor": 8952,
+      "level": 2,
+      "block": 12035678,
+      "logIndex": 9,
+      "tx": "0x1f0972eefc20d465f9e1826656545cfc27e65274dcc0ab8af8173c0683a23d70",
+      "at": "2026-10-31T18:38:36.000Z"
+    },
+    {
+      "survivor": 8955,
+      "donor": 8956,
+      "level": 2,
+      "block": 12035679,
+      "logIndex": 25,
+      "tx": "0x0798bb6721f0e2c77bea8e2d8ca48127de042311021c10dfd87e374d5a65074c",
+      "at": "2026-10-31T18:38:48.000Z"
+    },
+    {
+      "survivor": 8943,
+      "donor": 8944,
+      "level": 2,
+      "block": 12035688,
+      "logIndex": 8,
+      "tx": "0x87e94c3716edfc5371dd3d735c9b7c29a14855c8ca845b7bf73f16c1703dea68",
+      "at": "2026-10-31T18:40:36.000Z"
+    },
+    {
+      "survivor": 8945,
+      "donor": 8946,
+      "level": 2,
+      "block": 12035689,
+      "logIndex": 18,
+      "tx": "0xbcf9f07ebf06a95e39e438a9c349dec9dc5fffd39693cbf5f4e20143ab2b23fa",
+      "at": "2026-10-31T18:40:48.000Z"
+    },
+    {
+      "survivor": 8947,
+      "donor": 8948,
+      "level": 2,
+      "block": 12035690,
+      "logIndex": 22,
+      "tx": "0x413537f626a49eedcac751dba590088b083b12661f73d29dd2775fed05546cce",
+      "at": "2026-10-31T18:41:00.000Z"
+    },
+    {
+      "survivor": 8949,
+      "donor": 8950,
+      "level": 2,
+      "block": 12035692,
+      "logIndex": 29,
+      "tx": "0x804722470323b4d1885ced9e68dc4c6ead0d9f21d5a8eac1a93f3352cae86c16",
+      "at": "2026-10-31T18:41:24.000Z"
+    },
+    {
+      "survivor": 8953,
+      "donor": 8954,
+      "level": 2,
+      "block": 12035693,
+      "logIndex": 7,
+      "tx": "0x4a25054ed9c7a7e8d8892463228722fb5d44890cf9e61146b7b4c1dbf6864475",
+      "at": "2026-10-31T18:41:36.000Z"
+    },
+    {
+      "survivor": 8957,
+      "donor": 8958,
+      "level": 2,
+      "block": 12035694,
+      "logIndex": 30,
+      "tx": "0xbf16ff810d415ed97701e5416ceed2cf7945dc9202a0ee12b4844afc69e20bbc",
+      "at": "2026-10-31T18:41:48.000Z"
+    },
+    {
+      "survivor": 8903,
+      "donor": 8909,
+      "level": 3,
+      "block": 12045066,
+      "logIndex": 266,
+      "tx": "0x18a824609a0813cf0b7099c6f9fe331dbc00950a77d19db20e8b7cc4e725e3f2",
+      "at": "2026-11-02T02:04:12.000Z"
+    },
+    {
+      "survivor": 8911,
+      "donor": 8913,
+      "level": 3,
+      "block": 12045363,
+      "logIndex": 69,
+      "tx": "0xd370fb9b49f54ca2b1906ba750a6cacf7d5f07a3a67d9bbe68ed649800323f55",
+      "at": "2026-11-02T03:03:48.000Z"
+    },
+    {
+      "survivor": 8915,
+      "donor": 8917,
+      "level": 3,
+      "block": 12046852,
+      "logIndex": 430,
+      "tx": "0xc09aa08e32f6ce53f00a656efebe654722027fb7f5a575175166c9fae2d2b1b8",
+      "at": "2026-11-02T08:04:00.000Z"
+    },
+    {
+      "survivor": 8919,
+      "donor": 8921,
+      "level": 3,
+      "block": 12047142,
+      "logIndex": 194,
+      "tx": "0xa460f38b3ff8af2bbb982cebb90408735911f8b9605b37c0b86bf96c1eb26fcb",
+      "at": "2026-11-02T09:03:24.000Z"
+    },
+    {
+      "survivor": 8929,
+      "donor": 1162,
+      "level": 2,
+      "block": 12049456,
+      "logIndex": 61,
+      "tx": "0x57d5230516b0f1662d21e7e3b0b684d79fd08fa0613ba3bb90003bed2cbd9f9b",
+      "at": "2026-11-02T16:51:48.000Z"
+    },
+    {
+      "survivor": 8938,
+      "donor": 1161,
+      "level": 2,
+      "block": 12049458,
+      "logIndex": 191,
+      "tx": "0xa0a2879e0201628ce5f7529f33c4cd20f92f6fc0fdd0fee48d135382f8941a8c",
+      "at": "2026-11-02T16:52:12.000Z"
+    },
+    {
+      "survivor": 8935,
+      "donor": 1164,
+      "level": 2,
+      "block": 12049475,
+      "logIndex": 7,
+      "tx": "0x0d424586bfae78c06641face55e3a940e6985442a4be3324fd56da3a1ebbc00d",
+      "at": "2026-11-02T16:55:36.000Z"
+    },
+    {
+      "survivor": 8931,
+      "donor": 1163,
+      "level": 2,
+      "block": 12049480,
+      "logIndex": 20,
+      "tx": "0xb44f238702c20df2ebe8c70ca152817d6d787a848d9696dcc5faedaff11c3252",
+      "at": "2026-11-02T16:56:36.000Z"
+    },
+    {
+      "survivor": 8932,
+      "donor": 1165,
+      "level": 2,
+      "block": 12049580,
+      "logIndex": 29,
+      "tx": "0x0dcbc7cdd532043462c568c95f13cb614d45f8d903bb93af87d95e746c7c620e",
+      "at": "2026-11-02T17:17:12.000Z"
+    },
+    {
+      "survivor": 8923,
+      "donor": 8925,
+      "level": 3,
+      "block": 12051305,
+      "logIndex": 204,
+      "tx": "0x2b1490a77b90b5e2d4d8279ce004a2a9088e330b634fcfd117f850ccec13bd98",
+      "at": "2026-11-02T23:04:00.000Z"
+    }
+  ],
+  "portraits": {
+    "1": {
+      "file": "art/1.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "b193a167c8695e0f2c74b5b5e10294a177a6acd9937d9f8e830a5a004ac4e06c",
+      "palette": "Acid Lime"
+    },
+    "1161": {
+      "file": "art/1161.svg",
+      "block": 12049457,
+      "source": "archive",
+      "sha256": "6d23e39421761941066a12225da0920872148eaea07177caa6db16e0b94335db",
+      "palette": "Orange CRT"
+    },
+    "1162": {
+      "file": "art/1162.svg",
+      "block": 12049455,
+      "source": "archive",
+      "sha256": "fb6039e71c34f1ae33e3effd04213a4d949ba323bd76903ce88fd49e39623615",
+      "palette": "Spectral Hot Magenta"
+    },
+    "1163": {
+      "file": "art/1163.svg",
+      "block": 12049479,
+      "source": "archive",
+      "sha256": "903b8bcc39d94af79972f04aacd0a838a7b0618c6d955b8391a8e568b52296f3",
+      "palette": "Spectral Reactor Red"
+    },
+    "1164": {
+      "file": "art/1164.svg",
+      "block": 12049474,
+      "source": "archive",
+      "sha256": "40a4263c815d7a09cbbaadf4aee1bc625138f53e5640e9b586c8179cd2d4b812",
+      "palette": "Orange CRT"
+    },
+    "1165": {
+      "file": "art/1165.svg",
+      "block": 12049579,
+      "source": "archive",
+      "sha256": "fe25bb72b4c05acaf3201ec4aa0f1512a66a5be15d6b2f8a112f3e1286c25b6e",
+      "palette": "Spectral Ice White"
+    },
+    "8903": {
+      "file": "art/8903.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "efc7660394ce372e90044b645e1ac8ca4c9f87305b8f37161614f94a50607f27",
+      "palette": "Spectral Void Violet"
+    },
+    "8904": {
+      "file": "art/8904.svg",
+      "block": 12022919,
+      "source": "archive",
+      "sha256": "2bf985bda3223d653476d5b04ddd3b2cca5f254eb177d1b1797eec601abbe883",
+      "palette": "Spectral Acid Lime"
+    },
+    "8909": {
+      "file": "art/8909.svg",
+      "block": 12045065,
+      "source": "archive",
+      "sha256": "57856fc22eeb7e65febb4d9a75496e9b7d2899d2148fa25245df4fdc9196d604",
+      "palette": "Electric Cyan"
+    },
+    "8910": {
+      "file": "art/8910.svg",
+      "block": 12022921,
+      "source": "archive",
+      "sha256": "129a9f152c83bf4b5fd141c31517d28be057af51b9ea891031bc6faf0b9e3a49",
+      "palette": "Spectral RGB"
+    },
+    "8911": {
+      "file": "art/8911.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "369daa26bf99198cd53af17193c8e5e4839de0054e64bf6b280e6766a1e6a2af",
+      "palette": "Spectral Void Violet"
+    },
+    "8912": {
+      "file": "art/8912.svg",
+      "block": 12022923,
+      "source": "archive",
+      "sha256": "46ec3a3afb78c343ed97ea34ba7add3724321e1c4092ad05ccdfe84953a086ce",
+      "palette": "Gold"
+    },
+    "8913": {
+      "file": "art/8913.svg",
+      "block": 12045362,
+      "source": "archive",
+      "sha256": "09e78b4d3cf0b4944217328a7c8d18d6532eb63820df4a1d7c5d8e450cd8cfbd",
+      "palette": "Electric Cyan"
+    },
+    "8914": {
+      "file": "art/8914.svg",
+      "block": 12022924,
+      "source": "archive",
+      "sha256": "2ebcdfb48015e16563f0574fdf49d5d810acfab7077d67cfcbbb5c6c5d280b37",
+      "palette": "Spectral Gold"
+    },
+    "8915": {
+      "file": "art/8915.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "8fa6bd37e2bb66bd493a7daad9987a041a0450259f1b0896b617a93aba567af8",
+      "palette": "Electric Cyan"
+    },
+    "8916": {
+      "file": "art/8916.svg",
+      "block": 12022925,
+      "source": "archive",
+      "sha256": "effae2cf556d9e1a4a4a02829526e34c4804ccf7a67e0e36164f0300c0ce7703",
+      "palette": "Spectral Void Violet"
+    },
+    "8917": {
+      "file": "art/8917.svg",
+      "block": 12046851,
+      "source": "archive",
+      "sha256": "dc20e84b0a7a0e83b834730424a98f972a2ffd4f4dd0dc266e0a36293d76ec69",
+      "palette": "Reactor Red"
+    },
+    "8918": {
+      "file": "art/8918.svg",
+      "block": 12023219,
+      "source": "archive",
+      "sha256": "a6bc747ee6f619206dffdf7be49625210722f8412a1383db739f15c2e1ccb5ca",
+      "palette": "Spectral Ice White"
+    },
+    "8919": {
+      "file": "art/8919.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "67c0d8eb883863bdf399be125d00ffe5d9ffabb1b8e9dc0b7117e2cfc9eb2cd5",
+      "palette": "Ice White"
+    },
+    "8920": {
+      "file": "art/8920.svg",
+      "block": 12023220,
+      "source": "archive",
+      "sha256": "10f2b398986b3c43983dc5ddd889bd467b7ba7f3f2480ba63088c553f7a287f1",
+      "palette": "Gold"
+    },
+    "8921": {
+      "file": "art/8921.svg",
+      "block": 12047141,
+      "source": "archive",
+      "sha256": "c4aa68907a15e3f53daab707bf4e78a55de4b317daf5df4e59461f9f44059699",
+      "palette": "Spectral Electric Cyan"
+    },
+    "8922": {
+      "file": "art/8922.svg",
+      "block": 12023221,
+      "source": "archive",
+      "sha256": "5b7330a4f828e22e8e562fdf1567c6e382962fb8840845271e3644b62b7ac422",
+      "palette": "Spectral RGB"
+    },
+    "8923": {
+      "file": "art/8923.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "6b896755e1b3514078ff401043bbb9e5840ee097d9ac57f4e0735e4b26a29d83",
+      "palette": "Acid Lime"
+    },
+    "8924": {
+      "file": "art/8924.svg",
+      "block": 12023517,
+      "source": "archive",
+      "sha256": "47bcb97ab72e75347ef06dae701ffa60005465b91a158c4925119d852383b0bf",
+      "palette": "Spectral RGB"
+    },
+    "8925": {
+      "file": "art/8925.svg",
+      "block": 12051304,
+      "source": "archive",
+      "sha256": "8306e510060c4d222fd85d8cdde98b28b33f39ed9cca1c338482846f8f5b1973",
+      "palette": "Acid Lime"
+    },
+    "8926": {
+      "file": "art/8926.svg",
+      "block": 12023518,
+      "source": "archive",
+      "sha256": "4160c8ab0fef9690f1bd9849d3ce89a926aad52af8d54a49f2d7a30ccd485274",
+      "palette": "Reactor Red"
+    },
+    "8927": {
+      "file": "art/8927.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "2343e38381fe7322354ced45dc996e5d69428a681586b243bdcfa5a21d9d3731",
+      "palette": "Acid Lime"
+    },
+    "8928": {
+      "file": "art/8928.svg",
+      "block": 12023521,
+      "source": "archive",
+      "sha256": "53397cd44a22f8372c3642fcd8ae781c0ce538fd6ce1de68d975e68764c8e4b2",
+      "palette": "Spectral Gold"
+    },
+    "8929": {
+      "file": "art/8929.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "a31c17c3a5a25b65b2af0bb92a8a4dec376c3c751b1adb3dc21815df59be8d95",
+      "palette": "Hot Magenta"
+    },
+    "8930": {
+      "file": "art/8930.svg",
+      "block": 12029162,
+      "source": "archive",
+      "sha256": "0de0cfd91ca0c19c1c89b10017a2ed791693c9406cb405670d7a0b9a20b3617c",
+      "palette": "Spectral Hot Magenta"
+    },
+    "8931": {
+      "file": "art/8931.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "9fb6804d00044ea48e440250e933e8e03f7109f3606761acb8a40b086c053c3b",
+      "palette": "Hot Magenta"
+    },
+    "8932": {
+      "file": "art/8932.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "cc34194740137a7259092654a40eb97508d95c62a2bab392860c63a21caef080",
+      "palette": "Spectral Hot Magenta"
+    },
+    "8933": {
+      "file": "art/8933.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "09aa6d7e8a5a5c722901dbea82cb6b2afae09353a856b63593c4da9c05e1eb1a",
+      "palette": "Spectral Acid Lime"
+    },
+    "8935": {
+      "file": "art/8935.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "ffd93d0e72753d88e08e4f309c54bd18afb6f2e8e98604bd23adc7b9b6734279",
+      "palette": "Spectral Ice White"
+    },
+    "8936": {
+      "file": "art/8936.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "7d627aaaf68fd236558c91f5ca69c54487a8846e3990dddcf3fb3d8be156d16e",
+      "palette": "Gold"
+    },
+    "8937": {
+      "file": "art/8937.svg",
+      "block": 12034078,
+      "source": "archive",
+      "sha256": "7b39cd4980302c213d92c17e3d018c4e4707fd64795c1d0f4df29479990fcfde",
+      "palette": "Reactor Red"
+    },
+    "8938": {
+      "file": "art/8938.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "e878acd2e2e8e665df4e95327d107a23a420d3fdfba1cd6ec0ed3fa5ceb0e493",
+      "palette": "Electric Cyan"
+    },
+    "8939": {
+      "file": "art/8939.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "e2057c3276f3d077bd38677f1292d3ff05107c48fad5dc652cd84a18c903f600",
+      "palette": "Spectral Orange CRT"
+    },
+    "8940": {
+      "file": "art/8940.svg",
+      "block": 12033412,
+      "source": "archive",
+      "sha256": "496803d83ae7e4305ec556daf1a5d582b3abb7c7ea1e08885c0d0bcf12f3b965",
+      "palette": "Acid Lime"
+    },
+    "8941": {
+      "file": "art/8941.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "354d385d9718346f69f9521374f2fd6b8c82c3cded9058805cc68a465f7122df",
+      "palette": "Spectral Hot Magenta"
+    },
+    "8942": {
+      "file": "art/8942.svg",
+      "block": 12035675,
+      "source": "archive",
+      "sha256": "3ee1a0099a396b1690bffd45601efd7f858fd2b07236947bb38583821c5ef0f9",
+      "palette": "Spectral RGB"
+    },
+    "8943": {
+      "file": "art/8943.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "0a47ca6d1c47fe1c8b8e1db3aeaeb5b732671413faebc84b00eb70acfbffe258",
+      "palette": "Hot Magenta"
+    },
+    "8944": {
+      "file": "art/8944.svg",
+      "block": 12035687,
+      "source": "archive",
+      "sha256": "0a4017d059dbb2e8188661ce414ce44b00bed8af974414ebe4bd50ff68cb0688",
+      "palette": "Ice White"
+    },
+    "8945": {
+      "file": "art/8945.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "2b588b338a414d809d530d35607ed12653c8c8d635612cea9a76764c1ccb85e2",
+      "palette": "RGB"
+    },
+    "8946": {
+      "file": "art/8946.svg",
+      "block": 12035688,
+      "source": "archive",
+      "sha256": "ecf020a3f21bfd4a5ec83f8cea93becdb822f5f937268a76312dd5f6632d5040",
+      "palette": "Electric Cyan"
+    },
+    "8947": {
+      "file": "art/8947.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "26194aa701a092949b190a2d1cd9b4459258aa3a65665029e799e88b82fe02c7",
+      "palette": "Void Violet"
+    },
+    "8948": {
+      "file": "art/8948.svg",
+      "block": 12035689,
+      "source": "archive",
+      "sha256": "01869d18d89c81b00e6566a7edf559bce47ea28b0624e93369a6099ac74b2d20",
+      "palette": "Spectral Reactor Red"
+    },
+    "8949": {
+      "file": "art/8949.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "d2a29769b58d81097356d7400a33a7b5ecfb786ef735c04b29e634900592a99e",
+      "palette": "Spectral Electric Cyan"
+    },
+    "8950": {
+      "file": "art/8950.svg",
+      "block": 12035691,
+      "source": "archive",
+      "sha256": "421c182de18166691859cd92d9c9dfbbfa885474b045e1395ae8af21fc914767",
+      "palette": "Electric Cyan"
+    },
+    "8951": {
+      "file": "art/8951.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "6bf631acbfb68c581e7c5b94529aa240d940e84d64b37d96840e176cdef22abd",
+      "palette": "Spectral Acid Lime"
+    },
+    "8952": {
+      "file": "art/8952.svg",
+      "block": 12035677,
+      "source": "archive",
+      "sha256": "4bf742ef820d298bbaa2cc6bd9cc9c32aff3f02b57aab7781c60cf7bb3bbb4f2",
+      "palette": "RGB"
+    },
+    "8953": {
+      "file": "art/8953.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "18692e5dd424965339fa48f5fca10d969d5502b805c2b7df5e4734e155c1fae7",
+      "palette": "Spectral Hot Magenta"
+    },
+    "8954": {
+      "file": "art/8954.svg",
+      "block": 12035692,
+      "source": "archive",
+      "sha256": "d083c514c69e68dd292c322a722a7ad6f7f59701ca94cffafb765084a4e1234e",
+      "palette": "Gold"
+    },
+    "8955": {
+      "file": "art/8955.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "8e328ffab9b2289f0640dfbcda5dfef47a5f1736fbfc6a697421482ce1c2d2e4",
+      "palette": "Spectral Reactor Red"
+    },
+    "8956": {
+      "file": "art/8956.svg",
+      "block": 12035678,
+      "source": "archive",
+      "sha256": "79fcd221cf07ed2f0cc1613bbedf4c1f95965abbf4df05b57624b18fbe67e2ea",
+      "palette": "RGB"
+    },
+    "8957": {
+      "file": "art/8957.svg",
+      "block": 12063500,
+      "source": "chain",
+      "sha256": "ccfb8718b7f6a7eb8f61d82c5311f777ef21a27f2bb8f45c8b81155bb538146a",
+      "palette": "Orange CRT"
+    },
+    "8958": {
+      "file": "art/8958.svg",
+      "block": 12035693,
+      "source": "archive",
+      "sha256": "030da5fb83649a62af034e1780ba4594ab1f1a026e2d27547c5fcaa6573e44cb",
+      "palette": "Spectral Electric Cyan"
+    }
+  }
+}

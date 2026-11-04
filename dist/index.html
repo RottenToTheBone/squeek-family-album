@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f2e9" />
+    <meta
+      name="description"
+      content="Explore the verified merge history of Squeekchain NFTs and recover their original onchain portraits on Ethereum Sepolia."
+    />
+    <meta property="og:title" content="Squeek Family Album" />
+    <meta
+      property="og:description"
+      content="Trace four originals into Squeek #8923 and uncover three portraits from before they were burned."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://squeek.machinepaystack.com/cover.png" />
+    <title>Squeek Family Album — Squeekchain on Sepolia</title>
+    <link rel="icon" href="./mark.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./app.css" />
+  </head>
+  <body>
+    <a class="skip" href="#workbench" data-zh="跳到家谱">Skip to the family tree</a>
+    <header class="mast">
+      <div class="shell mast-inner">
+        <a class="brand" href="./" aria-label="Squeek Family Album"
+          ><img src="./mark.svg" alt="" width="32" height="32" /><span>Squeek Archive</span></a
+        >
+        <div class="nav-tools">
+          <span class="network"><i></i> Sepolia <span data-zh="测试网">testnet</span></span
+          ><span class="nav-line"></span
+          ><button class="nav-button" id="notes" data-zh="档案说明">Field notes</button
+          ><button class="lang" id="lang" lang="zh-Hans">中文</button>
+        </div>
+      </div>
+    </header>
+    <main class="shell">
+      <section class="intro">
+        <div>
+          <div class="eyebrow">
+            <i class="line-id"></i
+            ><span data-zh="SQUEEKCHAIN · 藏品目录 01">SQUEEKCHAIN · COLLECTION INDEX 01</span>
+          </div>
+          <h1><span data-zh="仓鼠">Family</span> <em data-zh="家谱">Album</em><b>.</b></h1>
+          <p class="lede" data-zh="追溯一只 Squeek 的合并家谱，找回已经销毁的链上原画。">
+            Trace a Squeek back to its originals. Recover the onchain portraits of the ones that were burned.
+          </p>
+        </div>
+        <div class="lookup">
+          <form id="lookup-form" novalidate>
+            <label class="eyebrow" for="token-input" data-zh="按 NFT 编号查找">LOOK UP A TOKEN</label>
+            <div class="search-field">
+              <span class="search-hash" aria-hidden="true">#</span
+              ><input
+                id="token-input"
+                type="text"
+                inputmode="numeric"
+                autocomplete="off"
+                spellcheck="false"
+                maxlength="24"
+                placeholder="Token ID"
+                aria-describedby="search-error"
+              /><button class="open-btn" type="submit">
+                <span data-zh="查找">Look up</span> <span aria-hidden="true">→</span>
+              </button>
+            </div>
+            <div id="search-error" class="error" role="alert"></div>
+          </form>
+          <div class="examples">
+            <span data-zh="试试">Try</span><button data-open="8923">#8923</button
+            ><button data-open="8925">#8925</button><button data-open="1">#1</button>
+          </div>
+        </div>
+      </section>
+      <div class="record-bar">
+        <span class="eyebrow"><i class="diamond"></i><span data-zh="当前档案">OPEN RECORD</span></span
+        ><span id="record-code" class="mono">—</span>
+      </div>
+      <noscript>This archive needs JavaScript to look up portraits and draw the family tree.</noscript>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+      <span id="selection-status" class="sr-only" role="status"></span>
+      <div class="spread" id="workbench" tabindex="-1">
+        <section class="specimen" aria-labelledby="portrait-title">
+          <div class="plate">
+            <div class="plate-top">
+              <span class="plate-label"><i></i><span id="plate-type">ONCHAIN PORTRAIT</span></span
+              ><span id="plate-no">—</span>
+            </div>
+            <button id="enlarge" class="art-open" aria-label="Enlarge original portrait" disabled>
+              <span class="art-mat"
+                ><img id="hero-art" alt="" hidden /><span
+                  class="art-fallback"
+                  id="art-fallback"
+                  data-zh="正在读取原画…"
+                  >Reading portrait…</span
+                ></span
+              >
+            </button>
+            <div class="plate-foot">
+              <span class="cross" aria-hidden="true">⊹</span><span id="plate-palette">DOT GRID / SEPOLIA</span
+              ><span class="cross" aria-hidden="true">⊹</span>
+            </div>
+          </div>
+          <div class="specimen-caption">
+            <div>
+              <div class="eyebrow" data-zh="选中的原画">SELECTED PORTRAIT</div>
+              <h2 id="portrait-title">Squeek <span id="selected-id">—</span></h2>
+            </div>
+            <span id="art-state" class="tag"></span>
+          </div>
+          <div class="art-details">
+            <span id="art-source"></span
+            ><a id="token-source" target="_blank" rel="noopener noreferrer"
+              ><span data-zh="查看来源">Source</span> ↗</a
+            >
+          </div>
+          <button id="share" class="share-btn" disabled>
+            <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+              <path
+                d="M12 15V3m-4 4 4-4 4 4M5 12v7h14v-7"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="square"
+              /></svg
+            ><span data-zh="分享家谱卡">Share family card</span>
+          </button>
+        </section>
+        <section class="genealogy" aria-labelledby="tree-title">
+          <div class="tree-head">
+            <div>
+              <div class="eyebrow">
+                <span class="section-num">01</span><span data-zh="合并记录">MERGE RECORD</span>
+              </div>
+              <h2 id="tree-title" data-zh="合并家谱">The family tree</h2>
+            </div>
+            <span class="edition" id="level-tag">—</span>
+          </div>
+          <p class="tree-intro" data-zh="点选任意节点查看原画。连线沿着每次合并指向保留的编号。">
+            Select a node to see its portrait. Follow each line to the token that survived.
+          </p>
+          <div class="tree-frame">
+            <div
+              id="tree-viewport"
+              class="tree-viewport"
+              role="group"
+              aria-label="Interactive Squeek family tree"
+            >
+              <div class="tree-stage" id="tree-stage"></div>
+            </div>
+          </div>
+          <div class="tree-legend">
+            <span><i class="dot live"></i><span data-zh="编号仍存续">Surviving ID</span></span
+            ><span><i class="dot burned"></i><span data-zh="编号已销毁">Burned ID</span></span>
+          </div>
+          <div class="facts">
+            <div><strong id="f-originals">—</strong><span data-zh="原始藏品">Originals</span></div>
+            <div><strong id="f-merges">—</strong><span data-zh="链上合并">Onchain merges</span></div>
+            <div><strong id="f-level">—</strong><span data-zh="最终等级">Final level</span></div>
+          </div>
+        </section>
+      </div>
+      <section class="ledger" aria-labelledby="ledger-title">
+        <div class="ledger-head">
+          <div class="eyebrow">
+            <span class="section-num">02</span><span data-zh="链上凭据">ONCHAIN EVIDENCE</span>
+          </div>
+          <h2 id="ledger-title" data-zh="合并明细">Merge ledger</h2>
+        </div>
+        <div id="ledger-body"></div>
+      </section>
+      <footer>
+        <div>
+          <span class="foot-mark">✳</span
+          ><span data-zh="Squeek Family Album · 独立社区项目"
+            >Squeek Family Album · Independent community project</span
+          >
+        </div>
+        <div>
+          <span id="freshness"></span
+          ><a href="https://squeekchain.com/genesis/code" target="_blank" rel="noopener noreferrer"
+            >Genesis ↗</a
+          >
+        </div>
+      </footer>
+    </main>
+    <dialog id="notes-dialog" aria-labelledby="notes-title">
+      <div class="modal-top">
+        <span class="eyebrow" data-zh="档案说明">FIELD NOTES</span
+        ><button class="close" data-close aria-label="Close">×</button>
+      </div>
+      <h2 id="notes-title" data-zh="怎样阅读这本家谱">Reading the album</h2>
+      <p
+        data-zh="两只同级 Squeek 合并后，一只保留编号并升级，另一只被销毁。每条连线都来自 Sepolia 上已确认的合并事件。"
+      >
+        Two Squeeks of the same level merge. One ID survives and levels up, and the other is burned. Each
+        connection comes from a confirmed merge on Ethereum Sepolia.
+      </p>
+      <p
+        data-zh="编号已销毁时，我们在合并前一个区块读取 tokenURI，恢复当时的原画。点击合并明细可以独立核对交易。"
+      >
+        For a burned ID, the album reads tokenURI at the block immediately before its merge to recover its
+        original portrait. Open any ledger transaction to check the evidence.
+      </p>
+      <p id="notes-data" class="notes-data"></p>
+      <p>
+        <a href="https://docs.squeekchain.com/squeeks/merge/" target="_blank" rel="noopener noreferrer"
+          ><span data-zh="官方合并说明">Official merge rules</span> ↗</a
+        >
+      </p>
+    </dialog>
+    <dialog id="art-dialog" aria-labelledby="art-modal-title">
+      <div class="modal-top">
+        <span id="art-modal-title" class="eyebrow"></span
+        ><button class="close" data-close aria-label="Close">×</button>
+      </div>
+      <img id="full-art" alt="" />
+      <p id="full-art-source" class="notes-data"></p>
+      <div class="modal-actions">
+        <a id="save-svg" class="secondary" download
+          ><span data-zh="保存原始 SVG">Save original SVG</span> ↓</a
+        >
+      </div>
+    </dialog>
+    <dialog id="share-dialog" aria-labelledby="card-title">
+      <div class="modal-top">
+        <span class="eyebrow" data-zh="分享家谱卡">SHARE FAMILY CARD</span
+        ><button class="close" data-close aria-label="Close">×</button>
+      </div>
+      <h2 id="card-title" data-zh="家谱卡">Family card</h2>
+      <img id="card-preview" alt="" hidden />
+      <p class="card-status" id="card-status" role="status"></p>
+      <div class="modal-actions">
+        <button id="copy-link" class="secondary" data-zh="复制档案链接">Copy record link</button
+        ><a id="save-card" class="primary" download hidden><span data-zh="保存 PNG">Save PNG</span> ↓</a>
+      </div>
+    </dialog>
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
