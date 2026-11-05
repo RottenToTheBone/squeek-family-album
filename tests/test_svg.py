@@ -16,14 +16,15 @@ CASES = json.loads((ROOT / "tests/svg-cases.json").read_text(encoding="utf-8"))
 
 class SvgSafety(unittest.TestCase):
     def test_legitimate_originals_keep_their_bytes(self):
-        manifest = json.loads((ROOT / "dist/data/archive.json").read_text(encoding="utf-8"))
-        expected_files = {f"{token}.svg" for token in manifest["portraits"]}
-        self.assertEqual({p.name for p in (ROOT / "dist/art").iterdir()}, expected_files)
-        for token, record in manifest["portraits"].items():
-            self.assertEqual(record["file"], "art/" + token + ".svg")
-            original = (ROOT / "dist" / record["file"]).read_bytes()
-            validate_svg(original, "Squeek #" + token)
-            self.assertEqual(hashlib.sha256(original).hexdigest(), record["sha256"])
+        for name, folder in (("archive", "art"), ("current", "current-art")):
+            manifest = json.loads((ROOT / "dist/data" / (name + ".json")).read_text(encoding="utf-8"))
+            expected_files = {f"{token}.svg" for token in manifest["portraits"]}
+            self.assertEqual({p.name for p in (ROOT / "dist" / folder).iterdir()}, expected_files)
+            for token, record in manifest["portraits"].items():
+                self.assertEqual(record["file"], folder + "/" + token + ".svg")
+                original = (ROOT / "dist" / record["file"]).read_bytes()
+                validate_svg(original, "Squeek #" + token)
+                self.assertEqual(hashlib.sha256(original).hexdigest(), record["sha256"])
         valid = CASES["valid"].encode()
         for uri in ["data:image/svg+xml;base64," + base64.b64encode(valid).decode(),
                     "data:image/svg+xml;charset=utf-8," + quote_from_bytes(valid)]:

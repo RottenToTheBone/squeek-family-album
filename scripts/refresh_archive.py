@@ -23,9 +23,9 @@ RPCS = ("https://sepolia.gateway.tenderly.co", "https://rpc.sepolia.ethpandaops.
 CHAIN = 11155111
 HASH = re.compile(r"0x[0-9a-fA-F]{64}")
 ADDRESS = re.compile(r"0x[0-9a-fA-F]{40}")
-RELEASE = "stream-game-sepolia-test-20261026-01"
-COLLECTION = "0xcb98349c134ab983da5bfd80527dfe2552bdb70f"
-STAKING = "0x4b67b739dfd832f4eac67a7aa3bc244fb74cea4f"
+RELEASE = "core-sepolia-20261103"
+COLLECTION = "0xc4c7982657f00509548f3a3a41db7fa439a6856b"
+STAKING = "0x50fd1780526c3186a0c037c7622203bc4fb611ca"
 TOPICS = {
     "wallet": "0x8a9b1a009a32cc0082d2270e9033429b8e1aa3235e7b8198b013f603116a3c87",
     "staking": "0x47dc7fa0b474cf75263255e0530e84606f909e3099ad0d06bd67883467333339",
@@ -45,6 +45,13 @@ def api(path, params=None):
     require(data.get("status") == "available", f"{path}: {data.get('reason', 'unavailable')}")
     require(data["chain"]["target"] == "sepolia" and int(data["chain"]["chainId"]) == CHAIN,
             f"{path}: wrong chain")
+    deployment = data["deployment"]
+    require(data["schemaVersion"] == {"economy/state": 3, "events": 4}[path]
+            and data["release"]["id"] == deployment["releaseId"] == RELEASE
+            and deployment["target"] == "sepolia" and int(deployment["chainId"]) == CHAIN
+            and deployment["components"]["collection"]["address"].lower() == COLLECTION
+            and deployment["components"]["staking"]["address"].lower() == STAKING,
+            f"{path}: unsupported deployment or API schema")
     return data
 
 
@@ -122,8 +129,8 @@ def confirm_merge(event, custody, block_hash, receipt, header):
 
 def read_merges(snapshot, providers=None):
     release = snapshot["release"]["id"]
-    collection = snapshot["identities"]["genesis"].lower()
-    staking = snapshot["identities"]["staking"]["proxy"].lower()
+    collection = snapshot["deployment"]["components"]["collection"]["address"].lower()
+    staking = snapshot["deployment"]["components"]["staking"]["address"].lower()
     safe_block = int(snapshot["chain"]["safeThroughBlock"])
     require((release, collection, staking) == (RELEASE, COLLECTION, STAKING), "Unrecognized merge deployment")
     if providers is None:
@@ -134,8 +141,6 @@ def read_merges(snapshot, providers=None):
     params = {"category": "players", "limit": 100}
     while True:
         page = api("events", params)
-        require(page["release"]["id"] == release and page["identities"]["genesis"].lower() == collection,
-                "The event feed changed deployment")
         for event in page["events"]:
             if event["type"] != "nft.merged":
                 continue
@@ -246,7 +251,7 @@ def fetch_portrait(token_id, burns, safe_block, collection, providers, staging):
     else:
         raise ValueError(f"Unable to verify #{token_id} at {block}: {'; '.join(failures)}")
     (staging / f"{token_id}.svg").write_bytes(svg)
-    result = {"file": f"art/{token_id}.svg", "block": block, "source": "archive" if archived else "chain",
+    result = {"file": f"current-art/{token_id}.svg", "block": block, "source": "archive" if archived else "chain",
               "sha256": hashlib.sha256(svg).hexdigest()}
     if palette:
         result["palette"] = palette
@@ -255,12 +260,12 @@ def fetch_portrait(token_id, burns, safe_block, collection, providers, staging):
 
 def refresh():
     snapshot = api("economy/state")
-    collection = snapshot["identities"]["genesis"].lower()
+    collection = snapshot["deployment"]["components"]["collection"]["address"].lower()
     release = snapshot["release"]["id"]
     safe_block, block_hash = int(snapshot["chain"]["safeThroughBlock"]), snapshot["chain"]["safeBlockHash"]
     require(ADDRESS.fullmatch(collection) and HASH.fullmatch(block_hash), "Invalid deployment or block hash")
     issued, burned, live = (int(snapshot["nft"][key]) for key in ("issued", "burned", "live"))
-    manifest = DIST / "data" / "archive.json"
+    manifest = DIST / "data" / "current.json"
     previous = None
     if manifest.exists():
         previous = json.loads(manifest.read_text(encoding="utf-8"))
@@ -271,7 +276,7 @@ def refresh():
                                     snapshot["chain"]["safeBlockTimestamp"])
     events = read_merges(snapshot, providers)
     burns = validate_history(events, issued, burned, live, int(snapshot["nft"]["maximumLevel"]))
-    tokens = sorted(set(burns) | {event["survivor"] for event in events} | {1})
+    tokens = sorted(set(burns) | {event["survivor"] for event in events} | {1, 8923})
     print(f"Verified {len(events)} unique merges. Reading {len(tokens)} original tokenURIs.", flush=True)
     with tempfile.TemporaryDirectory(dir=ROOT, prefix=".refresh-") as temp_dir:
         staging = Path(temp_dir)
@@ -288,14 +293,14 @@ def refresh():
         staged_manifest = staging / "archive.json"
         staged_manifest.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         manifest.parent.mkdir(parents=True, exist_ok=True)
-        (DIST / "art").mkdir(parents=True, exist_ok=True)
+        (DIST / "current-art").mkdir(parents=True, exist_ok=True)
         # Committed art is immutable. New images can appear before a manifest that references them.
         for portrait in portraits.values():
             target = DIST / portrait["file"]
             require(not target.exists() or hashlib.sha256(target.read_bytes()).hexdigest() == portrait["sha256"],
                     f"An existing original differs: {target.name}")
         for token in tokens:
-            target = DIST / "art" / f"{token}.svg"
+            target = DIST / "current-art" / f"{token}.svg"
             if not target.exists():
                 os.replace(staging / target.name, target)
         os.replace(staged_manifest, manifest)

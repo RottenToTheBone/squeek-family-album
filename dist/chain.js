@@ -1,5 +1,5 @@
 import { eventKey, snapshotIndex, validUtc } from './lineage.js';
-import { ARCHIVES, hash32, SEPOLIA, verifyMergeReceipts } from './receipts.js';
+import { ARCHIVES, CURRENT, HISTORICAL, deploymentFor, hash32, verifyMergeReceipts } from './receipts.js';
 import { svgImage } from './svg.js';
 
 export const API = 'https://api.squeekchain.com/v1';
@@ -12,26 +12,27 @@ async function json(url, options = {}, timeout = 7000) {
   return response.json();
 }
 
-function sameRelease(payload, seed) {
+function currentResponse(payload, version) {
+  const deployment = payload?.deployment;
   return (
     payload?.status === 'available' &&
+    payload.schemaVersion === version &&
     payload.chain?.target === 'sepolia' &&
-    Number(payload.chain.chainId) === seed.chainId &&
-    payload.release?.id === seed.releaseId &&
-    payload.identities?.genesis?.toLowerCase() === seed.collection.toLowerCase()
+    Number(payload.chain.chainId) === 11155111 &&
+    payload.release?.id === CURRENT.release &&
+    deployment?.releaseId === CURRENT.release &&
+    deployment.target === 'sepolia' &&
+    Number(deployment.chainId) === 11155111 &&
+    deployment.components?.collection?.address?.toLowerCase() === CURRENT.collection &&
+    deployment.components?.staking?.address?.toLowerCase() === CURRENT.staking
   );
 }
 
 // Apply only a complete contiguous interval above the bundled safe block. Leave the snapshot intact on any failure.
 export async function refreshIndex(seed) {
+  if (deploymentFor(seed) !== CURRENT) throw new Error('Historical snapshot is fixed');
   const state = await json(API + '/economy/state');
-  if (
-    !sameRelease(state, seed) ||
-    seed.releaseId !== SEPOLIA.release ||
-    seed.collection.toLowerCase() !== SEPOLIA.collection ||
-    state.identities.staking?.proxy?.toLowerCase() !== SEPOLIA.staking
-  )
-    throw new Error('Release mismatch');
+  if (!currentResponse(state, 3)) throw new Error('Release mismatch');
   const through = Number(state.chain.safeThroughBlock);
   if (!Number.isSafeInteger(through) || through < seed.safeBlock) throw new Error('Stale projection');
   const expected = Number(state.nft.burned);
@@ -65,7 +66,7 @@ export async function refreshIndex(seed) {
     const params = new URLSearchParams({ category: 'players', limit: '100' });
     if (cursor) params.set('cursor', cursor);
     const feed = await json(API + '/events?' + params);
-    if (!sameRelease(feed, seed) || !Array.isArray(feed.events)) throw new Error('Incomplete feed');
+    if (!currentResponse(feed, 4) || !Array.isArray(feed.events)) throw new Error('Incomplete feed');
     let boundary = false;
     for (const item of feed.events) {
       const src = item.source;
@@ -81,7 +82,7 @@ export async function refreshIndex(seed) {
         p.custody === 'wallet'
           ? seed.collection
           : p.custody === 'staking'
-            ? state.identities.staking?.proxy
+            ? CURRENT.staking
             : '';
       if (
         !contract ||
@@ -127,18 +128,28 @@ export async function refreshIndex(seed) {
 }
 
 export async function livePortrait(id, seed) {
+  if (deploymentFor(seed) === HISTORICAL) {
+    const image = await contractPortrait(id, seed.safeBlock, seed, 'chain');
+    // The complete historical index already accounts for every burn and merge at this block.
+    return { ...image, level: 1, burned: false };
+  }
   const info = await json(tokenLink(id));
-  if (!sameRelease(info, seed) || Number(info.tokenId) !== id)
+  if (!currentResponse(info, 3) || Number(info.tokenId) !== id)
     throw new Error('Token projection unavailable');
+  if (!Number.isInteger(info.level) || info.level < 1 || info.level > 10 || typeof info.custody?.burned !== 'boolean')
+    throw new Error('Invalid token state');
   if (info.metadata && info.metadata.status !== 'pending' && info.metadata.name !== 'Squeek #' + id)
     throw new Error('Portrait mismatch');
   if (info.metadata?.imageDataUri && info.metadata.name !== 'Squeek #' + id)
     throw new Error('Portrait mismatch');
   const url = info.metadata?.imageDataUri ? svgImage(info.metadata.imageDataUri, id) : '';
-  const palette = info.metadata?.attributes?.find((t) => t.traitType === 'Palette')?.value ?? '';
+  if (url) {
+    const original = await contractPortrait(id, seed.safeBlock, seed, 'chain');
+    if (url !== original.url) throw new Error('API portrait differs from the collection contract');
+    return { ...original, level: info.level, burned: info.custody.burned };
+  }
   return {
-    url,
-    palette,
+    url: '',
     level: Number(info.level),
     burned: info.custody?.burned === true,
     block: Number(info.metadata?.refreshedAtBlock ?? info.chain.safeThroughBlock),
@@ -166,7 +177,10 @@ function tokenMetadata(hex) {
   return JSON.parse(jsonText);
 }
 export async function lostPortrait(id, event, seed) {
-  const block = event.block - 1;
+  return contractPortrait(id, event.block - 1, seed, 'archive');
+}
+async function contractPortrait(id, block, seed, source) {
+  const deployment = deploymentFor(seed);
   for (const rpc of ARCHIVES) {
     try {
       const payload = {
@@ -174,7 +188,7 @@ export async function lostPortrait(id, event, seed) {
         id: 1,
         method: 'eth_call',
         params: [
-          { to: seed.collection, data: '0xc87b56dd' + id.toString(16).padStart(64, '0') },
+          { to: deployment.collection, data: '0xc87b56dd' + id.toString(16).padStart(64, '0') },
           '0x' + block.toString(16),
         ],
       };
@@ -186,8 +200,9 @@ export async function lostPortrait(id, event, seed) {
       const info = tokenMetadata(reply.result);
       if (info.name !== 'Squeek #' + id) throw new Error('Portrait mismatch');
       const url = svgImage(info.image ?? info.image_data, id);
-      const palette = info.attributes?.find((t) => t.trait_type === 'Palette')?.value ?? '';
-      return { url, palette, block, source: 'archive' };
+      const value = info.attributes?.find((t) => t.trait_type === 'Palette')?.value;
+      const palette = typeof value === 'string' ? value : '';
+      return { url, palette, block, source };
     } catch {
       /* Continue with the independent archive. */
     }

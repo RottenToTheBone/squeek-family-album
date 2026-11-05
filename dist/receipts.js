@@ -1,10 +1,21 @@
-// Event layouts from the reviewed stream-game Sepolia deployment. The indexer
-// cannot nominate a different emitter when confirming an event from its own feed.
-export const SEPOLIA = {
+// Both deployed contracts emit the same merge layouts. Their records never share emitters.
+export const HISTORICAL = {
   release: 'stream-game-sepolia-test-20261026-01',
   collection: '0xcb98349c134ab983da5bfd80527dfe2552bdb70f',
   staking: '0x4b67b739dfd832f4eac67a7aa3bc244fb74cea4f',
 };
+export const CURRENT = {
+  release: 'core-sepolia-20261103',
+  collection: '0xc4c7982657f00509548f3a3a41db7fa439a6856b',
+  staking: '0x50fd1780526c3186a0c037c7622203bc4fb611ca',
+};
+export function deploymentFor(seed) {
+  const deployment = [HISTORICAL, CURRENT].find(
+    (item) => item.release === seed.releaseId && item.collection === seed.collection,
+  );
+  if (!deployment) throw new Error('Unknown album deployment');
+  return deployment;
+}
 export const ARCHIVES = ['https://sepolia.gateway.tenderly.co', 'https://rpc.sepolia.ethpandaops.io'];
 export const EVENT_TOPIC = {
   wallet: '0x8a9b1a009a32cc0082d2270e9033429b8e1aa3235e7b8198b013f603116a3c87',
@@ -23,7 +34,7 @@ function checkHeader(header, block, hash) {
     throw new Error('Canonical block mismatch');
 }
 
-export function confirmMerge(proof, receipt, header) {
+export function confirmMerge(proof, receipt, header, deployment) {
   const { merge } = proof;
   const blockHash = proof.blockHash ?? receipt?.blockHash;
   checkHeader(header, merge.block, blockHash);
@@ -45,14 +56,14 @@ export function confirmMerge(proof, receipt, header) {
   const log = logs[0];
   // Compact prebuilt manifests omit custody. Only the two pinned receipt
   // emitters are eligible; live API claims must also match this choice.
-  const custody = proof.custody ?? (lower(log?.address) === SEPOLIA.staking ? 'staking' : 'wallet');
+  const custody = proof.custody ?? (lower(log?.address) === deployment.staking ? 'staking' : 'wallet');
   const staked = custody === 'staking';
   if (
     logs.length !== 1 ||
     !common(log) ||
     log.removed === true ||
     !Object.hasOwn(EVENT_TOPIC, custody) ||
-    lower(log.address) !== (staked ? SEPOLIA.staking : SEPOLIA.collection) ||
+    lower(log.address) !== (staked ? deployment.staking : deployment.collection) ||
     !Array.isArray(log.topics) ||
     log.topics.length !== (staked ? 4 : 3) ||
     !log.topics.every(hash32) ||
@@ -68,7 +79,7 @@ export function confirmMerge(proof, receipt, header) {
     .map((word) => BigInt('0x' + word));
   if (
     staked &&
-    (BigInt(log.topics[2]) !== BigInt(SEPOLIA.collection) || !/^0x0{24}[a-f0-9]{40}$/i.test(log.topics[1]))
+    (BigInt(log.topics[2]) !== BigInt(deployment.collection) || !/^0x0{24}[a-f0-9]{40}$/i.test(log.topics[1]))
   )
     throw new Error('Staked collection mismatch');
   const survivor = BigInt(log.topics[staked ? 3 : 1]);
@@ -103,10 +114,11 @@ async function batch(endpoint, calls) {
 const blockCall = (n) => ['eth_getBlockByNumber', [hex(n), false]];
 
 export async function verifyMergeReceipts(proofs, seed, state, providers) {
+  const deployment = deploymentFor(seed);
   const through = Number(state.chain.safeThroughBlock);
   for (const endpoint of providers) {
     try {
-      const supplyCall = (data) => ['eth_call', [{ to: SEPOLIA.collection, data }, hex(through)]];
+      const supplyCall = (data) => ['eth_call', [{ to: deployment.collection, data }, hex(through)]];
       const [chain, previous, current, live, burned] = await batch(endpoint, [
         ['eth_chainId', []],
         blockCall(seed.safeBlock),
@@ -133,7 +145,7 @@ export async function verifyMergeReceipts(proofs, seed, state, providers) {
           blockCall(merge.block),
         ]);
         const results = await batch(endpoint, calls);
-        group.forEach((proof, i) => confirmMerge(proof, results[2 * i], results[2 * i + 1]));
+        group.forEach((proof, i) => confirmMerge(proof, results[2 * i], results[2 * i + 1], deployment));
       }
       return;
     } catch {

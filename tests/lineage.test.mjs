@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { prepareIndex, snapshotIndex, tokenNumber, treeRows, validUtc } from '../dist/lineage.js';
 import { refreshIndex } from '../dist/chain.js';
-import { confirmMerge, EVENT_TOPIC, SEPOLIA } from '../dist/receipts.js';
+import { confirmMerge, CURRENT, EVENT_TOPIC, HISTORICAL } from '../dist/receipts.js';
 
 const root = new URL('../dist/', import.meta.url);
 const seed = JSON.parse(await readFile(new URL('data/archive.json', root), 'utf8'));
@@ -121,7 +121,7 @@ test('duplicates, missing generations and reuse of burned IDs are distinguished'
   );
 });
 test('live catch-up requires a complete, correctly dated delta and independent RPC receipts', async (t) => {
-  const synthetic = { ...seed, events: [], safeBlock: 100, safeBlockHash: '0x' + 'c'.repeat(64), issued: 4 };
+  const synthetic = { ...seed, releaseId: CURRENT.release, collection: CURRENT.collection, events: [], safeBlock: 100, safeBlockHash: '0x' + 'c'.repeat(64), issued: 4 };
   const common = {
     status: 'available',
     chain: {
@@ -131,14 +131,18 @@ test('live catch-up requires a complete, correctly dated delta and independent R
       safeBlockHash: '0x' + 'd'.repeat(64),
       safeBlockTimestamp: time,
     },
-    identities: { genesis: seed.collection, staking: { proxy: SEPOLIA.staking } },
-    release: { id: seed.releaseId },
+    schemaVersion: 3,
+    deployment: {
+      releaseId: CURRENT.release, target: 'sepolia', chainId: 11155111,
+      components: { collection: { address: CURRENT.collection }, staking: { address: CURRENT.staking } },
+    },
+    release: { id: CURRENT.release },
   };
   const event = {
     type: 'nft.merged',
     occurredAt: '2026-11-05T00:00:00Z',
     payload: {
-      collection: seed.collection,
+      collection: CURRENT.collection,
       custody: 'wallet',
       donorTokenId: '2',
       survivorTokenId: '1',
@@ -148,8 +152,8 @@ test('live catch-up requires a complete, correctly dated delta and independent R
       kind: 'chain',
       target: 'sepolia',
       chainId: '11155111',
-      releaseId: seed.releaseId,
-      contractAddress: seed.collection,
+      releaseId: CURRENT.release,
+      contractAddress: CURRENT.collection,
       blockNumber: '109',
       blockHash: '0x' + 'a'.repeat(64),
       logIndex: '3',
@@ -168,7 +172,7 @@ test('live catch-up requires a complete, correctly dated delta and independent R
   const walletLog = {
     ...receipt,
     logIndex: '0x3',
-    address: SEPOLIA.collection,
+    address: CURRENT.collection,
     removed: false,
     topics: [EVENT_TOPIC.wallet, '0x' + word(1), '0x' + word(2)],
     data: '0x' + word(2) + word(100),
@@ -184,7 +188,7 @@ test('live catch-up requires a complete, correctly dated delta and independent R
               ...common,
               nft: { issued: '4', burned: String(reportedBurns), live: String(4 - reportedBurns) },
             }
-          : { ...common, events: feed, nextCursor: null },
+          : { ...common, schemaVersion: 4, events: feed, nextCursor: null },
       );
     const batch = JSON.parse(options.body);
     rpcAttempts++;
@@ -232,25 +236,30 @@ test('live catch-up requires a complete, correctly dated delta and independent R
   const proof = { merge, custody: 'staking', blockHash: header.hash };
   const stakingLog = {
     ...walletLog,
-    address: SEPOLIA.staking,
-    topics: [EVENT_TOPIC.staking, '0x' + word(123), '0x' + word(SEPOLIA.collection), '0x' + word(1)],
+    address: CURRENT.staking,
+    topics: [EVENT_TOPIC.staking, '0x' + word(123), '0x' + word(CURRENT.collection), '0x' + word(1)],
     data: '0x' + word(2) + word(2) + word(200),
   };
-  assert.doesNotThrow(() => confirmMerge(proof, { ...receipt, logs: [stakingLog] }, header));
+  assert.doesNotThrow(() => confirmMerge(proof, { ...receipt, logs: [stakingLog] }, header, CURRENT));
   for (const changed of [
-    { address: SEPOLIA.collection },
+    { address: CURRENT.collection },
     { logIndex: '0x4' },
     { removed: true },
     { blockHash: synthetic.safeBlockHash },
     { topics: [EVENT_TOPIC.wallet, ...stakingLog.topics.slice(1)] },
     { data: '0x' + word(3) + word(2) + word(200) },
   ]) {
-    assert.throws(() => confirmMerge(proof, { ...receipt, logs: [{ ...stakingLog, ...changed }] }, header));
+    assert.throws(() => confirmMerge(proof, { ...receipt, logs: [{ ...stakingLog, ...changed }] }, header, CURRENT));
   }
-  assert.throws(() => confirmMerge(proof, { ...receipt, status: '0x0', logs: [stakingLog] }, header));
+  assert.throws(() => confirmMerge(proof, { ...receipt, status: '0x0', logs: [stakingLog] }, header, CURRENT));
   assert.throws(() =>
-    confirmMerge(proof, { ...receipt, logs: [stakingLog] }, { ...header, hash: synthetic.safeBlockHash }),
+    confirmMerge(proof, { ...receipt, logs: [stakingLog] }, { ...header, hash: synthetic.safeBlockHash }, CURRENT),
   );
-  common.identities.staking.proxy = '0x' + 'f'.repeat(40);
+  assert.throws(() => confirmMerge(proof, { ...receipt, logs: [stakingLog] }, header, HISTORICAL));
+  await assert.rejects(refreshIndex(seed), /Historical snapshot/);
+  common.schemaVersion = 2;
+  await assert.rejects(refreshIndex(synthetic), /Release mismatch/);
+  common.schemaVersion = 3;
+  common.deployment.components.staking.address = HISTORICAL.staking;
   await assert.rejects(refreshIndex(synthetic), /Release mismatch/);
 });

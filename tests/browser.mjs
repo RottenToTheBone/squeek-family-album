@@ -5,7 +5,7 @@ import { mkdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { browserRegressions } from './browser-regressions.mjs';
-import { ARCHIVES } from '../dist/receipts.js';
+import { CURRENT, HISTORICAL } from '../dist/receipts.js';
 
 const qa = fileURLToPath(new URL('../.qa/', import.meta.url));
 await mkdir(qa, { recursive: true });
@@ -139,75 +139,50 @@ try {
       await p.keyboard.press('Escape');
     }
   }
+  const now = watch(await ctx.newPage());
+  await now.goto(base);
+  await ready(now, 8923);
+  assert.equal(await now.locator('#current-edition').getAttribute('aria-current'), 'page');
+  const currentSource = await now.locator('#token-source').getAttribute('href');
+  assert.ok(currentSource === 'https://sepolia.etherscan.io/nft/' + CURRENT.collection + '/8923' ||
+    /^https:\/\/sepolia\.etherscan\.io\/tx\/0x[\da-f]{64}$/i.test(currentSource));
+  await now.locator('#history-example').click();
+  await ready(now, 8925);
+  assert.equal(await now.locator('#archive-edition').getAttribute('aria-current'), 'page');
+  assert.equal(await now.locator('#token-source').getAttribute('href'), 'https://sepolia.etherscan.io/tx/' + sampledBurn.tx);
+  await now.locator('#current-edition').click();
+  assert.equal(new URL(now.url()).searchParams.get('id'), '8925');
+  assert.equal(new URL(now.url()).searchParams.get('release'), CURRENT.release);
   if (process.env.ALBUM_LIVE === '1') {
-    if (uncached) {
-      await find(p, uncached);
-      await ready(p, uncached);
-      assert.match(await p.locator('#hero-art').getAttribute('src'), /^data:image\/svg/);
-      console.log('Live public artwork lookup passed for #' + uncached);
-    }
-    const stale = await browser.newContext();
-    const original = structuredClone(bundled);
-    const last = original.events.at(-1);
-    original.safeBlock = last.block - 1;
-    original.events = original.events.filter((event) => event.block <= original.safeBlock);
-    original.burned = original.events.length;
-    original.live = original.issued - original.burned;
-    let header;
-    for (const endpoint of ARCHIVES) {
-      try {
-        const reply = await stale.request.post(endpoint, {
-          data: {
-            jsonrpc: '2.0',
-            id: 1,
-            method: 'eth_getBlockByNumber',
-            params: ['0x' + original.safeBlock.toString(16), false],
-          },
-          timeout: 12000,
-        });
-        header = (await reply.json()).result;
-        if (header?.hash) break;
-      } catch {}
-    }
-    assert.ok(header?.hash, 'canonical header for the older test snapshot');
-    original.safeBlockHash = header.hash;
-    original.asOf = new Date(Number(BigInt(header.timestamp)) * 1000).toISOString();
-    delete original.portraits[last.donor];
-    await stale.route(
-      (url) => url.pathname.endsWith('/data/archive.json'),
-      (r) => r.fulfill({ json: original }),
-    );
-    let releaseFeed;
-    const feedGate = new Promise((resolve) => {
-      releaseFeed = resolve;
-    });
-    await stale.route(
-      (url) => url.hostname === 'api.squeekchain.com' && url.pathname === '/v1/events',
-      async (route) => {
-        await feedGate;
-        await route.continue();
-      },
-    );
-    const stableId = Number(Object.keys(original.portraits)[0]);
-    const newer = watch(await stale.newPage());
-    await newer.goto(base + '?id=' + stableId + '&lang=en');
-    await ready(newer, stableId);
-    await newer.locator('#share').click();
-    await newer.locator('#save-card:not([hidden])').waitFor();
-    releaseFeed();
-    await newer.locator('#share-dialog[open]').waitFor({ state: 'hidden', timeout: 60000 });
-    await find(newer, last.donor);
-    await newer.waitForFunction(
-      (data) =>
-        document.querySelector('#art-source').textContent.includes('Pre-burn block') &&
-        document.querySelector('#token-source').href.endsWith(data.tx) &&
-        document.querySelector('#hero-art').getAttribute('src')?.startsWith('data:image/svg'),
-      last,
-      { timeout: 40000 },
-    );
-    assert.match(await newer.locator('#token-source').getAttribute('href'), new RegExp(last.tx + '$'));
-    await stale.close();
-    console.log('Recovered latest missing merge and original SVG using the live feed and archive RPC');
+    await ready(now, 8925);
+    await find(now, uncached);
+    await ready(now, uncached);
+    assert.match(await now.locator('#hero-art').getAttribute('src'), /^data:image\/svg/);
+    await now.locator('#share').click();
+    await now.locator('#save-card:not([hidden])').waitFor();
+    await now.locator('#copy-link').click();
+    const shared = new URL(await now.evaluate(() => navigator.clipboard.readText()));
+    assert.equal(shared.searchParams.get('release'), CURRENT.release);
+    assert.equal(shared.searchParams.get('id'), String(uncached));
+    console.log('Real current token API and contract tokenURI agree for #' + uncached, CURRENT.collection);
+    const old = await browser.newContext();
+    const copy = structuredClone(bundled);
+    delete copy.portraits[sampledBurn.donor];
+    await old.route((u) => u.pathname.endsWith('/data/archive.json'), (r) => r.fulfill({ json: copy }));
+    const past = watch(await old.newPage());
+    const touched = [];
+    past.on('request', (r) => { if (r.url().includes('api.squeekchain.com')) touched.push(r.url()); });
+    await past.goto(base + '?release=archive&id=8925&lang=en');
+    await ready(past, 8925);
+    assert.match(await past.locator('#hero-art').getAttribute('src'), /^data:image\/svg/);
+    assert.ok((await past.locator('#token-source').getAttribute('href')).endsWith(sampledBurn.tx));
+    await find(past, uncached);
+    await ready(past, uncached);
+    assert.equal(await past.locator('#token-source').getAttribute('href'),
+      'https://sepolia.etherscan.io/nft/' + HISTORICAL.collection + '/' + uncached);
+    assert.deepEqual(touched, []);
+    await old.close();
+    console.log('Real historical pre-burn portrait and uncached historical token recovered from the old contract');
   }
   const offline = await browser.newContext();
   await offline.route(
@@ -217,7 +192,7 @@ try {
   const op = watch(await offline.newPage());
   await op.goto(base + '?id=8925&lang=en');
   await ready(op, 8925);
-  await op.waitForFunction(() => document.querySelector('#status').textContent.includes('archive time'));
+  await op.waitForFunction(() => document.querySelector('#freshness').textContent.includes('Historical snapshot'));
   if (uncached) {
     await find(op, uncached);
     await op.waitForFunction(() =>

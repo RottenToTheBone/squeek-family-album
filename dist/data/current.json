@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "chainId": 11155111,
+  "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
+  "releaseId": "core-sepolia-20261103",
+  "asOf": "2026-11-05T04:23:00.000Z",
+  "safeBlock": 12067109,
+  "safeBlockHash": "0x06a76d06c0661268532ed251e54c2593badce2ea7282374f13a27949fe32d22c",
+  "issued": 9999,
+  "burned": 0,
+  "live": 9999,
+  "events": [],
+  "portraits": {
+    "1": {
+      "file": "current-art/1.svg",
+      "block": 12067109,
+      "source": "chain",
+      "sha256": "9d7995717e177c36f1ffb84caa42c68e5be94c35af81bc8f6b6df0b9991f670f",
+      "palette": "Void Violet"
+    },
+    "8923": {
+      "file": "current-art/8923.svg",
+      "block": 12067109,
+      "source": "chain",
+      "sha256": "fa0a323c69879c9caec6adaec0b1ba9e46774380b6c3241ec5b64bfb47a1719a",
+      "palette": "Hot Magenta"
+    }
+  }
+}

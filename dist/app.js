@@ -1,10 +1,22 @@
 import { snapshotIndex, tokenNumber, treeRows } from './lineage.js';
-import { livePortrait, lostPortrait, refreshIndex, tokenLink, txLink } from './chain.js';
+import { livePortrait, lostPortrait, refreshIndex, txLink } from './chain.js';
 import { familyCard } from './share.js';
+import { CURRENT, HISTORICAL, deploymentFor } from './receipts.js';
 
 const $ = (id) => document.getElementById(id);
 const staticCopy = [...document.querySelectorAll('[data-zh]')].map((el) => [el, el.textContent]);
 const params = () => new URL(location.href).searchParams;
+function routeEdition() {
+  const route = params();
+  const release = route.get('release');
+  if (release === CURRENT.release) return 'current';
+  if (release === HISTORICAL.release) return 'archive';
+  // Links generated before the current collection launched belong to the historical collection.
+  return release ?? (route.has('id') || route.has('stage') ? 'archive' : 'current');
+}
+const edition = routeEdition();
+const historical = edition === 'archive';
+const deployment = historical ? HISTORICAL : CURRENT;
 let language = params().get('lang');
 if (!['en', 'zh'].includes(language)) {
   try {
@@ -83,6 +95,11 @@ function localize() {
   $('lang').lang = tr('zh-Hans', 'en');
   $('lang').setAttribute('aria-label', tr('Switch to Chinese', 'Switch to English'));
   $('token-input').placeholder = tr('Token ID', 'NFT 编号');
+  $('editions').setAttribute('aria-label', tr('Collection', '藏品版本'));
+  $('history-example').href = recordUrl(8925, 'o-8925', 'archive');
+  $('history-example').hidden = historical;
+  $(historical ? 'archive-edition' : 'current-edition').setAttribute('aria-current', 'page');
+  editionLinks();
   $('enlarge').setAttribute('aria-label', tr('Enlarge original portrait', '放大原始画像'));
   $('tree-viewport').setAttribute(
     'aria-label',
@@ -93,22 +110,27 @@ function localize() {
   renderNotices();
   renderFreshness();
 }
-function recordUrl(id, key) {
+function recordUrl(id, key, release = edition) {
   const url = new URL(location.origin);
   url.pathname = location.pathname;
+  url.searchParams.set('release', release === 'archive' ? HISTORICAL.release : CURRENT.release);
   if (id != null) url.searchParams.set('id', id);
   if (key) url.searchParams.set('stage', key);
   url.searchParams.set('lang', language);
   return url.href;
+}
+function editionLinks(id = selected?.id ?? tokenNumber(params().get('id')) ?? 8923) {
+  $('current-edition').href = recordUrl(id, null, 'current');
+  $('archive-edition').href = recordUrl(id, null, 'archive');
 }
 function setRoute(id, key, method = 'replaceState') {
   history[method]({}, '', recordUrl(id, key));
 }
 function renderFreshness() {
   if (!archive) return;
-  $('freshness').textContent = tr('Index · ', '索引 · ') + utc(archive.asOf);
+  $('freshness').textContent = (historical ? tr('Historical snapshot · ', '历史快照 · ') : tr('Index · ', '索引 · ')) + utc(archive.asOf);
   $('notes-data').textContent =
-    tr('Sepolia · ', 'Sepolia 测试网 · ') +
+    archive.releaseId + ' · ' +
     fmt(archive.issued) +
     tr(' issued · ', ' 只已发行 · ') +
     archive.events.length +
@@ -123,7 +145,10 @@ function artFor(id) {
     burn = index.absorbed.get(id);
   let pending;
   if (cached && (!burn || (cached.source === 'archive' && Number(cached.block) === burn.block - 1))) {
-    pending = Promise.resolve({ ...cached, url: cached.file });
+    const file = (historical ? 'art/' : 'current-art/') + id + '.svg';
+    pending = cached.file === file
+      ? Promise.resolve({ ...cached, url: file })
+      : Promise.reject(new Error('Wrong collection portrait'));
   } else if (burn) {
     pending = lostPortrait(id, burn, archive);
   } else {
@@ -160,17 +185,19 @@ function portraitHeader() {
     : tr('ONCHAIN PORTRAIT', '链上原画');
   $('plate-no').textContent = 'PL. ' + String(id).padStart(5, '0');
   $('record-code').textContent =
-    tr('SEPOLIA TESTNET', 'SEPOLIA 测试网') + '  ·  ' + String(family.root.id).padStart(5, '0');
+    (historical ? tr('HISTORICAL', '历史藏品') : tr('CURRENT', '当前藏品')) + '  ·  SEPOLIA  ·  ' + String(family.root.id).padStart(5, '0');
   $('level-tag').textContent = tr('LEVEL ', '等级 ') + String(family.root.level).padStart(2, '0');
   const block = selectedArt?.block;
   $('art-source').textContent = block
     ? (dead ? tr('Pre-burn block ', '销毁前区块 ') : tr('Recorded at block ', '原画区块 ')) + fmt(block)
     : tr('Reading source…', '正在读取来源…');
-  $('token-source').href = dead ? txLink(index.absorbed.get(id).tx) : tokenLink(id);
+  $('token-source').href = dead ? txLink(index.absorbed.get(id).tx)
+    : 'https://sepolia.etherscan.io/nft/' + deployment.collection + '/' + id;
   $('plate-palette').textContent = selectedArt?.palette?.toUpperCase() || 'DOT GRID / SEPOLIA';
 }
 function setSelected(node, changeURL = true, reveal = false) {
   selected = node;
+  editionLinks(node.id);
   selectedArt = null;
   const call = ++selectionNo;
   document.title = 'Squeek #' + node.id + ' · Family Album';
@@ -331,10 +358,12 @@ function renderFamily() {
       el(
         'p',
         'empty-ledger',
-        tr(
+        !historical && archive.events.length === 0
+          ? tr('This collection has no confirmed merges at the indexed block.', '截至索引区块，当前系列尚无已确认的合并。')
+          : tr(
           'This original has no merges at the indexed block.',
           '截至索引区块，这只原始 Squeek 没有合并记录。',
-        ),
+          ),
       ),
     );
   drawTree();
@@ -429,6 +458,7 @@ function navigateFromUrl() {
   if (!archive) return;
   const raw = params().get('id');
   const id = raw === null ? 8923 : tokenNumber(raw, archive.issued);
+  editionLinks(id ?? 8923);
   if (!id) {
     ++requestNo;
     clearRecord();
@@ -460,6 +490,7 @@ $('token-input').addEventListener('input', () => {
 for (const button of document.querySelectorAll('[data-open]'))
   button.addEventListener('click', () => openRecord(Number(button.dataset.open), null, 'pushState'));
 window.addEventListener('popstate', () => {
+  if (routeEdition() !== edition) { location.reload(); return; }
   const l = params().get('lang');
   if (['en', 'zh'].includes(l)) language = l;
   localize();
@@ -513,7 +544,7 @@ $('share').addEventListener('click', async () => {
   $('card-status').textContent = tr('Drawing the original portraits…', '正在绘制家谱卡…');
   $('share-dialog').showModal();
   try {
-    const blob = await familyCard({ selected, family, portrait: selectedArt, artFor, zh: language === 'zh' });
+    const blob = await familyCard({ selected, family, portrait: selectedArt, artFor, historical, deployment, zh: language === 'zh' });
     if (ticket !== shareNo || !$('share-dialog').open) return;
     if (shareBlob) URL.revokeObjectURL(shareBlob);
     shareBlob = URL.createObjectURL(blob);
@@ -521,7 +552,7 @@ $('share').addEventListener('click', async () => {
     $('card-preview').alt = tr('Family card for Squeek #', 'Squeek 家谱卡 #') + id;
     $('card-preview').hidden = false;
     $('save-card').href = shareBlob;
-    $('save-card').download = 'squeek-family-' + id + '.png';
+    $('save-card').download = 'squeek-' + edition + '-family-' + id + '.png';
     $('save-card').hidden = false;
     $('card-status').textContent = '';
   } catch {
@@ -561,14 +592,16 @@ new ResizeObserver((entries) => {
 }).observe($('tree-viewport'));
 localize();
 try {
-  const response = await fetch('./data/archive.json');
+  if (edition !== 'archive' && edition !== 'current') throw new Error('Unknown collection');
+  const response = await fetch(historical ? './data/archive.json' : './data/current.json');
   if (!response.ok) throw new Error('Archive unavailable');
   const bundled = await response.json();
+  if (deploymentFor(bundled) !== deployment) throw new Error('Wrong collection archive');
   index = snapshotIndex(bundled);
   archive = bundled;
   renderFreshness();
   navigateFromUrl();
-  refreshIndex(archive)
+  if (!historical) refreshIndex(archive)
     .then((latest) => {
       const changed = latest.events.length !== archive.events.length;
       const nextIndex = changed ? snapshotIndex(latest) : index;

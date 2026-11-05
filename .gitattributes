@@ -1,3 +1,4 @@
 * text=auto eol=lf
 dist/art/*.svg -text
+dist/current-art/*.svg -text
 *.png binary

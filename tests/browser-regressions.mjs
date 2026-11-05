@@ -1,3 +1,4 @@
+import { CURRENT } from '../dist/receipts.js';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
@@ -8,10 +9,13 @@ export async function browserRegressions(browser, base, bundled) {
   const examples = bundled.events.filter((e) => [8924, 8925, 8926].includes(e.donor));
   const seed = {
     ...bundled,
+    releaseId: CURRENT.release,
+    collection: CURRENT.collection,
     events: examples,
     burned: examples.length,
     live: bundled.issued - examples.length,
-    portraits: Object.fromEntries([1, 8923, 8924, 8925, 8926].map((id) => [id, bundled.portraits[id]])),
+    portraits: Object.fromEntries([1, 8923, 8924, 8925, 8926].map((id) =>
+      [id, { ...bundled.portraits[id], file: 'current-art/' + id + '.svg' }])),
   };
   const state = {
     status: 'available',
@@ -23,16 +27,21 @@ export async function browserRegressions(browser, base, bundled) {
       safeBlockTimestamp: seed.asOf,
       safeBlockHash: seed.safeBlockHash,
     },
-    identities: {
-      genesis: seed.collection,
-      staking: { proxy: '0x4b67b739dfd832f4eac67a7aa3bc244fb74cea4f' },
+    schemaVersion: 3,
+    deployment: {
+      releaseId: CURRENT.release, target: 'sepolia', chainId: 11155111,
+      components: { collection: { address: CURRENT.collection }, staking: { address: CURRENT.staking } },
     },
     nft: { issued: seed.issued, burned: seed.burned, live: seed.live },
   };
   const make = async (stateResponse = state) => {
     const c = await browser.newContext({ permissions: ['clipboard-read', 'clipboard-write'] });
+    await c.route((u) => /\/current-art\/\d+\.svg$/.test(u.pathname), async (r) => {
+      const name = new URL(r.request().url()).pathname.split('/').pop();
+      await r.fulfill({ contentType: 'image/svg+xml', body: await readFile(new URL('../dist/art/' + name, import.meta.url)) });
+    });
     await c.route(
-      (u) => u.pathname.endsWith('/data/archive.json'),
+      (u) => u.pathname.endsWith('/data/current.json'),
       (r) => r.fulfill({ json: seed }),
     );
     await c.route(
@@ -78,7 +87,7 @@ export async function browserRegressions(browser, base, bundled) {
   const c = await make();
   try {
     const p = await c.newPage();
-    await p.goto(base + '?id=8925&lang=en&private_ref=EXAMPLE_ONLY#fragment');
+    await p.goto(base + '?release=current&id=8925&lang=en&private_ref=EXAMPLE_ONLY#fragment');
     await ready(p, 8925);
     await p.locator('#share').click();
     await p.locator('#save-card:not([hidden])').waitFor();
@@ -87,7 +96,8 @@ export async function browserRegressions(browser, base, bundled) {
     const u = new URL(link);
     assert.equal(u.origin, new URL(base).origin);
     assert.equal(u.pathname, new URL(base).pathname);
-    assert.deepEqual([...u.searchParams.keys()].sort(), ['id', 'lang', 'stage']);
+    assert.deepEqual([...u.searchParams.keys()].sort(), ['id', 'lang', 'release', 'stage']);
+    assert.equal(u.searchParams.get('release'), CURRENT.release);
     assert.equal(u.hash, '');
     assert.equal(u.searchParams.get('id'), '8925');
     await p.evaluate(() =>
@@ -182,10 +192,21 @@ export async function browserRegressions(browser, base, bundled) {
     await c.close();
   }
 
+  const encodeToken = (image) => {
+    const meta = 'data:application/json;base64,' + Buffer.from(JSON.stringify({ name: 'Squeek #42', image })).toString('base64');
+    const bytes = Buffer.from(meta);
+    const word = (n) => n.toString(16).padStart(64, '0');
+    return '0x' + word(32) + word(bytes.length) + bytes.toString('hex').padEnd(Math.ceil(bytes.length / 32) * 64, '0');
+  };
   const d = await make();
   try {
     let calls = 0;
     const image = 'data:image/svg+xml;base64,' + Buffer.from(cases.valid).toString('base64');
+    await d.route(
+      (u) => ['sepolia.gateway.tenderly.co', 'rpc.sepolia.ethpandaops.io'].includes(u.hostname),
+      (r) => Array.isArray(r.request().postDataJSON()) ? r.fallback()
+        : r.fulfill({ json: { jsonrpc: '2.0', id: 1, result: encodeToken(image) } }),
+    );
     const record = { ...state, tokenId: '42', level: 1, custody: { burned: false } };
     await d.route(
       (u) => u.pathname === '/v1/squeeks/42',
@@ -200,7 +221,7 @@ export async function browserRegressions(browser, base, bundled) {
       },
     );
     const p = await d.newPage();
-    await p.goto(base + '?id=42&lang=en');
+    await p.goto(base + '?release=current&id=42&lang=en');
     await p.waitForFunction(
       () => document.querySelector('#art-fallback').textContent === 'Original portrait unavailable',
     );
@@ -209,6 +230,13 @@ export async function browserRegressions(browser, base, bundled) {
     await lookup(p, 42);
     await ready(p, 42);
     assert.equal(calls, 2);
+    // A valid passive picture with the right token title still has to match tokenURI.
+    const other = 'data:image/svg+xml;base64,' + Buffer.from(cases.valid.replace('</svg>', '<g/></svg>')).toString('base64');
+    await d.route((u) => u.pathname === '/v1/squeeks/42',
+      (r) => r.fulfill({ json: { ...record, metadata: { name: 'Squeek #42', imageDataUri: other } } }));
+    await p.reload();
+    await p.waitForFunction(() => document.querySelector('#status').textContent.includes('could not be verified'));
+    assert.ok(await p.locator('#share').isDisabled());
     // A separate page has no image cache. The live lookup and the historical
     // tokenURI fallback must both reject a file with a stylesheet instruction.
     const malicious =
@@ -218,23 +246,13 @@ export async function browserRegressions(browser, base, bundled) {
       (u) => u.pathname === '/v1/squeeks/42',
       (r) => r.fulfill({ json: { ...record, metadata: { name: 'Squeek #42', imageDataUri: malicious } } }),
     );
-    const meta =
-      'data:application/json;base64,' +
-      Buffer.from(JSON.stringify({ name: 'Squeek #42', image: malicious })).toString('base64');
-    const bytes = Buffer.from(meta),
-      word = (n) => n.toString(16).padStart(64, '0');
-    const encoded =
-      '0x' +
-      word(32) +
-      word(bytes.length) +
-      bytes.toString('hex').padEnd(Math.ceil(bytes.length / 32) * 64, '0');
     let rpcCalls = 0;
     await d.route(
       (u) => ['sepolia.gateway.tenderly.co', 'rpc.sepolia.ethpandaops.io'].includes(u.hostname),
       (r) => {
         if (Array.isArray(r.request().postDataJSON())) return r.fallback();
         rpcCalls++;
-        return r.fulfill({ json: { jsonrpc: '2.0', id: 1, result: encoded } });
+        return r.fulfill({ json: { jsonrpc: '2.0', id: 1, result: encodeToken(malicious) } });
       },
     );
     await p.reload();
@@ -268,7 +286,7 @@ export async function browserRegressions(browser, base, bundled) {
           started = resolve;
         });
       await slow.route(
-        (u) => u.pathname.endsWith('/data/archive.json'),
+        (u) => u.pathname.endsWith('/data/current.json'),
         async (r) => {
           started();
           await gate;
@@ -277,7 +295,7 @@ export async function browserRegressions(browser, base, bundled) {
       );
       const p = await slow.newPage();
       const route =
-        intent === 'lookup' ? '?lang=en' : '?id=8925&stage=o-8925&lang=en&private_ref=EXAMPLE_ONLY#fragment';
+        intent === 'lookup' ? '?release=current&lang=en' : '?release=current&id=8925&stage=o-8925&lang=en&private_ref=EXAMPLE_ONLY#fragment';
       await p.goto(base + route, { waitUntil: 'commit' });
       await waiting;
       if (intent === 'lookup') await lookup(p, 1);
@@ -333,9 +351,9 @@ export async function browserRegressions(browser, base, bundled) {
       };
       await ctx.route(
         (u) => u.pathname === '/v1/events',
-        (r) => r.fulfill({ json: { ...later, events: [event], nextCursor: null } }),
+        (r) => r.fulfill({ json: { ...later, schemaVersion: 4, events: [event], nextCursor: null } }),
       );
-      await page.goto(base + '?id=8925&lang=en');
+      await page.goto(base + '?release=current&id=8925&lang=en');
       await ready(page, 8925);
       await page.waitForFunction(() =>
         document.querySelector('#status').textContent.includes('archive time'),

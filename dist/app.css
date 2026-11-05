@@ -233,6 +233,32 @@ h2 {
 .lookup label {
   margin-bottom: 9px;
 }
+.editions {
+  display: inline-flex;
+  gap: 3px;
+  padding: 3px;
+  margin-bottom: 13px;
+  border: 1px solid #9ca792;
+  border-radius: 4px;
+}
+.editions a {
+  padding: 7px 9px;
+  font-size: 13px;
+  line-height: 1.3;
+  text-decoration: none;
+  border-radius: 2px;
+}
+.editions a[aria-current='page'] {
+  background: var(--forest);
+  color: white;
+}
+.history-example {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 13px;
+  text-underline-offset: 3px;
+}
+.history-example[hidden] { display: none; }
 .search-field {
   display: flex;
   align-items: center;

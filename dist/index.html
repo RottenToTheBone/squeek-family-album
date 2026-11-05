@@ -53,6 +53,10 @@
           </p>
         </div>
         <div class="lookup">
+          <nav class="editions" aria-label="Collection" id="editions">
+            <a id="current-edition" href="?release=current" data-zh="当前藏品">Current collection</a>
+            <a id="archive-edition" href="?release=archive&amp;id=8923" data-zh="历史家谱">Historical archive</a>
+          </nav>
           <form id="lookup-form" novalidate>
             <label class="eyebrow" for="token-input" data-zh="按 NFT 编号查找">LOOK UP A TOKEN</label>
             <div class="search-field">
@@ -76,6 +80,7 @@
             <span data-zh="试试">Try</span><button data-open="8923">#8923</button
             ><button data-open="8925">#8925</button><button data-open="1">#1</button>
           </div>
+          <a id="history-example" class="history-example" href="?release=archive&amp;id=8925&amp;stage=o-8925" data-zh="找回已销毁的 #8925 原画 ↗">Recover the burned #8925 portrait ↗</a>
         </div>
       </section>
       <div class="record-bar">

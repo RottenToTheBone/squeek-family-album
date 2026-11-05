@@ -5,7 +5,7 @@ async function imageAt(url) {
   return img;
 }
 
-export async function familyCard({ selected, family, portrait, artFor, zh }) {
+export async function familyCard({ selected, family, portrait, artFor, historical, deployment, zh }) {
   const canvas = document.createElement('canvas');
   canvas.width = 1120;
   canvas.height = 716;
@@ -24,7 +24,8 @@ export async function familyCard({ selected, family, portrait, artFor, zh }) {
   c.fillRect(0, 0, 1120, 716);
   c.fillStyle = ink;
   c.fillRect(32, 32, 1056, 3);
-  text('SQUEEK ARCHIVE     /     COLLECTION 01', 45, 71, 18);
+  text(historical ? word('SQUEEK  /  HISTORICAL COLLECTION', 'SQUEEK  /  历史藏品')
+    : word('SQUEEK  /  CURRENT COLLECTION', 'SQUEEK  /  当前藏品'), 45, 71, 18);
   text('ETHEREUM SEPOLIA', 864, 71, 16);
   text(word('Family Album.', '仓鼠家谱'), 40, 161, 79, serif);
   c.fillStyle = '#26372b';
@@ -49,7 +50,7 @@ export async function familyCard({ selected, family, portrait, artFor, zh }) {
     m = family.history.length;
   text(
     word(
-      n + ' originals  /  ' + m + ' merges  /  level ' + family.root.level,
+      n + (n === 1 ? ' original' : ' originals') + '  /  ' + m + (m === 1 ? ' merge' : ' merges') + '  /  level ' + family.root.level,
       n + ' 只原始藏品  /  ' + m + ' 次合并  /  等级 ' + family.root.level,
     ),
     478,
@@ -78,7 +79,7 @@ export async function familyCard({ selected, family, portrait, artFor, zh }) {
     text(word('First four of ' + n + ' originals', '展示 ' + n + ' 只中的前四只'), 478, 610, 15, mono, muted);
   c.fillStyle = ink;
   c.fillRect(43, 640, 1034, 1);
-  text(word('SQUEEK FAMILY ALBUM  /  TESTNET RECORD', 'SQUEEK FAMILY ALBUM  /  测试网档案'), 43, 679, 16);
+  text('SQUEEK FAMILY ALBUM  /  ' + deployment.release, 43, 679, 16);
   text(word('FAMILY #', '家族 #') + family.root.id, 894, 679, 16);
   return new Promise((resolve, reject) =>
     canvas.toBlob(
