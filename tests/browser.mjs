@@ -31,10 +31,10 @@ const watch = (page) => {
 async function ready(page, id) {
   await page.waitForFunction(
     (token) =>
-      document.querySelector('#selected-id').textContent === '#' + token &&
-      !document.querySelector('#hero-art').hidden &&
-      document.querySelector('#hero-art').naturalWidth > 0 &&
-      !document.querySelector('#share').disabled,
+      document.querySelector('#selected-id')?.textContent === '#' + token &&
+      document.querySelector('#hero-art')?.hidden === false &&
+      document.querySelector('#hero-art')?.naturalWidth > 0 &&
+      document.querySelector('#share')?.disabled === false,
     id,
     { timeout: 22000 },
   );
