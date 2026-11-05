@@ -28,3 +28,5 @@ Use Node 20.19+ or 22.12+ for the validation commands.
 1. Run `npm ci`, `npm test` and `python -B -m unittest discover -s tests -p test_svg.py`. The release also runs `npm run verify:chain` against public Sepolia RPCs to confirm the actual bundled records.
 2. Start the local site and run `npm run test:browser` in a second terminal. Set `CHROME_PATH` if the test cannot locate an installed Chrome or Edge.
 3. Set `$env:ALBUM_LIVE='1'` in PowerShell before the browser test to check an uncached current portrait against the contract and recover a missing historical portrait from its pre-burn block. Fixtures test a future current merge, wrong collections, mismatched artwork and invalid receipts. Test screenshots and an exported card are saved under `.qa/`.
+
+squeekchain-project: 9c3269ac-ae72-4d40-ac2f-db56a1776672
