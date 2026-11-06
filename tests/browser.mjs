@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs';
 import { mkdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { gzipSync } from 'node:zlib';
 import { browserRegressions } from './browser-regressions.mjs';
 import { CURRENT, HISTORICAL } from '../dist/receipts.js';
 
@@ -274,6 +275,42 @@ try {
   await find(op, '1');
   await ready(op, 1);
   await offline.close();
+  const packedDonor = current.events.find((event) => current.portraits[event.donor]?.pack)?.donor;
+  if (process.env.ALBUM_PACKED === '1' && packedDonor) {
+    const record = current.portraits[packedDonor];
+    for (const corrupt of [false, true]) {
+      const isolated = await browser.newContext();
+      try {
+        let packRequests = 0;
+        await isolated.route('**/*', async (route) => {
+          const url = new URL(route.request().url());
+          if (url.protocol === 'data:' || url.protocol === 'blob:') return route.continue();
+          if (url.origin !== new URL(base).origin || url.pathname === '/current-art/' + packedDonor + '.svg') return route.abort();
+          if (url.pathname.endsWith('/' + record.pack)) {
+            packRequests++;
+            if (corrupt) return route.fulfill({ json: { [packedDonor]: gzipSync('wrong original').toString('base64') } });
+          }
+          return route.continue();
+        });
+        const page = watch(await isolated.newPage());
+        await page.goto(base + '?release=current&id=' + packedDonor + '&lang=en');
+        if (corrupt) {
+          await page.getByText('Original portrait unavailable', { exact: true }).waitFor();
+          assert.ok(await page.locator('#share').isDisabled());
+        } else {
+          await ready(page, packedDonor);
+          const sha = await page.locator('#hero-art').evaluate(async (img) => {
+            const bytes = await (await fetch(img.src)).arrayBuffer();
+            return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), (n) => n.toString(16).padStart(2, '0')).join('');
+          });
+          assert.equal(sha, record.sha256);
+          await exportFeaturedCard(page, packedDonor);
+        }
+        assert.ok(packRequests >= 1);
+      } finally { await isolated.close(); }
+    }
+    console.log('Same-origin pack restored #' + packedDonor + ', exported its card, and rejected a corrupted original.');
+  }
   await browserRegressions(browser, base, bundled);
   assert.deepEqual(errors, []);
   console.log(

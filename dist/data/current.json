@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-06T17:11:48.000Z",
-  "safeBlock": 12077954,
-  "safeBlockHash": "0x98e8885ba3857b916c10274dda5ef32c436af873f88bd7996ff307495b28ee83",
+  "asOf": "2026-11-06T17:37:24.000Z",
+  "safeBlock": 12078081,
+  "safeBlockHash": "0x630a41cebda3df18782f103fa559205411e116f0b1c85f17f97f9a59f5398e1a",
   "issued": 9999,
-  "burned": 1731,
-  "live": 8268,
+  "burned": 1735,
+  "live": 8264,
   "events": [
     {
       "survivor": 942,
@@ -15588,6 +15588,42 @@
       "logIndex": 212,
       "tx": "0xe91b7d0bce0a921de8f7c924809ae6a59984a81fdbc3ffa16792ea247536c36a",
       "at": "2026-11-06T17:10:24.000Z"
+    },
+    {
+      "survivor": 6730,
+      "donor": 6734,
+      "level": 2,
+      "block": 12077990,
+      "logIndex": 38,
+      "tx": "0x3983fa0c4a3af172b70aafadd466d36e4583d47327d5e50783b32dc4c1b75b43",
+      "at": "2026-11-06T17:19:00.000Z"
+    },
+    {
+      "survivor": 8451,
+      "donor": 8453,
+      "level": 2,
+      "block": 12078005,
+      "logIndex": 268,
+      "tx": "0xee8de5d68a4d04269d5a28d904c254536778ff0815574018ff650de764ec041f",
+      "at": "2026-11-06T17:22:00.000Z"
+    },
+    {
+      "survivor": 8452,
+      "donor": 8454,
+      "level": 2,
+      "block": 12078021,
+      "logIndex": 16,
+      "tx": "0x7c7ca18b62a7c283dcf8bf24cfb18522f3c7b248450f31699582e47a6785e97b",
+      "at": "2026-11-06T17:25:12.000Z"
+    },
+    {
+      "survivor": 8455,
+      "donor": 8456,
+      "level": 2,
+      "block": 12078040,
+      "logIndex": 320,
+      "tx": "0xc6a4ef380f7af9fea10c82b1d10599b3cf5ec401ccfda6e19cd001f5547b52d2",
+      "at": "2026-11-06T17:29:00.000Z"
     }
   ],
   "portraits": {
@@ -35100,6 +35136,14 @@
       "sha256": "84e6346ab67bd7d9807e4324067935e0deb3613f0aa4edee0c941a747b74d120",
       "palette": "Void Violet"
     },
+    "6730": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/6730.svg",
+      "block": 12078081,
+      "source": "chain",
+      "sha256": "b2dd7425cde1e4a61f1e681c04ef403d8d235deed779b09b67d04097bbd2ca8f",
+      "palette": "Spectral RGB",
+      "pack": "current-packs/52.json"
+    },
     "6731": {
       "file": "current-art/6731.svg",
       "block": 12070155,
@@ -35120,6 +35164,14 @@
       "source": "chain",
       "sha256": "c74c8580cddd41b9851a352057657dc77efcd54d0d672954cfc135f65b4145b6",
       "palette": "Spectral Reactor Red"
+    },
+    "6734": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/6734.svg",
+      "block": 12077989,
+      "source": "archive",
+      "sha256": "24cd3e551b1c1cb4c12dd3c8836f8d43ddc7866eb0f41cf8d6aa3d1ab0330b9b",
+      "palette": "RGB",
+      "pack": "current-packs/52.json"
     },
     "6735": {
       "file": "current-art/6735.svg",
@@ -38893,6 +38945,54 @@
       "source": "archive",
       "sha256": "cc4329b28d5c88152aacd1bc7f8d2ed87f2d6d56cd6bf9e7eb99b2fb8a4fe76c",
       "palette": "Spectral Electric Cyan"
+    },
+    "8451": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/8451.svg",
+      "block": 12078081,
+      "source": "chain",
+      "sha256": "cc75275a0a72acb35554eed532e303df8c1bcc8ba6fccb2b74b879983c32fb49",
+      "palette": "Spectral Acid Lime",
+      "pack": "current-packs/66.json"
+    },
+    "8452": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/8452.svg",
+      "block": 12078081,
+      "source": "chain",
+      "sha256": "81b8c966ca8107cdb766cbd963ad8332635e8819ed8a58e0407f8d96ab2a0863",
+      "palette": "Spectral Void Violet",
+      "pack": "current-packs/66.json"
+    },
+    "8453": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/8453.svg",
+      "block": 12078004,
+      "source": "archive",
+      "sha256": "5b72930fd459d337e7ae6ea1946239ec78bc8b56518464fd234565ffcca932e2",
+      "palette": "Spectral Electric Cyan",
+      "pack": "current-packs/66.json"
+    },
+    "8454": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/8454.svg",
+      "block": 12078020,
+      "source": "archive",
+      "sha256": "5f896f1831dadfd32195d561202a1e3223cc70b28de41508012774cb44182972",
+      "palette": "Spectral Reactor Red",
+      "pack": "current-packs/66.json"
+    },
+    "8455": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/8455.svg",
+      "block": 12078081,
+      "source": "chain",
+      "sha256": "8936581390e6ccbb4596a1270ddf48f4225bebb4949498b36072ffa974947336",
+      "palette": "Spectral Gold",
+      "pack": "current-packs/66.json"
+    },
+    "8456": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/8456.svg",
+      "block": 12078039,
+      "source": "archive",
+      "sha256": "a9591a924d6462a7dabdd652fdcacde118b06eb1d5ab7b5c6c65f38ac36dbf03",
+      "palette": "Ice White",
+      "pack": "current-packs/66.json"
     },
     "8464": {
       "file": "current-art/8464.svg",

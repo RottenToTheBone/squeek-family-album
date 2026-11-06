@@ -1,6 +1,7 @@
 import { snapshotIndex, tokenNumber, treeRows } from './lineage.js';
 import { livePortrait, lostPortrait, refreshIndex, txLink } from './chain.js';
 import { familyCard } from './share.js';
+import { packedPortrait } from './packed-art.js';
 import { CURRENT, HISTORICAL, deploymentFor } from './receipts.js';
 
 const $ = (id) => document.getElementById(id);
@@ -150,8 +151,8 @@ function artFor(id) {
   let pending;
   if (cached && (!burn || (cached.source === 'archive' && Number(cached.block) === burn.block - 1))) {
     const file = (historical ? 'art/' : 'current-art/') + id + '.svg';
-    pending = cached.file === file
-      ? Promise.resolve({ ...cached, url: file })
+    if (!historical && cached.pack) pending = packedPortrait(id, cached, archive.safeBlock);
+    else pending = cached.file === file ? Promise.resolve({ ...cached, url: file })
       : Promise.reject(new Error('Wrong collection portrait'));
   } else if (burn) {
     pending = lostPortrait(id, burn, archive);

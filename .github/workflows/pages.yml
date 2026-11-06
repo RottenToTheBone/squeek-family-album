@@ -67,19 +67,22 @@ jobs:
       - name: Independently confirm new receipts and archive supply on Sepolia
         if: steps.candidate.outputs.publish == 'true'
         run: node scripts/verify_bundle.mjs --since "$RUNNER_TEMP/previous-current.json"
+      - name: Build the compact Pages artifact and verify packed original bytes
+        if: steps.candidate.outputs.publish == 'true'
+        run: python3 -B scripts/package_site.py "$RUNNER_TEMP/album-site"
       - name: Open both collections and export the featured family cards
         if: steps.candidate.outputs.publish == 'true'
         run: |
           npm ci --ignore-scripts --no-audit --no-fund
-          python3 -m http.server 4179 --bind 127.0.0.1 --directory dist > "$RUNNER_TEMP/album-http.log" 2>&1 &
+          python3 -m http.server 4179 --bind 127.0.0.1 --directory "$RUNNER_TEMP/album-site" > "$RUNNER_TEMP/album-http.log" 2>&1 &
           album_server=$!
           trap 'kill "$album_server"' EXIT
           curl --retry 8 --retry-connrefused --retry-delay 1 -fsS -o /dev/null http://127.0.0.1:4179/
-          npm run test:browser
+          ALBUM_PACKED=1 npm run test:browser
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         if: steps.candidate.outputs.publish == 'true'
         with:
-          path: dist
+          path: ${{ runner.temp }}/album-site
       - name: Save only verified public index and portraits for the next update
         if: steps.candidate.outputs.publish == 'true'
         env:
@@ -107,10 +110,14 @@ jobs:
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.site.outputs.page_url }}
+      url: https://squeek.machinepaystack.com/
     steps:
       - name: Publish the static archive
         id: site
+        continue-on-error: true
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+      - name: Retry the same validated Pages artifact once
+        if: ${{ !cancelled() && steps.site.outcome == 'failure' }}
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
       - name: Read back the published index from the custom domain
         env:

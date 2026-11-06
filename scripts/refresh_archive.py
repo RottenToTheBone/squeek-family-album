@@ -30,6 +30,8 @@ RELEASE = "core-sepolia-20261103"
 COLLECTION = "0xc4c7982657f00509548f3a3a41db7fa439a6856b"
 STAKING = "0x50fd1780526c3186a0c037c7622203bc4fb611ca"
 ZERO_BURN_BLOCK = 12067109  # First published checkpoint of this deployment.
+RAW_COMPAT_BLOCK = 12077954  # Every standalone SVG published through this block keeps its URL.
+RAW_ORIGINALS = "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/"
 TOPICS = {
     "wallet": "0x8a9b1a009a32cc0082d2270e9033429b8e1aa3235e7b8198b013f603116a3c87",
     "staking": "0x47dc7fa0b474cf75263255e0530e84606f909e3099ad0d06bd67883467333339",
@@ -413,7 +415,10 @@ def cached_portrait(previous, token, burns):
     filename = f"current-art/{token}.svg"
     if not record:
         return None
-    require(record["file"] == filename and 0 < record["block"] <= previous["safeBlock"], "Invalid cached portrait")
+    if record.get("pack"):
+        require(record["pack"] == f"current-packs/{token // 128}.json", "Invalid cached pack name")
+    expected_file = RAW_ORIGINALS + f"{token}.svg" if record.get("pack") else filename
+    require(record["file"] == expected_file and 0 < record["block"] <= previous["safeBlock"], "Invalid cached portrait")
     raw = (DIST / filename).read_bytes()
     require(hashlib.sha256(raw).hexdigest() == record["sha256"], "Cached portrait digest differs")
     if token in burns:
@@ -447,6 +452,10 @@ def refresh(onchain=False):
     events = (read_chain_merges if onchain else read_merges)(snapshot, providers, previous)
     burns = validate_history(events, issued, burned, live, int(snapshot["nft"]["maximumLevel"]))
     tokens = sorted(set(burns) | {event["survivor"] for event in events} | {1, 8923, 7453, 7458})
+    standalone = {1, 8923, 7453, 7458}
+    standalone.update(e[role] for e in events if e["block"] <= RAW_COMPAT_BLOCK for role in ("survivor", "donor"))
+    if previous:
+        standalone.update(int(k) for k, p in previous["portraits"].items() if not p.get("pack"))
     portraits = {}
     missing = []
     for token in tokens:
@@ -466,6 +475,10 @@ def refresh(onchain=False):
 
         with ThreadPoolExecutor(max_workers=4) as pool:
             for n, group in enumerate(pool.map(fetch, (missing[i:i + 6] for i in range(0, len(missing), 6))), 1):
+                for key, portrait in group.items():
+                    if int(key) not in standalone:
+                        portrait["pack"] = f"current-packs/{int(key) // 128}.json"
+                        portrait["file"] = RAW_ORIGINALS + key + ".svg"
                 portraits.update(group)
                 if n % 25 == 0:
                     print(f"  verified {n * 6}/{len(missing)} new portraits", flush=True)
@@ -482,7 +495,7 @@ def refresh(onchain=False):
         # Committed art is immutable. New images can appear before a manifest that references them.
         for token in missing:
             portrait = portraits[str(token)]
-            target = DIST / portrait["file"]
+            target = DIST / "current-art" / f"{token}.svg"
             require(not target.exists() or hashlib.sha256(target.read_bytes()).hexdigest() == portrait["sha256"],
                     f"An existing original differs: {target.name}")
         for token in missing:
