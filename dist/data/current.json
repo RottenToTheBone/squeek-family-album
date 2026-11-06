@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-06T19:19:48.000Z",
-  "safeBlock": 12078589,
-  "safeBlockHash": "0x2670130088c2316c3be43cd5293db252b5c19c542f08b5a5b3232b30dfd1377f",
+  "asOf": "2026-11-06T20:17:24.000Z",
+  "safeBlock": 12078875,
+  "safeBlockHash": "0xf4e222d71ae1cea1194cf360ac5a1c9474b742a56304223b2b4b2d3ef8dec092",
   "issued": 9999,
-  "burned": 1742,
-  "live": 8257,
+  "burned": 1743,
+  "live": 8256,
   "events": [
     {
       "survivor": 942,
@@ -15687,6 +15687,15 @@
       "logIndex": 3,
       "tx": "0xdc6f2c4fc1dc458a2b671e04a54b50f0d0e116b891332e4030676f8ef82e9b99",
       "at": "2026-11-06T18:51:12.000Z"
+    },
+    {
+      "survivor": 1092,
+      "donor": 6351,
+      "level": 2,
+      "block": 12078815,
+      "logIndex": 197,
+      "tx": "0xc10973b0e6c8552c8e59dfbd470fff8db773d6e0d0ee9432b9a4b03cebea5a88",
+      "at": "2026-11-06T20:05:00.000Z"
     }
   ],
   "portraits": {
@@ -20380,6 +20389,14 @@
       "source": "chain",
       "sha256": "8cf27efbdc354c2f6d39b1b5b19a983f6a1e783e279f68ab2066fe2541c01c0f",
       "palette": "Spectral Orange CRT"
+    },
+    "1092": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/1092.svg",
+      "block": 12078875,
+      "source": "chain",
+      "sha256": "6328f52cb2929b491e2fef09f67c660603110ea033862418fb237b8bda0fe351",
+      "palette": "Acid Lime",
+      "pack": "current-packs/8.json"
     },
     "1093": {
       "file": "current-art/1093.svg",
@@ -34620,6 +34637,14 @@
       "source": "chain",
       "sha256": "9ac8ca578f4f2c7e4bf4575d0dde6e02a43ccabbf405bb0d7b27719eb017b974",
       "palette": "Spectral RGB"
+    },
+    "6351": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/6351.svg",
+      "block": 12078814,
+      "source": "archive",
+      "sha256": "d8df153e7cb742d0c3a124b52bcb73ade2a92453ee1751002645cf94de578032",
+      "palette": "Gold",
+      "pack": "current-packs/49.json"
     },
     "6365": {
       "file": "current-art/6365.svg",
