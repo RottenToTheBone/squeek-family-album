@@ -18,6 +18,8 @@ jobs:
     timeout-minutes: 45
     outputs:
       publish: ${{ steps.candidate.outputs.publish }}
+      site_tree: ${{ steps.candidate.outputs.site_tree }}
+      index_digest: ${{ steps.candidate.outputs.index_digest }}
     permissions:
       contents: write
     steps:
@@ -45,6 +47,8 @@ jobs:
           fi
           printf '%s\n' "$site_tree" > dist/data/site-revision.txt
           echo "publish=$publish" >> "$GITHUB_OUTPUT"
+          echo "site_tree=$site_tree" >> "$GITHUB_OUTPUT"
+          echo "index_digest=$(sha256sum dist/data/current.json | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
       - name: Check archive and family trees
         if: steps.candidate.outputs.publish == 'true'
         run: node --test tests/lineage.test.mjs
@@ -99,3 +103,23 @@ jobs:
       - name: Publish the static archive
         id: site
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+      - name: Read back the published index from the custom domain
+        env:
+          SITE_TREE: ${{ needs.package.outputs.site_tree }}
+          INDEX_DIGEST: ${{ needs.package.outputs.index_digest }}
+        run: |
+          site=https://squeek.machinepaystack.com/data
+          for attempt in {1..24}; do
+            # Each probe gets a fresh edge key while GitHub switches the origin.
+            query="build=$SITE_TREE&probe=$attempt"
+            if revision=$(curl --max-time 12 --max-filesize 100 -fsS "$site/site-revision.txt?$query") &&
+               [[ "$revision" == "$SITE_TREE" ]] &&
+               curl --max-time 25 -fsS "$site/current.json?$query" -o "$RUNNER_TEMP/served-index.json" &&
+               echo "$INDEX_DIGEST  $RUNNER_TEMP/served-index.json" | sha256sum --check --status; then
+              echo "Public custom domain serves verified index $INDEX_DIGEST"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo 'The custom domain has not served the expected archive.'
+          exit 1
