@@ -3,7 +3,8 @@ name: Publish family album
 on:
   workflow_dispatch:
   schedule:
-    - cron: '17,47 * * * *'
+    - cron: '17 * * * *'
+    - cron: '47 * * * *'
 
 permissions: {}
 
