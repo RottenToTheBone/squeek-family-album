@@ -112,7 +112,8 @@ export async function refreshIndex(seed) {
         throw new Error('Conflicting merge');
       extra.set(key, proof);
     }
-    if (boundary || !feed.nextCursor) {
+    // Once the verified burn count is covered, older non-merge activity cannot add another family.
+    if (seed.events.length + extra.size === expected || boundary || !feed.nextCursor) {
       const proofs = [...extra.values()];
       const updated = { ...seed, ...updatedStats, events: [...seed.events, ...proofs.map((p) => p.merge)] };
       if (updated.events.length !== expected) throw new Error('Incomplete burn coverage');

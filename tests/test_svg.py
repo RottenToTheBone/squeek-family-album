@@ -20,8 +20,16 @@ class SvgSafety(unittest.TestCase):
             manifest = json.loads((ROOT / "dist/data" / (name + ".json")).read_text(encoding="utf-8"))
             expected_files = {f"{token}.svg" for token in manifest["portraits"]}
             self.assertEqual({p.name for p in (ROOT / "dist" / folder).iterdir()}, expected_files)
+            participants = {str(e[role]) for e in manifest["events"] for role in ("survivor", "donor")}
+            self.assertFalse(participants - manifest["portraits"].keys(), "a merged family lacks a portrait")
+            burns = {str(e["donor"]): e["block"] for e in manifest["events"]}
             for token, record in manifest["portraits"].items():
                 self.assertEqual(record["file"], folder + "/" + token + ".svg")
+                self.assertTrue(0 < record["block"] <= manifest["safeBlock"])
+                if token in burns:
+                    self.assertEqual((record["source"], record["block"]), ("archive", burns[token] - 1))
+                else:
+                    self.assertEqual(record["source"], "chain")
                 original = (ROOT / "dist" / record["file"]).read_bytes()
                 validate_svg(original, "Squeek #" + token)
                 self.assertEqual(hashlib.sha256(original).hexdigest(), record["sha256"])

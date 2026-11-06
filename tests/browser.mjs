@@ -11,9 +11,11 @@ const qa = fileURLToPath(new URL('../.qa/', import.meta.url));
 await mkdir(qa, { recursive: true });
 const base = process.env.ALBUM_URL || 'http://127.0.0.1:4179/';
 const bundled = JSON.parse(await readFile(new URL('../dist/data/archive.json', import.meta.url), 'utf8'));
+const current = JSON.parse(await readFile(new URL('../dist/data/current.json', import.meta.url), 'utf8'));
+const featuredBurn = current.events.find((e) => e.donor === 7453);
 const sampledBurn = bundled.events.find((event) => event.donor === 8925);
 const uncached = [42, ...Array.from({ length: bundled.issued }, (_, i) => i + 1)].find(
-  (id) => !bundled.portraits[id],
+  (id) => !bundled.portraits[id] && !current.portraits[id],
 );
 const executablePath = [
   process.env.CHROME_PATH,
@@ -42,6 +44,41 @@ async function ready(page, id) {
 async function find(page, id) {
   await page.locator('#token-input').fill(String(id));
   await page.locator('#lookup-form button').click();
+}
+async function exportFeaturedCard(page, id) {
+  await ready(page, id);
+  await page.locator('#share').click();
+  await page.locator('#save-card:not([hidden])').waitFor();
+  await page.locator('#card-preview').evaluate((img) => img.decode());
+  // Check the exported hero pixels against the selected onchain image. A blank
+  // placeholder or a card that kept the previous token must fail this check.
+  const matches = await page.evaluate(() => {
+    const pixels = (draw) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 345;
+      const c = canvas.getContext('2d');
+      draw(c);
+      return c.getImageData(0, 0, 345, 345).data;
+    };
+    const original = pixels((c) => {
+      c.fillStyle = '#26372b';
+      c.fillRect(0, 0, 345, 345);
+      c.drawImage(document.querySelector('#hero-art'), 0, 0, 345, 345);
+    });
+    const card = pixels((c) => c.drawImage(document.querySelector('#card-preview'), 68, 224, 345, 345, 0, 0, 345, 345));
+    let same = 0;
+    for (let i = 0; i < card.length; i++) if (Math.abs(original[i] - card[i]) <= 2) same++;
+    return same / card.length;
+  });
+  assert.ok(matches > 0.99, 'exported hero differs from the selected portrait');
+  const download = page.waitForEvent('download');
+  await page.locator('#save-card').click();
+  const dest = path.join(qa, 'current-family-' + id + '.png');
+  await (await download).saveAs(dest);
+  const png = await readFile(dest);
+  assert.equal(png.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
+  assert.deepEqual([png.readUInt32BE(16), png.readUInt32BE(20)], [1120, 716]);
+  await page.keyboard.press('Escape');
 }
 async function fit(page) {
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
@@ -141,11 +178,26 @@ try {
   }
   const now = watch(await ctx.newPage());
   await now.goto(base);
-  await ready(now, 8923);
+  await ready(now, 7458);
   assert.equal(await now.locator('#current-edition').getAttribute('aria-current'), 'page');
-  const currentSource = await now.locator('#token-source').getAttribute('href');
-  assert.ok(currentSource === 'https://sepolia.etherscan.io/nft/' + CURRENT.collection + '/8923' ||
-    /^https:\/\/sepolia\.etherscan\.io\/tx\/0x[\da-f]{64}$/i.test(currentSource));
+  assert.equal(featuredBurn.survivor, 7458);
+  assert.equal(await now.locator('.tree-node[aria-pressed=true]').getAttribute('data-key'), 'm-12076748-87');
+  assert.equal(await now.locator('.ledger-row a[href$="' + featuredBurn.tx + '"]').count(), 1);
+  await fit(now);
+  await accessibility(now);
+  await exportFeaturedCard(now, 7458);
+  await now.locator('#example-donor').click();
+  await ready(now, 7453);
+  assert.ok((await now.locator('#token-source').getAttribute('href')).endsWith(featuredBurn.tx));
+  assert.match(await now.locator('#art-source').textContent(), /^(Pre-burn block |销毁前区块 )12,076,747$/);
+  await exportFeaturedCard(now, 7453);
+  await now.setViewportSize({ width: 390, height: 844 });
+  await fit(now);
+  await now.screenshot({ path: path.join(qa, 'current-mobile.png'), fullPage: true });
+  await now.setViewportSize({ width: 1440, height: 960 });
+  await now.locator('#example-survivor').click();
+  await ready(now, 7458);
+  await now.screenshot({ path: path.join(qa, 'current-desktop.png'), fullPage: true });
   await now.locator('#history-example').click();
   await ready(now, 8925);
   assert.equal(await now.locator('#archive-edition').getAttribute('aria-current'), 'page');
@@ -154,6 +206,25 @@ try {
   assert.equal(new URL(now.url()).searchParams.get('id'), '8925');
   assert.equal(new URL(now.url()).searchParams.get('release'), CURRENT.release);
   if (process.env.ALBUM_LIVE === '1') {
+    const recovery = await browser.newContext();
+    // Exercise real archive-RPC recovery even when the public site has a bundled original.
+    await recovery.route((u) => u.pathname.endsWith('/data/current.json'), async (r) => {
+      const response = await r.fetch();
+      const copy = await response.json();
+      delete copy.portraits['7453'];
+      await r.fulfill({ json: copy });
+    });
+    const donor = watch(await recovery.newPage());
+    await donor.goto(base + '?release=current&id=7453&stage=o-7453&lang=en');
+    await ready(donor, 7453);
+    const recovered = await donor.locator('#hero-art').evaluate(async (img) => {
+      if (!img.src.startsWith('data:image/svg')) return null;
+      const bytes = await (await fetch(img.src)).arrayBuffer();
+      const digest = await crypto.subtle.digest('SHA-256', bytes);
+      return Array.from(new Uint8Array(digest), (n) => n.toString(16).padStart(2, '0')).join('');
+    });
+    assert.equal(recovered, current.portraits['7453'].sha256, 'pre-burn tokenURI must match the released original');
+    await recovery.close();
     await ready(now, 8925);
     await find(now, uncached);
     await ready(now, uncached);

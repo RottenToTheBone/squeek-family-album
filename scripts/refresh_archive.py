@@ -6,12 +6,15 @@ import os
 import re
 import sys
 import tempfile
+import threading
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
 from xml.etree import ElementTree
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from svg_validation import decode_uri, validate_svg
 
@@ -31,6 +34,18 @@ TOPICS = {
     "staking": "0x47dc7fa0b474cf75263255e0530e84606f909e3099ad0d06bd67883467333339",
 }
 UTC_TIME = re.compile(r"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{1,3})?Z")
+_connections = threading.local()
+
+
+def session():
+    if not hasattr(_connections, "client"):
+        client = requests.Session()
+        # All RPC POSTs in this script are reads. Retry transient provider failures only.
+        retry = Retry(total=2, backoff_factor=0.5, status_forcelist=(429, 502, 503, 504),
+                      allowed_methods={"GET", "POST"}, respect_retry_after_header=False)
+        client.mount("https://", HTTPAdapter(max_retries=retry))
+        _connections.client = client
+    return _connections.client
 
 
 def require(condition, message):
@@ -39,7 +54,7 @@ def require(condition, message):
 
 
 def api(path, params=None):
-    response = requests.get(f"{API}/{path}", params=params, timeout=30)
+    response = session().get(f"{API}/{path}", params=params, timeout=30)
     response.raise_for_status()
     data = response.json()
     require(data.get("status") == "available", f"{path}: {data.get('reason', 'unavailable')}")
@@ -56,7 +71,7 @@ def api(path, params=None):
 
 
 def rpc(url, method, params):
-    response = requests.post(url, timeout=25, json={
+    response = session().post(url, timeout=25, json={
         "jsonrpc": "2.0", "id": 1, "method": method, "params": params,
     })
     response.raise_for_status()
@@ -127,7 +142,27 @@ def confirm_merge(event, custody, block_hash, receipt, header):
     require(actual == (event["survivor"], event["donor"], event["level"]), "Onchain merge IDs or level differ")
 
 
-def read_merges(snapshot, providers=None):
+def rpc_batch(url, calls):
+    response = session().post(url, json=[
+        {"jsonrpc": "2.0", "id": i, "method": method, "params": params}
+        for i, (method, params) in enumerate(calls, 1)
+    ], timeout=45)
+    response.raise_for_status()
+    replies = response.json()
+    require(isinstance(replies, list) and len(replies) == len(calls), "Incomplete RPC batch")
+    by_id = {r["id"]: r for r in replies}
+    values = []
+    for i, (method, _) in enumerate(calls, 1):
+        reply = by_id.get(i, {})
+        error = reply.get("error") or {}
+        code = error.get("code") if isinstance(error, dict) else None
+        require(reply.get("jsonrpc") == "2.0" and reply.get("result") is not None and not error,
+                f"{method} returned no verified data (RPC code {code if isinstance(code, int) else 'unknown'})")
+        values.append(reply["result"])
+    return values
+
+
+def read_merges(snapshot, providers=None, previous=None):
     release = snapshot["release"]["id"]
     collection = snapshot["deployment"]["components"]["collection"]["address"].lower()
     staking = snapshot["deployment"]["components"]["staking"]["address"].lower()
@@ -138,15 +173,19 @@ def read_merges(snapshot, providers=None):
                                         as_of=snapshot["chain"]["safeBlockTimestamp"])
     events = {}
     cursors = set()
+    prior_events = previous["events"] if previous else []
+    boundary = previous["safeBlock"] if previous else 0
+    missing = int(snapshot["nft"]["burned"]) - len(prior_events)
+    require(missing >= 0, "Burn count went backwards")
     params = {"category": "players", "limit": 100}
-    while True:
+    while len(events) < missing:
         page = api("events", params)
         for event in page["events"]:
             if event["type"] != "nft.merged":
                 continue
             source, payload = event["source"], event["payload"]
             block = int(source["blockNumber"])
-            if block > safe_block:
+            if block > safe_block or block <= boundary:
                 continue
             expected_contract = {"wallet": collection, "staking": staking}.get(payload["custody"])
             require(source["kind"] == "chain" and source["target"] == "sepolia"
@@ -174,29 +213,35 @@ def read_merges(snapshot, providers=None):
         cursors.add(cursor)
         params["cursor"] = cursor
     proofs = list(events.values())
-    for offset in range(0, len(proofs), 8):
-        group = proofs[offset:offset + 8]
+    require(len(proofs) == missing, "Event feed does not cover the onchain burn count")
+
+    def verify_group(group):
         calls = []
         for item, _, _ in group:
             for method, params in (("eth_getTransactionReceipt", [item["tx"]]),
                                    ("eth_getBlockByNumber", [hex(item["block"]), False])):
-                calls.append({"jsonrpc": "2.0", "id": len(calls) + 1, "method": method, "params": params})
+                calls.append((method, params))
         failure = None
         for endpoint in providers:
             try:
-                response = requests.post(endpoint, json=calls, timeout=25)
-                response.raise_for_status()
-                replies = response.json()
-                require(isinstance(replies, list) and len(replies) == len(calls), "Incomplete RPC batch")
-                results = {entry["id"]: entry["result"] for entry in replies}
+                results = rpc_batch(endpoint, calls)
                 for i, (item, custody, block_hash) in enumerate(group):
-                    confirm_merge(item, custody, block_hash, results[2 * i + 1], results[2 * i + 2])
-                break
+                    confirm_merge(item, custody, block_hash, results[2 * i], results[2 * i + 1])
+                return
             except (ValueError, KeyError, TypeError, requests.RequestException) as exc:
                 failure = exc
-        else:
-            raise ValueError("No canonical RPC confirmed the merge batch") from failure
-    return sorted((p[0] for p in proofs), key=lambda event: (event["block"], event["logIndex"]))
+        if len(group) > 1:
+            middle = len(group) // 2
+            verify_group(group[:middle])
+            verify_group(group[middle:])
+            return
+        item = group[0][0]
+        raise ValueError(f"No canonical RPC confirmed {item['tx']} at block {item['block']}: {failure}") from failure
+
+    print(f"Verifying {len(proofs)} new merge receipts after block {boundary}.", flush=True)
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        list(pool.map(verify_group, (proofs[i:i + 8] for i in range(0, len(proofs), 8))))
+    return prior_events + sorted((p[0] for p in proofs), key=lambda event: (event["block"], event["logIndex"]))
 
 
 def validate_history(events, issued, burned, live, max_level):
@@ -220,10 +265,15 @@ def validate_history(events, issued, burned, live, max_level):
     return burns
 
 
+def art_params(collection, token_id, block):
+    return [{"to": collection, "data": f"0xc87b56dd{token_id:064x}"}, hex(block)]
+
+
 def token_art(url, collection, token_id, block):
-    result = rpc(url, "eth_call", [
-        {"to": collection, "data": f"0xc87b56dd{token_id:064x}"}, hex(block),
-    ])
+    return decode_art(rpc(url, "eth_call", art_params(collection, token_id, block)), token_id)
+
+
+def decode_art(result, token_id):
     raw = bytes.fromhex(result.removeprefix("0x"))
     require(len(raw) >= 64 and int.from_bytes(raw[:32], "big") == 32, "Malformed tokenURI return value")
     length = int.from_bytes(raw[32:64], "big")
@@ -235,27 +285,51 @@ def token_art(url, collection, token_id, block):
     validate_svg(svg, name)
     palette = next((trait["value"] for trait in metadata.get("attributes", [])
                     if trait.get("trait_type") == "Palette"), None)
-    return svg, palette
+    return svg, palette if isinstance(palette, str) else None
 
 
-def fetch_portrait(token_id, burns, safe_block, collection, providers, staging):
-    archived = token_id in burns
-    block = burns[token_id] - 1 if archived else safe_block
-    failures = []
+def fetch_portraits(tokens, burns, safe_block, collection, providers, staging):
+    blocks = [burns[i] - 1 if i in burns else safe_block for i in tokens]
+    calls = [("eth_call", art_params(collection, i, block)) for i, block in zip(tokens, blocks)]
+    error = None
     for url in providers:
         try:
-            svg, palette = token_art(url, collection, token_id, block)
+            results = rpc_batch(url, calls)
+            images = [decode_art(value, i) for value, i in zip(results, tokens)]
             break
-        except (ValueError, KeyError, ElementTree.ParseError, requests.RequestException) as exc:
-            failures.append(f"{url}: {exc}")
+        except (ValueError, KeyError, TypeError, ElementTree.ParseError, requests.RequestException) as exc:
+            error = exc
     else:
-        raise ValueError(f"Unable to verify #{token_id} at {block}: {'; '.join(failures)}")
-    (staging / f"{token_id}.svg").write_bytes(svg)
-    result = {"file": f"current-art/{token_id}.svg", "block": block, "source": "archive" if archived else "chain",
-              "sha256": hashlib.sha256(svg).hexdigest()}
-    if palette:
-        result["palette"] = palette
-    return result
+        if len(tokens) == 1:
+            raise ValueError(f"Unable to verify #{tokens[0]} at {blocks[0]}") from error
+        # Some archive nodes cap the size of a batch response.
+        records = {}
+        for token in tokens:
+            records.update(fetch_portraits([token], burns, safe_block, collection, providers, staging))
+        return records
+    records = {}
+    for i, block, (svg, palette) in zip(tokens, blocks, images):
+        (staging / f"{i}.svg").write_bytes(svg)
+        record = {"file": f"current-art/{i}.svg", "block": block, "source": "archive" if i in burns else "chain",
+                  "sha256": hashlib.sha256(svg).hexdigest()}
+        if palette:
+            record["palette"] = palette
+        records[str(i)] = record
+    return records
+
+
+def cached_portrait(previous, token, burns):
+    record = previous["portraits"].get(str(token)) if previous else None
+    filename = f"current-art/{token}.svg"
+    if not record:
+        return None
+    require(record["file"] == filename and 0 < record["block"] <= previous["safeBlock"], "Invalid cached portrait")
+    raw = (DIST / filename).read_bytes()
+    require(hashlib.sha256(raw).hexdigest() == record["sha256"], "Cached portrait digest differs")
+    if token in burns:
+        return record if record["source"] == "archive" and record["block"] == burns[token] - 1 else None
+    require(record["source"] == "chain", "Unexpected cached burn")
+    return record
 
 
 def refresh():
@@ -269,37 +343,55 @@ def refresh():
     previous = None
     if manifest.exists():
         previous = json.loads(manifest.read_text(encoding="utf-8"))
-        require(previous["collection"] == collection and previous["releaseId"] == release
+        require(previous["schemaVersion"] == 1 and previous["chainId"] == CHAIN
+                and previous["collection"] == collection and previous["releaseId"] == release
                 and previous["safeBlock"] <= safe_block, "Refusing a deployment change or older snapshot")
+        validate_history(previous["events"], previous["issued"], previous["burned"], previous["live"], 10)
     utc_time(snapshot["chain"]["safeBlockTimestamp"])
     providers = canonical_providers(safe_block, block_hash, previous, snapshot["nft"],
                                     snapshot["chain"]["safeBlockTimestamp"])
-    events = read_merges(snapshot, providers)
+    events = read_merges(snapshot, providers, previous)
     burns = validate_history(events, issued, burned, live, int(snapshot["nft"]["maximumLevel"]))
-    tokens = sorted(set(burns) | {event["survivor"] for event in events} | {1, 8923})
-    print(f"Verified {len(events)} unique merges. Reading {len(tokens)} original tokenURIs.", flush=True)
+    tokens = sorted(set(burns) | {event["survivor"] for event in events} | {1, 8923, 7453, 7458})
+    portraits = {}
+    missing = []
+    for token in tokens:
+        record = cached_portrait(previous, token, burns)
+        if record is None:
+            missing.append(token)
+        else:
+            portraits[str(token)] = record
+    if previous and not missing and previous["events"] == events and previous["issued"] == issued:
+        print(f"No new merges. Retaining verified checkpoint {previous['safeBlock']}.", flush=True)
+        return
+    print(f"Verified {len(events)} unique merges. Reading {len(missing)} original tokenURIs; reusing {len(portraits)}.", flush=True)
     with tempfile.TemporaryDirectory(dir=ROOT, prefix=".refresh-") as temp_dir:
         staging = Path(temp_dir)
-        def fetch(token_id):
-            return fetch_portrait(token_id, burns, safe_block, collection, providers, staging)
+        def fetch(group):
+            return fetch_portraits(group, burns, safe_block, collection, providers, staging)
 
         with ThreadPoolExecutor(max_workers=4) as pool:
-            portraits = dict(zip(map(str, tokens), pool.map(fetch, tokens)))
+            for n, group in enumerate(pool.map(fetch, (missing[i:i + 6] for i in range(0, len(missing), 6))), 1):
+                portraits.update(group)
+                if n % 25 == 0:
+                    print(f"  verified {n * 6}/{len(missing)} new portraits", flush=True)
         data = {
             "schemaVersion": 1, "chainId": CHAIN, "collection": collection, "releaseId": release,
             "asOf": snapshot["chain"]["safeBlockTimestamp"], "safeBlock": safe_block, "safeBlockHash": block_hash,
-            "issued": issued, "burned": burned, "live": live, "events": events, "portraits": portraits,
+            "issued": issued, "burned": burned, "live": live, "events": events,
+            "portraits": {str(i): portraits[str(i)] for i in tokens},
         }
         staged_manifest = staging / "archive.json"
         staged_manifest.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         manifest.parent.mkdir(parents=True, exist_ok=True)
         (DIST / "current-art").mkdir(parents=True, exist_ok=True)
         # Committed art is immutable. New images can appear before a manifest that references them.
-        for portrait in portraits.values():
+        for token in missing:
+            portrait = portraits[str(token)]
             target = DIST / portrait["file"]
             require(not target.exists() or hashlib.sha256(target.read_bytes()).hexdigest() == portrait["sha256"],
                     f"An existing original differs: {target.name}")
-        for token in tokens:
+        for token in missing:
             target = DIST / "current-art" / f"{token}.svg"
             if not target.exists():
                 os.replace(staging / target.name, target)

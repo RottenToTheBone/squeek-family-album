@@ -113,44 +113,53 @@ async function batch(endpoint, calls) {
 }
 const blockCall = (n) => ['eth_getBlockByNumber', [hex(n), false]];
 
-export async function verifyMergeReceipts(proofs, seed, state, providers) {
-  const deployment = deploymentFor(seed);
+async function verifyCheckpoint(endpoint, seed, state, deployment) {
   const through = Number(state.chain.safeThroughBlock);
-  for (const endpoint of providers) {
-    try {
-      const supplyCall = (data) => ['eth_call', [{ to: deployment.collection, data }, hex(through)]];
-      const [chain, previous, current, live, burned] = await batch(endpoint, [
-        ['eth_chainId', []],
-        blockCall(seed.safeBlock),
-        blockCall(through),
-        supplyCall('0x18160ddd'), // totalSupply()
-        supplyCall('0xd89135cd'), // totalBurned()
-      ]);
-      if (quantity(chain) !== 11155111) throw new Error('Wrong RPC network');
-      checkHeader(previous, seed.safeBlock, seed.safeBlockHash);
-      checkHeader(current, through, state.chain.safeBlockHash);
-      if (
-        !hash32(live) ||
-        !hash32(burned) ||
-        quantity(live) !== Number(state.nft.live) ||
-        quantity(burned) !== Number(state.nft.burned)
-      )
-        throw new Error('Onchain supply mismatch');
-      if (Date.parse(state.chain.safeBlockTimestamp) !== quantity(current.timestamp) * 1000)
-        throw new Error('Safe block time mismatch');
-      for (let offset = 0; offset < proofs.length; offset += 8) {
-        const group = proofs.slice(offset, offset + 8);
-        const calls = group.flatMap(({ merge }) => [
-          ['eth_getTransactionReceipt', [merge.tx]],
-          blockCall(merge.block),
-        ]);
+  const supplyCall = (data) => ['eth_call', [{ to: deployment.collection, data }, hex(through)]];
+  const [chain, previous, current, live, burned] = await batch(endpoint, [
+    ['eth_chainId', []], blockCall(seed.safeBlock), blockCall(through),
+    supplyCall('0x18160ddd'), supplyCall('0xd89135cd'),
+  ]);
+  if (quantity(chain) !== 11155111) throw new Error('Wrong RPC network');
+  checkHeader(previous, seed.safeBlock, seed.safeBlockHash);
+  checkHeader(current, through, state.chain.safeBlockHash);
+  if (!hash32(live) || !hash32(burned) || quantity(live) !== Number(state.nft.live) ||
+      quantity(burned) !== Number(state.nft.burned)) throw new Error('Onchain supply mismatch');
+  if (Date.parse(state.chain.safeBlockTimestamp) !== quantity(current.timestamp) * 1000)
+    throw new Error('Safe block time mismatch');
+}
+
+export async function verifyMergeReceipts(proofs, seed, state, providers, workers = 1) {
+  const deployment = deploymentFor(seed);
+  const checkpoints = new Map();
+  async function verifyGroup(group) {
+    let cause;
+    for (const endpoint of providers) {
+      try {
+        if (!checkpoints.has(endpoint)) checkpoints.set(endpoint, verifyCheckpoint(endpoint, seed, state, deployment));
+        await checkpoints.get(endpoint);
+        if (!group.length) return;
+        const calls = group.flatMap(({ merge }) => [['eth_getTransactionReceipt', [merge.tx]], blockCall(merge.block)]);
         const results = await batch(endpoint, calls);
         group.forEach((proof, i) => confirmMerge(proof, results[2 * i], results[2 * i + 1], deployment));
+        return;
+      } catch (error) {
+        cause = error;
       }
-      return;
-    } catch {
-      /* Retry the entire proof against the next independent archive. */
+    }
+    if (group.length <= 1) throw new Error('No canonical RPC confirmed the merge delta', { cause });
+    const half = Math.floor(group.length / 2);
+    await verifyGroup(group.slice(0, half));
+    await verifyGroup(group.slice(half));
+  }
+  if (!proofs.length) return verifyGroup([]);
+  let offset = 0;
+  async function worker() {
+    while (offset < proofs.length) {
+      const group = proofs.slice(offset, offset + 8);
+      offset += 8;
+      await verifyGroup(group);
     }
   }
-  throw new Error('No canonical RPC confirmed the merge delta');
+  await Promise.all(Array.from({ length: Math.min(workers, Math.ceil(proofs.length / 8)) }, worker));
 }

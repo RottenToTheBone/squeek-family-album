@@ -1,5 +1,6 @@
 node_modules/
 .qa/
+.refresh-*/
 .wrangler/
 .env
 .env.*

@@ -17,6 +17,10 @@ function routeEdition() {
 const edition = routeEdition();
 const historical = edition === 'archive';
 const deployment = historical ? HISTORICAL : CURRENT;
+// Pin the featured transaction stage even if its survivor merges again later.
+const featured = historical
+  ? { survivor: 8923, donor: 8925, stage: null }
+  : { survivor: 7458, donor: 7453, stage: 'm-12076748-87' };
 let language = params().get('lang');
 if (!['en', 'zh'].includes(language)) {
   try {
@@ -119,7 +123,7 @@ function recordUrl(id, key, release = edition) {
   url.searchParams.set('lang', language);
   return url.href;
 }
-function editionLinks(id = selected?.id ?? tokenNumber(params().get('id')) ?? 8923) {
+function editionLinks(id = selected?.id ?? tokenNumber(params().get('id')) ?? featured.survivor) {
   $('current-edition').href = recordUrl(id, null, 'current');
   $('archive-edition').href = recordUrl(id, null, 'archive');
 }
@@ -457,8 +461,8 @@ async function openRecord(id, key, method) {
 function navigateFromUrl() {
   if (!archive) return;
   const raw = params().get('id');
-  const id = raw === null ? 8923 : tokenNumber(raw, archive.issued);
-  editionLinks(id ?? 8923);
+  const id = raw === null ? featured.survivor : tokenNumber(raw, archive.issued);
+  editionLinks(id ?? featured.survivor);
   if (!id) {
     ++requestNo;
     clearRecord();
@@ -468,7 +472,7 @@ function navigateFromUrl() {
     renderNotices();
     return;
   }
-  openRecord(id, params().get('stage'), null);
+  openRecord(id, params().get('stage') ?? (raw === null ? featured.stage : null), null);
 }
 $('lookup-form').addEventListener('submit', (e) => {
   e.preventDefault();
@@ -487,8 +491,12 @@ $('token-input').addEventListener('input', () => {
     renderNotices();
   }
 });
-for (const button of document.querySelectorAll('[data-open]'))
-  button.addEventListener('click', () => openRecord(Number(button.dataset.open), null, 'pushState'));
+for (const role of ['survivor', 'donor']) {
+  const button = $('example-' + role);
+  const id = featured[role];
+  button.textContent = '#' + id;
+  button.addEventListener('click', () => openRecord(id, role === 'survivor' ? featured.stage : 'o-' + id, 'pushState'));
+}
 window.addEventListener('popstate', () => {
   if (routeEdition() !== edition) { location.reload(); return; }
   const l = params().get('lang');
