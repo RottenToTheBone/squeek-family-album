@@ -12,7 +12,7 @@ The home page opens the current collection at the merge of #7458 and #7453. Both
 
 ## How the records are built
 
-- The current index pins release `core-sepolia-20261103`, its NFT and staking contracts, and the expected API schemas. It reconciles the event feed with onchain supply. Each merge must match its transaction receipt, canonical block, emitter, log index, token IDs and level.
+- The scheduled update reads a finalized Sepolia block and fetches merge logs from the pinned NFT contract for release `core-sepolia-20261103`. For a staked merge, the collection and staking contract can emit two logs in one transaction. The album verifies both and uses the staking log's index, so the same merge has the same shared link as in the official player feed. The total must match onchain supply. The browser can add newer merges from that feed after checking their receipts.
 - New portraits are read from ERC-721 `tokenURI` at a verified safe block. A new burn always requires a read at the block before the merge, including when its earlier surviving portrait was already saved. The refresh checks the token name, SVG and SHA-256 digest. Each recorded merge participant has a bundled original. Verified surviving originals retain the block of their actual read.
 - The browser opens bundled portraits immediately. On a current lookup outside the bundle, it compares the official token image byte-for-byte with the collection's onchain tokenURI. The historical collection `stream-game-sepolia-test-20261026-01` uses its own contracts, original images and fixed block. Unbundled historical reads go directly to that contract. Preview and standalone download accept the renderer's passive UTF-8 SVG subset.
 - A GitHub Actions workflow runs at 17 and 47 minutes past each hour on the default branch. It resumes from the previous verified block, reconciles the new total with onchain supply and checks the image files and browser exports before deploying to the same site. A failed refresh leaves the last complete site available. GitHub may delay a scheduled run. The footer shows the block time of the displayed index.
@@ -21,7 +21,7 @@ The home page opens the current collection at the merge of #7458 and #7453. Both
 
 ## Refresh and check
 
-Refresh the current snapshot with `python -B scripts/refresh_archive.py`. This requires Python 3.10+ and the `requests` package. It uses public read-only endpoints and writes to `dist/data/current.json` and `dist/current-art/`. The historical manifest and portraits reside separately in `dist/data/archive.json` and `dist/art/`.
+Refresh the current snapshot with `python -B scripts/refresh_archive.py --onchain`. This requires Python 3.10+ and the `requests` package. It reads public Sepolia RPCs and writes to `dist/data/current.json` and `dist/current-art/`. Omit `--onchain` to use the official economy and player APIs as the event source with the same receipt checks. The historical manifest and portraits reside separately in `dist/data/archive.json` and `dist/art/`.
 
 Use Node 20.19+ or 22.12+ for the validation commands.
 

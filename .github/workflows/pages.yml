@@ -31,7 +31,7 @@ jobs:
             sudo apt-get -qq update
             sudo apt-get -qq install -y python3-requests
           }
-          /usr/bin/python3 -Bu scripts/refresh_archive.py
+          /usr/bin/python3 -Bu scripts/refresh_archive.py --onchain
       - name: Compare the candidate with the site actually deployed
         id: candidate
         run: |

@@ -12,6 +12,25 @@ import refresh_archive as archive
 
 
 class CheckpointUpdates(unittest.TestCase):
+    def test_direct_chain_source_keeps_staking_stage_links_and_rejects_ambiguous_receipts(self):
+        tx, block_hash = "0x" + "d" * 64, "0x" + "e" * 64
+        event = {"survivor": 3, "donor": 4, "level": 2, "block": 105, "logIndex": 7, "tx": tx}
+        common = {"transactionHash": tx, "blockNumber": hex(105), "blockHash": block_hash}
+        primary = {**common, "logIndex": "0x7", "address": archive.COLLECTION,
+                   "topics": [archive.TOPICS["wallet"], f"0x{3:064x}", f"0x{4:064x}"], "data": f"0x{2:064x}{1:064x}"}
+        wrapper = {**common, "logIndex": "0x8", "address": archive.STAKING,
+                   "topics": [archive.TOPICS["staking"], f"0x{1:064x}", f"0x{int(archive.COLLECTION, 16):064x}", f"0x{3:064x}"],
+                   "data": f"0x{4:064x}{2:064x}{1:064x}"}
+        receipt = {**common, "status": "0x1", "logs": [primary]}
+        header = {"hash": block_hash, "number": hex(105), "timestamp": "0x65432100"}
+        proof = (event, None, block_hash)
+        self.assertEqual(archive.receipt_event(proof, receipt, header)["logIndex"], 7)
+        receipt["logs"].append(wrapper)
+        self.assertEqual(archive.receipt_event(proof, receipt, header)["logIndex"], 8)
+        receipt["logs"].append({**wrapper, "logIndex": "0x9"})
+        with self.assertRaisesRegex(ValueError, "Ambiguous staking"):
+            archive.receipt_event(proof, receipt, header)
+
     def test_incremental_feed_checks_only_new_receipts_and_retries_idempotently(self):
         at = "2026-11-06T00:00:00.000Z"
         tx, block_hash = "0x" + "a" * 64, "0x" + "b" * 64

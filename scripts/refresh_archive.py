@@ -8,7 +8,7 @@ import sys
 import tempfile
 import threading
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from xml.etree import ElementTree
 
@@ -29,6 +29,7 @@ ADDRESS = re.compile(r"0x[0-9a-fA-F]{40}")
 RELEASE = "core-sepolia-20261103"
 COLLECTION = "0xc4c7982657f00509548f3a3a41db7fa439a6856b"
 STAKING = "0x50fd1780526c3186a0c037c7622203bc4fb611ca"
+ZERO_BURN_BLOCK = 12067109  # First published checkpoint of this deployment.
 TOPICS = {
     "wallet": "0x8a9b1a009a32cc0082d2270e9033429b8e1aa3235e7b8198b013f603116a3c87",
     "staking": "0x47dc7fa0b474cf75263255e0530e84606f909e3099ad0d06bd67883467333339",
@@ -214,6 +215,37 @@ def read_merges(snapshot, providers=None, previous=None):
         params["cursor"] = cursor
     proofs = list(events.values())
     require(len(proofs) == missing, "Event feed does not cover the onchain burn count")
+    return prior_events + verified_events(proofs, providers)
+
+
+def block_time(header):
+    return datetime.fromtimestamp(int(header["timestamp"], 16), timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
+
+
+def receipt_event(proof, receipt, header):
+    item, custody, block_hash = proof
+    if custody is not None:
+        confirm_merge(item, custody, block_hash, receipt, header)
+        return item
+    # Every burn emits the collection event. Staking also emits a wrapper event;
+    # use its log index when present so shared stage links agree with the player feed.
+    item = {**item, "at": block_time(header)}
+    confirm_merge(item, "wallet", block_hash, receipt, header)
+    wrappers = []
+    for log in receipt["logs"]:
+        topics, data = log.get("topics", []), log.get("data", "")
+        if (log["address"].lower() == STAKING and len(topics) == 4 and topics[0].lower() == TOPICS["staking"]
+                and int(topics[2], 16) == int(COLLECTION, 16) and int(topics[3], 16) == item["survivor"]
+                and len(data) == 194 and int(data[2:66], 16) == item["donor"]):
+            wrappers.append(int(log["logIndex"], 16))
+    require(len(wrappers) <= 1, "Ambiguous staking event")
+    if wrappers:
+        item = {**item, "logIndex": wrappers[0]}
+        confirm_merge(item, "staking", block_hash, receipt, header)
+    return item
+
+
+def verified_events(proofs, providers):
 
     def verify_group(group):
         calls = []
@@ -225,23 +257,81 @@ def read_merges(snapshot, providers=None, previous=None):
         for endpoint in providers:
             try:
                 results = rpc_batch(endpoint, calls)
-                for i, (item, custody, block_hash) in enumerate(group):
-                    confirm_merge(item, custody, block_hash, results[2 * i], results[2 * i + 1])
-                return
+                return [receipt_event(proof, results[2 * i], results[2 * i + 1]) for i, proof in enumerate(group)]
             except (ValueError, KeyError, TypeError, requests.RequestException) as exc:
                 failure = exc
         if len(group) > 1:
             middle = len(group) // 2
-            verify_group(group[:middle])
-            verify_group(group[middle:])
-            return
+            return verify_group(group[:middle]) + verify_group(group[middle:])
         item = group[0][0]
         raise ValueError(f"No canonical RPC confirmed {item['tx']} at block {item['block']}: {failure}") from failure
 
-    print(f"Verifying {len(proofs)} new merge receipts after block {boundary}.", flush=True)
+    print(f"Verifying {len(proofs)} new merge receipts.", flush=True)
     with ThreadPoolExecutor(max_workers=4) as pool:
-        list(pool.map(verify_group, (proofs[i:i + 8] for i in range(0, len(proofs), 8))))
-    return prior_events + sorted((p[0] for p in proofs), key=lambda event: (event["block"], event["logIndex"]))
+        groups = pool.map(verify_group, (proofs[i:i + 8] for i in range(0, len(proofs), 8)))
+        return sorted((event for group in groups for event in group), key=lambda e: (e["block"], e["logIndex"]))
+
+
+def chain_snapshot():
+    for endpoint in RPCS:
+        try:
+            header, network = rpc_batch(endpoint, [("eth_getBlockByNumber", ["finalized", False]), ("eth_chainId", [])])
+            require(int(network, 16) == CHAIN and HASH.fullmatch(header["hash"]), "Invalid finalized Sepolia block")
+            block = header["number"]
+            counts = rpc_batch(endpoint, [("eth_call", [{"to": COLLECTION, "data": selector}, block])
+                                          for selector in ("0x18160ddd", "0xd89135cd")])
+            require(all(HASH.fullmatch(n) for n in counts), "Invalid contract supply")
+            live, burned = [int(n, 16) for n in counts]
+            require(live + burned == 9999, "Unexpected issued supply for the pinned collection")
+            return {
+                "release": {"id": RELEASE},
+                "deployment": {"components": {"collection": {"address": COLLECTION}, "staking": {"address": STAKING}}},
+                "chain": {"safeThroughBlock": int(block, 16), "safeBlockHash": header["hash"],
+                          "safeBlockTimestamp": block_time(header)},
+                "nft": {"issued": live + burned, "live": live, "burned": burned, "maximumLevel": 10},
+            }
+        except (ValueError, KeyError, TypeError, requests.RequestException):
+            continue
+    raise ValueError("No archive RPC returned a finalized block and matching collection supply")
+
+
+def read_chain_merges(snapshot, providers, previous):
+    through = int(snapshot["chain"]["safeThroughBlock"])
+    start = previous["safeBlock"] if previous else ZERO_BURN_BLOCK
+    prior_events = previous["events"] if previous else []
+    expected = int(snapshot["nft"]["burned"]) - len(prior_events)
+    require(expected >= 0 and through >= start, "Chain checkpoint moved backwards")
+    if not expected:
+        return prior_events
+    events = {}
+    for first in range(start + 1, through + 1, 1024):
+        last = min(first + 1023, through)
+        query = {"address": COLLECTION, "topics": [TOPICS["wallet"]], "fromBlock": hex(first), "toBlock": hex(last)}
+        for endpoint in providers:
+            try:
+                logs = rpc(endpoint, "eth_getLogs", [query])
+                require(isinstance(logs, list), "Invalid collection log response")
+                break
+            except (ValueError, KeyError, TypeError, requests.RequestException):
+                continue
+        else:
+            raise ValueError(f"Unable to read collection logs at blocks {first} to {last}")
+        for log in logs:
+            topics, data = log["topics"], log["data"]
+            block, pos = int(log["blockNumber"], 16), int(log["logIndex"], 16)
+            tx, block_hash = log["transactionHash"].lower(), log["blockHash"].lower()
+            require(not log.get("removed") and log["address"].lower() == COLLECTION
+                    and len(topics) == 3 and topics[0].lower() == TOPICS["wallet"] and all(HASH.fullmatch(t) for t in topics)
+                    and re.fullmatch(r"0x[\da-fA-F]{128}", data) and first <= block <= last and pos >= 0
+                    and HASH.fullmatch(tx) and HASH.fullmatch(block_hash), "Unexpected collection log")
+            item = {"survivor": int(topics[1], 16), "donor": int(topics[2], 16), "level": int(data[2:66], 16),
+                    "block": block, "logIndex": pos, "tx": tx}
+            key = (tx, pos)
+            proof = (item, None, block_hash)
+            require(key not in events or events[key] == proof, "Conflicting collection logs")
+            events[key] = proof
+    require(len(events) == expected, "Collection logs do not match the onchain burn count")
+    return prior_events + verified_events(list(events.values()), providers)
 
 
 def validate_history(events, issued, burned, live, max_level):
@@ -332,8 +422,8 @@ def cached_portrait(previous, token, burns):
     return record
 
 
-def refresh():
-    snapshot = api("economy/state")
+def refresh(onchain=False):
+    snapshot = chain_snapshot() if onchain else api("economy/state")
     collection = snapshot["deployment"]["components"]["collection"]["address"].lower()
     release = snapshot["release"]["id"]
     safe_block, block_hash = int(snapshot["chain"]["safeThroughBlock"]), snapshot["chain"]["safeBlockHash"]
@@ -344,13 +434,17 @@ def refresh():
     if manifest.exists():
         previous = json.loads(manifest.read_text(encoding="utf-8"))
         require(previous["schemaVersion"] == 1 and previous["chainId"] == CHAIN
-                and previous["collection"] == collection and previous["releaseId"] == release
-                and previous["safeBlock"] <= safe_block, "Refusing a deployment change or older snapshot")
+                and previous["collection"] == collection and previous["releaseId"] == release, "Deployment changed")
         validate_history(previous["events"], previous["issued"], previous["burned"], previous["live"], 10)
+        if onchain and previous["safeBlock"] > safe_block:
+            canonical_providers(previous["safeBlock"], previous["safeBlockHash"], counts=previous, as_of=previous["asOf"])
+            print("Finality has not reached the previous verified checkpoint yet.")
+            return
+        require(previous["safeBlock"] <= safe_block, "Refusing an older snapshot")
     utc_time(snapshot["chain"]["safeBlockTimestamp"])
     providers = canonical_providers(safe_block, block_hash, previous, snapshot["nft"],
                                     snapshot["chain"]["safeBlockTimestamp"])
-    events = read_merges(snapshot, providers, previous)
+    events = (read_chain_merges if onchain else read_merges)(snapshot, providers, previous)
     burns = validate_history(events, issued, burned, live, int(snapshot["nft"]["maximumLevel"]))
     tokens = sorted(set(burns) | {event["survivor"] for event in events} | {1, 8923, 7453, 7458})
     portraits = {}
@@ -413,4 +507,6 @@ if __name__ == "__main__":
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except OSError:
             sys.exit("Cannot acquire the archive refresh lock. Check for an active refresh.")
-        refresh()
+        if sys.argv[1:] not in ([], ["--onchain"]):
+            sys.exit("Usage: refresh_archive.py [--onchain]")
+        refresh(onchain=bool(sys.argv[1:]))
