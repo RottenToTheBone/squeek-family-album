@@ -1,7 +1,13 @@
 name: Publish family album
+run-name: ${{ inputs.clock_run && format('Refresh family album · clock {0}', inputs.clock_run) || 'Publish family album' }}
 
 on:
   workflow_dispatch:
+    inputs:
+      clock_run:
+        description: Run ID of the hosted fallback clock, if used
+        required: false
+        type: string
   schedule:
     - cron: '17 * * * *'
     - cron: '47 * * * *'
@@ -37,12 +43,14 @@ jobs:
           /usr/bin/python3 -Bu scripts/refresh_archive.py --onchain
       - name: Compare the candidate with the site actually deployed
         id: candidate
+        env:
+          CLOCK_RUN: ${{ inputs.clock_run }}
         run: |
           git add -- dist/data/current.json dist/current-art/
           tree=$(git write-tree)
           site_tree=$(git rev-parse "$tree:dist")
           publish=true
-          if [[ "$GITHUB_EVENT_NAME" == schedule ]]; then
+          if [[ "$GITHUB_EVENT_NAME" == schedule || -n "$CLOCK_RUN" ]]; then
             deployed=$(curl --max-time 10 --max-filesize 100 -fsS 'https://squeek.machinepaystack.com/data/site-revision.txt' || true)
             if [[ "$deployed" == "$site_tree" ]] && git diff --cached --quiet; then publish=false; fi
           fi

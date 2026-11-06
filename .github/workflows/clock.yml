@@ -1,0 +1,69 @@
+name: Family album cloud clock
+run-name: Family album clock · ${{ github.run_number }}
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+# Only one timer can run at a time. A duplicate start cannot multiply the clock.
+concurrency:
+  group: family-album-cloud-clock
+  cancel-in-progress: false
+
+jobs:
+  tick:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # GitHub holds this job for 30 minutes before assigning it a runner.
+    environment: family-album-clock
+    permissions:
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Verify the wait and arm the next tick
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="repos/$GITHUB_REPOSITORY"
+          minutes=$(gh api "$api/environments/family-album-clock" --jq '[.protection_rules[] | select(.type == "wait_timer") | .wait_timer] | first // 0')
+          created=$(gh api "$api/actions/runs/$GITHUB_RUN_ID" --jq .created_at)
+          elapsed=$(( $(date -u +%s) - $(date -u -d "$created" +%s) ))
+          if [[ "$minutes" != 30 ]] || (( elapsed < 1800 )); then
+            echo 'The protected 30-minute wait did not elapse. Stopping the clock.'
+            exit 1
+          fi
+          state=$(gh api "$api/actions/workflows/clock.yml" --jq .state)
+          if [[ "$state" != active ]]; then
+            echo 'Clock disabled.'
+            exit 1
+          fi
+          echo "GitHub released this tick after $elapsed seconds."
+          for attempt in 1 2 3; do
+            if gh api "$api/actions/workflows/clock.yml/runs?branch=main&per_page=20" > "$RUNNER_TEMP/clock-runs.json"; then
+              if jq -e --argjson id "$GITHUB_RUN_ID" 'any(.workflow_runs[]; .id > $id and .status != "completed")' "$RUNNER_TEMP/clock-runs.json" > /dev/null; then
+                echo 'Another clock tick is already queued.'
+                exit 0
+              fi
+              if gh workflow run clock.yml --repo "$GITHUB_REPOSITORY" --ref main; then exit 0; fi
+            fi
+            sleep "$((5 * attempt))"
+          done
+          exit 1
+      - name: Refresh only when another recent run has not covered this tick
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="repos/$GITHUB_REPOSITORY/actions/workflows/pages.yml/runs?branch=main&per_page=25"
+          recent=$(date -u -d '25 minutes ago' +%FT%TZ)
+          active=$(date -u -d '60 minutes ago' +%FT%TZ)
+          gh api "$api" > "$RUNNER_TEMP/publish-runs.json"
+          if jq -e --arg recent "$recent" --arg active "$active" 'any(.workflow_runs[];
+            (.conclusion == "success" and .created_at >= $recent) or
+            (.status != "completed" and .created_at >= $active))' "$RUNNER_TEMP/publish-runs.json" > /dev/null; then
+            echo 'A recent or active publication already covers this tick.'
+            exit 0
+          fi
+          gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref main -f clock_run="$GITHUB_RUN_ID"
