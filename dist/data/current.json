@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-06T20:49:24.000Z",
-  "safeBlock": 12079031,
-  "safeBlockHash": "0x6db46ac91b2b5e3fcb83f02c56076eb0017ddf55c5cee709c7593a30a5ca1e98",
+  "asOf": "2026-11-06T21:21:24.000Z",
+  "safeBlock": 12079188,
+  "safeBlockHash": "0x88aebda1817f8b513153268327b9f363ec2b40de17c8c3765b7000f8adec661d",
   "issued": 9999,
-  "burned": 1746,
-  "live": 8253,
+  "burned": 1747,
+  "live": 8252,
   "events": [
     {
       "survivor": 942,
@@ -15723,6 +15723,15 @@
       "logIndex": 10,
       "tx": "0xd07ee39cd17650c3757e01ba284080049aae4569f542b258e914b74129cf73af",
       "at": "2026-11-06T20:45:48.000Z"
+    },
+    {
+      "survivor": 4402,
+      "donor": 6624,
+      "level": 2,
+      "block": 12079053,
+      "logIndex": 303,
+      "tx": "0x01aed45c2003dc4e00f24eec2645a79fb7e15250ec41cc06513eb24840b1a528",
+      "at": "2026-11-06T20:54:12.000Z"
     }
   ],
   "portraits": {
@@ -29761,6 +29770,14 @@
       "sha256": "c46140f5f32905d9d63de63024a7da3e26c6c3e9923686cb8a1f0a9e445195fd",
       "palette": "Acid Lime"
     },
+    "4402": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/4402.svg",
+      "block": 12079188,
+      "source": "chain",
+      "sha256": "f7eced399afa090d85f875994eb93aad2ff76f7c8d98194115a1c0335c23400f",
+      "palette": "Ice White",
+      "pack": "current-packs/34.json"
+    },
     "4418": {
       "file": "current-art/4418.svg",
       "block": 12076818,
@@ -35089,6 +35106,14 @@
       "source": "chain",
       "sha256": "6d84b6d38b3d3ceb1534e73f27ac16231dfc1ad3d7fe9c56080a71bc66e3a44d",
       "palette": "Spectral RGB"
+    },
+    "6624": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/6624.svg",
+      "block": 12079052,
+      "source": "archive",
+      "sha256": "0b83a9572048b12f22e2ef3d335ccf87b78fe5e2e92eb1cafbb8fae04e87f79c",
+      "palette": "Orange CRT",
+      "pack": "current-packs/51.json"
     },
     "6625": {
       "file": "current-art/6625.svg",
