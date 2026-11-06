@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-06T13:47:00.000Z",
-  "safeBlock": 12076946,
-  "safeBlockHash": "0x1f7a0e70e6103eed69b7d19901dc318f074e4d7dc7df4ad163b7e74607fdb229",
+  "asOf": "2026-11-06T14:44:36.000Z",
+  "safeBlock": 12077231,
+  "safeBlockHash": "0x7895e617e99e7cd88515356b5981881e9ccd0944831b56595d8b97a4fc630789",
   "issued": 9999,
-  "burned": 1596,
-  "live": 8403,
+  "burned": 1631,
+  "live": 8368,
   "events": [
     {
       "survivor": 942,
@@ -14373,6 +14373,321 @@
       "logIndex": 35,
       "tx": "0xe60125f5869f83b5b0d8a80a826df5469ac70c30ea1e4cf937a6b7093494721d",
       "at": "2026-11-06T13:43:48.000Z"
+    },
+    {
+      "survivor": 6099,
+      "donor": 6100,
+      "level": 2,
+      "block": 12076953,
+      "logIndex": 84,
+      "tx": "0x835dd11e8a7bb21ca1883fffc43a4d7e9d73fa65d996c6c9c8301cde0ed78e45",
+      "at": "2026-11-06T13:48:24.000Z"
+    },
+    {
+      "survivor": 3284,
+      "donor": 3280,
+      "level": 2,
+      "block": 12076962,
+      "logIndex": 253,
+      "tx": "0x3d32233211d645c121292f8ba0d55296a08161fd3f0c5874632b5a6e24760eb9",
+      "at": "2026-11-06T13:50:12.000Z"
+    },
+    {
+      "survivor": 2916,
+      "donor": 2917,
+      "level": 2,
+      "block": 12076963,
+      "logIndex": 2,
+      "tx": "0xb23c3a08dac7182979492baae1368c1a6cfd579082dc421f37bec8db623bc563",
+      "at": "2026-11-06T13:50:24.000Z"
+    },
+    {
+      "survivor": 6102,
+      "donor": 6101,
+      "level": 2,
+      "block": 12076963,
+      "logIndex": 34,
+      "tx": "0x7fcb45bcce732a853a0ce5defe840a29c74de45db541ed2569f54a032ec66ffb",
+      "at": "2026-11-06T13:50:24.000Z"
+    },
+    {
+      "survivor": 2130,
+      "donor": 2132,
+      "level": 2,
+      "block": 12076963,
+      "logIndex": 88,
+      "tx": "0xe7de278f2849ea088b105ef075b3e313eb22ae79121ea730b587c7bd5fc09d30",
+      "at": "2026-11-06T13:50:24.000Z"
+    },
+    {
+      "survivor": 5354,
+      "donor": 5355,
+      "level": 2,
+      "block": 12076965,
+      "logIndex": 71,
+      "tx": "0x48f8565812e669557113742920b8fabcb740073efe37743a04e85b6f003e53a3",
+      "at": "2026-11-06T13:50:48.000Z"
+    },
+    {
+      "survivor": 3289,
+      "donor": 3286,
+      "level": 2,
+      "block": 12076969,
+      "logIndex": 114,
+      "tx": "0xa6d17526aa5282745e43b8bea884e24375c653140925b86d0a026af672a99bfd",
+      "at": "2026-11-06T13:51:36.000Z"
+    },
+    {
+      "survivor": 3921,
+      "donor": 3923,
+      "level": 2,
+      "block": 12076970,
+      "logIndex": 289,
+      "tx": "0xeeaa149d4fa3936d294e93fa9f65c819e0c08c37c19ee0878a5f1dc2a49454f2",
+      "at": "2026-11-06T13:51:48.000Z"
+    },
+    {
+      "survivor": 3283,
+      "donor": 3285,
+      "level": 2,
+      "block": 12076978,
+      "logIndex": 199,
+      "tx": "0xf20fc772ba41107c475f741d7751f6f3db70eeb6093ee59980451487c2d42e08",
+      "at": "2026-11-06T13:53:24.000Z"
+    },
+    {
+      "survivor": 3290,
+      "donor": 3291,
+      "level": 2,
+      "block": 12076979,
+      "logIndex": 79,
+      "tx": "0x0721ac0ec87045457c40a397b6ef8d00cda4f98f9eb072cf0a654bfe4e82bc5e",
+      "at": "2026-11-06T13:53:36.000Z"
+    },
+    {
+      "survivor": 8285,
+      "donor": 8284,
+      "level": 2,
+      "block": 12076981,
+      "logIndex": 52,
+      "tx": "0x661eca26070570646055d6c540dca6d79fd1d0950540957717031254d2c04a29",
+      "at": "2026-11-06T13:54:00.000Z"
+    },
+    {
+      "survivor": 6726,
+      "donor": 6727,
+      "level": 2,
+      "block": 12076983,
+      "logIndex": 73,
+      "tx": "0xc3f29d9dc96b3f71500604187b380b31b3beb6348e04b34454e5aeca0af14550",
+      "at": "2026-11-06T13:54:24.000Z"
+    },
+    {
+      "survivor": 5627,
+      "donor": 5629,
+      "level": 2,
+      "block": 12076985,
+      "logIndex": 51,
+      "tx": "0xed00deb2107e9e244feb21df99dfeaee41234c8a1ddceca73c90edb3547994ac",
+      "at": "2026-11-06T13:54:48.000Z"
+    },
+    {
+      "survivor": 3922,
+      "donor": 3924,
+      "level": 2,
+      "block": 12076989,
+      "logIndex": 116,
+      "tx": "0xf9db7ae26ccced784d9612ac7276160a644200ec29c1b4c8360b9029e8ddf71f",
+      "at": "2026-11-06T13:55:36.000Z"
+    },
+    {
+      "survivor": 8609,
+      "donor": 8606,
+      "level": 2,
+      "block": 12076990,
+      "logIndex": 63,
+      "tx": "0xdb538535af168cda23b4b45837b580df1711d5ff9bd5bc7fbe2871126022cf09",
+      "at": "2026-11-06T13:55:48.000Z"
+    },
+    {
+      "survivor": 3287,
+      "donor": 3288,
+      "level": 2,
+      "block": 12076994,
+      "logIndex": 27,
+      "tx": "0x0546afedf9c4ddce678c7b69ee1863aa40ab2215e985f44558c8068bbd82acf7",
+      "at": "2026-11-06T13:56:36.000Z"
+    },
+    {
+      "survivor": 5628,
+      "donor": 5630,
+      "level": 2,
+      "block": 12076996,
+      "logIndex": 81,
+      "tx": "0x4980d1a0a0922fbdadc29573553b773b24b1ab285de7379b83014fc59b46faa0",
+      "at": "2026-11-06T13:57:00.000Z"
+    },
+    {
+      "survivor": 7964,
+      "donor": 7965,
+      "level": 2,
+      "block": 12077012,
+      "logIndex": 54,
+      "tx": "0xd738a58ea7461a2df823b82d2503c6f95c8644c7bbce6a80013b381f1c93346e",
+      "at": "2026-11-06T14:00:12.000Z"
+    },
+    {
+      "survivor": 5065,
+      "donor": 5066,
+      "level": 2,
+      "block": 12077016,
+      "logIndex": 177,
+      "tx": "0x5fef5b0f3bc2dedb11b10b61f45a7270ec02a5832ff2bf383ba02b8af33d0494",
+      "at": "2026-11-06T14:01:00.000Z"
+    },
+    {
+      "survivor": 5067,
+      "donor": 5068,
+      "level": 2,
+      "block": 12077021,
+      "logIndex": 173,
+      "tx": "0xe8fd100169d520a88e001c29d1f76fd59ab4e96a2810083daad17420fdaf04ca",
+      "at": "2026-11-06T14:02:00.000Z"
+    },
+    {
+      "survivor": 7966,
+      "donor": 7967,
+      "level": 2,
+      "block": 12077024,
+      "logIndex": 29,
+      "tx": "0xd309286a85b6b1ee9e5872cc06253fea04b77459143052af2e2cf0150d26909a",
+      "at": "2026-11-06T14:02:36.000Z"
+    },
+    {
+      "survivor": 569,
+      "donor": 571,
+      "level": 2,
+      "block": 12077033,
+      "logIndex": 85,
+      "tx": "0xb960efa103aae83e04750dca97d3d9af16477e01e30c301f52aaffa4b4422b41",
+      "at": "2026-11-06T14:04:24.000Z"
+    },
+    {
+      "survivor": 570,
+      "donor": 572,
+      "level": 2,
+      "block": 12077036,
+      "logIndex": 52,
+      "tx": "0x095b56365fb1ece4a661fe8e002d8a5f89c6a0182d3613ff1790945b7c5ef9c0",
+      "at": "2026-11-06T14:05:00.000Z"
+    },
+    {
+      "survivor": 7540,
+      "donor": 7542,
+      "level": 2,
+      "block": 12077053,
+      "logIndex": 211,
+      "tx": "0xe11b77627e2a10fb8dd6a5d9cfb69c0cee056eb8c69e39ac0945608a1ea8b555",
+      "at": "2026-11-06T14:08:24.000Z"
+    },
+    {
+      "survivor": 341,
+      "donor": 339,
+      "level": 2,
+      "block": 12077067,
+      "logIndex": 163,
+      "tx": "0xe29b35b300255380483a678fd96b0e80ab8a2abbea1e9563b3b0142ce7a374fa",
+      "at": "2026-11-06T14:11:12.000Z"
+    },
+    {
+      "survivor": 7544,
+      "donor": 7545,
+      "level": 2,
+      "block": 12077072,
+      "logIndex": 250,
+      "tx": "0xeebc427758e69b427423947f3af2602f33e0fa469d51e8d62ce2ac74bfda24fd",
+      "at": "2026-11-06T14:12:12.000Z"
+    },
+    {
+      "survivor": 7541,
+      "donor": 7543,
+      "level": 2,
+      "block": 12077092,
+      "logIndex": 254,
+      "tx": "0xafd2c5ec19544e5b26431ec198fb72584b34ef0df2fa49110c673f0fe0ed3373",
+      "at": "2026-11-06T14:16:12.000Z"
+    },
+    {
+      "survivor": 4500,
+      "donor": 4499,
+      "level": 2,
+      "block": 12077140,
+      "logIndex": 90,
+      "tx": "0xd5e22939171ef9849bb2fdd0edba3744eca8ada95686302b20271bb21ab1b506",
+      "at": "2026-11-06T14:26:00.000Z"
+    },
+    {
+      "survivor": 5044,
+      "donor": 5041,
+      "level": 2,
+      "block": 12077148,
+      "logIndex": 182,
+      "tx": "0x6822c9d8490bca4eef756b4135108948cf53a4744f27c7cd9eee9cc064dfefcc",
+      "at": "2026-11-06T14:27:36.000Z"
+    },
+    {
+      "survivor": 5042,
+      "donor": 5043,
+      "level": 2,
+      "block": 12077153,
+      "logIndex": 46,
+      "tx": "0x555a66afc45b2260085bdb74b417e90e191742fd578bc045e46f40ebfacbec97",
+      "at": "2026-11-06T14:28:36.000Z"
+    },
+    {
+      "survivor": 3431,
+      "donor": 3432,
+      "level": 2,
+      "block": 12077188,
+      "logIndex": 174,
+      "tx": "0x2cda04b85953e15f44d468854427cb6c03b59d789bd82a718a452f2949d5ee7f",
+      "at": "2026-11-06T14:35:48.000Z"
+    },
+    {
+      "survivor": 3905,
+      "donor": 3906,
+      "level": 2,
+      "block": 12077217,
+      "logIndex": 123,
+      "tx": "0xf14f67da2084f0aa8aa292d29cc83b1e98b0f1248263d77871121b51479adada",
+      "at": "2026-11-06T14:41:48.000Z"
+    },
+    {
+      "survivor": 2811,
+      "donor": 2812,
+      "level": 2,
+      "block": 12077222,
+      "logIndex": 50,
+      "tx": "0xba1175ba286e0b668bd760d83bd22ec30fefdb399b6c6a7a91770013917e12fb",
+      "at": "2026-11-06T14:42:48.000Z"
+    },
+    {
+      "survivor": 2813,
+      "donor": 2814,
+      "level": 2,
+      "block": 12077226,
+      "logIndex": 65,
+      "tx": "0xa33c85ff6d83b70639e1c8ce6f81313393b192b63b1a9b72ed4e1e7e7e61cb9a",
+      "at": "2026-11-06T14:43:36.000Z"
+    },
+    {
+      "survivor": 5198,
+      "donor": 5200,
+      "level": 2,
+      "block": 12077228,
+      "logIndex": 76,
+      "tx": "0x8fec2a448e472ad39d2aea85ff49a0685e27ae3d5656228ea5fab5c86b346d16",
+      "at": "2026-11-06T14:44:00.000Z"
     }
   ],
   "portraits": {
@@ -15545,6 +15860,20 @@
       "sha256": "b84f23bb6bfbeb0b1214e68fe94ce8feb542c7e573728fec1c2a78ac86979622",
       "palette": "Spectral Ice White"
     },
+    "339": {
+      "file": "current-art/339.svg",
+      "block": 12077066,
+      "source": "archive",
+      "sha256": "ebf342f0f84428f0d5c9707e76fad2e22d7430a9b65a3e1c6f5acedd58874d87",
+      "palette": "Acid Lime"
+    },
+    "341": {
+      "file": "current-art/341.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "3e2a39a00520097fb8849253ce42a280f711c625caaec7e01caac89d94f481c2",
+      "palette": "Void Violet"
+    },
     "347": {
       "file": "current-art/347.svg",
       "block": 12076818,
@@ -16622,6 +16951,34 @@
       "source": "archive",
       "sha256": "cfca9383362c2dd090e3e365f64f39f129c3f931a27726185ea433226e6743f3",
       "palette": "Spectral Ice White"
+    },
+    "569": {
+      "file": "current-art/569.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "29338446e5f19ba5f3290ae4571ba89e7cd17e3c2a877b897ad3b7945bd8f737",
+      "palette": "RGB"
+    },
+    "570": {
+      "file": "current-art/570.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "45041610905743deb28cdb1831181aad2c9d9eafa363ef24fba1dd302b9ff5be",
+      "palette": "Hot Magenta"
+    },
+    "571": {
+      "file": "current-art/571.svg",
+      "block": 12077032,
+      "source": "archive",
+      "sha256": "e06bf5948fc6dd131d8dfd219eff01c00562035da6778a37ceb6002e2e408209",
+      "palette": "Spectral Gold"
+    },
+    "572": {
+      "file": "current-art/572.svg",
+      "block": 12077035,
+      "source": "archive",
+      "sha256": "4ebd614aea2e87743d8f8e8ab96156a92583ca67f5bbb2279174a0778cf933fb",
+      "palette": "Ice White"
     },
     "577": {
       "file": "current-art/577.svg",
@@ -21334,12 +21691,26 @@
       "sha256": "b0549282bd316e0a1441dc90597a18d23b22dc95066bb4bc105b63ae7023705d",
       "palette": "Acid Lime"
     },
+    "2130": {
+      "file": "current-art/2130.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "3b307d7eb2475a75bb5ef917aebaee478f08ab73cb1fbcc8879f5903c907568a",
+      "palette": "Acid Lime"
+    },
     "2131": {
       "file": "current-art/2131.svg",
       "block": 12076719,
       "source": "archive",
       "sha256": "c5134c237c5495fcd8093a6dd860e75f7fd610889b16a06215dc96f03c9c4bfa",
       "palette": "Electric Cyan"
+    },
+    "2132": {
+      "file": "current-art/2132.svg",
+      "block": 12076962,
+      "source": "archive",
+      "sha256": "eadcc8c63d13871d60e37d47284972a53c03aa9276c0778dad48c4bc719d1a2b",
+      "palette": "Acid Lime"
     },
     "2133": {
       "file": "current-art/2133.svg",
@@ -22734,6 +23105,34 @@
       "sha256": "498361883861b95aa48802aa27d00703fb7df39d2a4677ffc11c39bdd37ca52b",
       "palette": "Gold"
     },
+    "2811": {
+      "file": "current-art/2811.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "71d03727cd856c1e9f442606bdd2682882017e27aa6c00f79b94cf101f6bf22d",
+      "palette": "Spectral Gold"
+    },
+    "2812": {
+      "file": "current-art/2812.svg",
+      "block": 12077221,
+      "source": "archive",
+      "sha256": "828245e040a6e2ced4216da0dcc9bd3bb1ddd5e5734c37c410dd0d86744ac5b5",
+      "palette": "Spectral Orange CRT"
+    },
+    "2813": {
+      "file": "current-art/2813.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "69c938b62f2fd5ffeec4c64f212a2dd9a4ce466b4b0f84ca24dbd6d83165c19d",
+      "palette": "Spectral Acid Lime"
+    },
+    "2814": {
+      "file": "current-art/2814.svg",
+      "block": 12077225,
+      "source": "archive",
+      "sha256": "e66cf7543938d01e1c60dfdbe76494d3831bf2a47b64e0c3d0ef9640cbda9749",
+      "palette": "RGB"
+    },
     "2817": {
       "file": "current-art/2817.svg",
       "block": 12076818,
@@ -23097,6 +23496,20 @@
       "source": "chain",
       "sha256": "2452f1e5943e57569ac85af79ec88815a1a1cecdd0aafcad2196dfba1b2bca1a",
       "palette": "Spectral Hot Magenta"
+    },
+    "2916": {
+      "file": "current-art/2916.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "7d0a80d90161a3b43131857dd50d246ba13152d4314c49e57f0f7a8c23763a6d",
+      "palette": "Ice White"
+    },
+    "2917": {
+      "file": "current-art/2917.svg",
+      "block": 12076962,
+      "source": "archive",
+      "sha256": "1cf55d967859b504e7abc034714b4b2c5375317ffa1d7ef582135440489e3686",
+      "palette": "Spectral Reactor Red"
     },
     "2918": {
       "file": "current-art/2918.svg",
@@ -24477,6 +24890,76 @@
       "sha256": "0e6220d32973b71a803091b9390223239ad3c32603648a0a1a182678fe640b45",
       "palette": "Spectral Orange CRT"
     },
+    "3280": {
+      "file": "current-art/3280.svg",
+      "block": 12076961,
+      "source": "archive",
+      "sha256": "02664331d29a5e8d7da25f9c6eba5945e9e61e2527debc9187a21c79702e7927",
+      "palette": "Spectral Orange CRT"
+    },
+    "3283": {
+      "file": "current-art/3283.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "fbac9e93c1fcf14075e5beb2da1a4d00e2b356bf7c220cf53ca66779793a6a53",
+      "palette": "Ice White"
+    },
+    "3284": {
+      "file": "current-art/3284.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "44cb163cb50e01b065e58176cf81119828d7798f12ba6ddf5c72cba5d08e595a",
+      "palette": "Gold"
+    },
+    "3285": {
+      "file": "current-art/3285.svg",
+      "block": 12076977,
+      "source": "archive",
+      "sha256": "604e5091dd3b607297fdaf83052fa0224ed4cc077b36b0bd57f95a1e46851aa9",
+      "palette": "Ice White"
+    },
+    "3286": {
+      "file": "current-art/3286.svg",
+      "block": 12076968,
+      "source": "archive",
+      "sha256": "5d411b8dd8c85ade82dd578c7c6a7b081df6feb076a412cc3b311c108a2e7d2f",
+      "palette": "Gold"
+    },
+    "3287": {
+      "file": "current-art/3287.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "ab2ec841d70db5310dfc6a58136df52a27e794d105a23992b30bad6116408864",
+      "palette": "Reactor Red"
+    },
+    "3288": {
+      "file": "current-art/3288.svg",
+      "block": 12076993,
+      "source": "archive",
+      "sha256": "2e4a51d7c2130ba2d1b3804e17e94b60220f2f10f5ecb845069419c114eaa4ea",
+      "palette": "Spectral Gold"
+    },
+    "3289": {
+      "file": "current-art/3289.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "18efcc7a2d74017347acde5db69c5a0f47feab8b97b0d79cecc6b221ab056f85",
+      "palette": "Gold"
+    },
+    "3290": {
+      "file": "current-art/3290.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "ff384e3d52211367418e5bb54da48a6ea598dcf84e338bf807a699ba468400eb",
+      "palette": "Ice White"
+    },
+    "3291": {
+      "file": "current-art/3291.svg",
+      "block": 12076978,
+      "source": "archive",
+      "sha256": "d68d66c32d9259a1547b8548bc6328fcd995e8f169586b0dec0ae2215b388b82",
+      "palette": "Ice White"
+    },
     "3299": {
       "file": "current-art/3299.svg",
       "block": 12076818,
@@ -24777,6 +25260,20 @@
       "source": "chain",
       "sha256": "707c1d442b3951c0a432561ad89ff20a26284545c0ff359cd1bf0f11d3e7d8e0",
       "palette": "Void Violet"
+    },
+    "3431": {
+      "file": "current-art/3431.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "4b2c53b8af43210392b42078133351ff3e453c998b8419db10e84c609aeea835",
+      "palette": "Reactor Red"
+    },
+    "3432": {
+      "file": "current-art/3432.svg",
+      "block": 12077187,
+      "source": "archive",
+      "sha256": "4087b00b801b328990c57f933751b7f8d2fd31f57f0b409864a937ce7076fa2d",
+      "palette": "Spectral Void Violet"
     },
     "3434": {
       "file": "current-art/3434.svg",
@@ -26024,6 +26521,20 @@
       "sha256": "320b72a13ae2f07c359618162cb69e6e39975a0792b1efa8f5f19cbb55c9af02",
       "palette": "Spectral Reactor Red"
     },
+    "3905": {
+      "file": "current-art/3905.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "23ed0d790513042b0481ec1bde479c360782a105c3250193ae319c73e7efb556",
+      "palette": "Orange CRT"
+    },
+    "3906": {
+      "file": "current-art/3906.svg",
+      "block": 12077216,
+      "source": "archive",
+      "sha256": "ca365ed827a55d108bf9b765f56c8be1f30e243a75ee3f4fb13acbf5dec1987c",
+      "palette": "Void Violet"
+    },
     "3907": {
       "file": "current-art/3907.svg",
       "block": 12073751,
@@ -26037,6 +26548,34 @@
       "source": "chain",
       "sha256": "33b65755995d7f257981f36cd651aa9adb3c36346c26f97d95d9cc32187bdd13",
       "palette": "Acid Lime"
+    },
+    "3921": {
+      "file": "current-art/3921.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "962363e11a144d48330a73ef079e80739886ef48493f31a23c5e7691b212b429",
+      "palette": "Spectral Gold"
+    },
+    "3922": {
+      "file": "current-art/3922.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "d9c47c072f733a57af5fbcfce42a2b00aa8a6aa931811db5a2311ed177f591e8",
+      "palette": "RGB"
+    },
+    "3923": {
+      "file": "current-art/3923.svg",
+      "block": 12076969,
+      "source": "archive",
+      "sha256": "7759c57466fdc997457db18ecc4d2e9310ae4f23d9547e79e089dc9f583e8c5f",
+      "palette": "Spectral RGB"
+    },
+    "3924": {
+      "file": "current-art/3924.svg",
+      "block": 12076988,
+      "source": "archive",
+      "sha256": "56990c3c23da9cc48f55a37927c1f99d5646385f2e329f2c858adff0cc727226",
+      "palette": "Electric Cyan"
     },
     "3936": {
       "file": "current-art/3936.svg",
@@ -27557,6 +28096,20 @@
       "sha256": "fa0b48d83cb8f7a489cb940fdc8ae220a2341328f554d0c6b76a7b4083a5ae79",
       "palette": "Spectral Electric Cyan"
     },
+    "4499": {
+      "file": "current-art/4499.svg",
+      "block": 12077139,
+      "source": "archive",
+      "sha256": "a9ed2345e9dd414bec94b3b4955e4bf8d3c3ff624acf4ef536ae80cf1f7432e7",
+      "palette": "Spectral Void Violet"
+    },
+    "4500": {
+      "file": "current-art/4500.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "27d37157ac808aa41afdac67107a915a25d22702e3d3c6327a3059acdd696e7e",
+      "palette": "Spectral Gold"
+    },
     "4501": {
       "file": "current-art/4501.svg",
       "block": 12076048,
@@ -28733,6 +29286,34 @@
       "sha256": "c41b7e5f38201b6fe9b1341f9f736abb7e4b006181f03ababcca26a829526e7c",
       "palette": "Spectral Ice White"
     },
+    "5041": {
+      "file": "current-art/5041.svg",
+      "block": 12077147,
+      "source": "archive",
+      "sha256": "3c13473e3707ba2a22f615a916663683c53d94bab3fce03611b1ca0c60930b38",
+      "palette": "Spectral Hot Magenta"
+    },
+    "5042": {
+      "file": "current-art/5042.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "53653afdf5335b8a9a89beca4f11f4fb90c57033ac056675718a76550a76fc82",
+      "palette": "Electric Cyan"
+    },
+    "5043": {
+      "file": "current-art/5043.svg",
+      "block": 12077152,
+      "source": "archive",
+      "sha256": "cd941790780e84b700ec173caa2118f6c15efb34956dbb6bd06e94a069a4b660",
+      "palette": "Electric Cyan"
+    },
+    "5044": {
+      "file": "current-art/5044.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "75adb32fa0206bd8e8c0cf64e89ba07f4ae6be086c8a55a60d9acc56e89c2265",
+      "palette": "Reactor Red"
+    },
     "5050": {
       "file": "current-art/5050.svg",
       "block": 12075675,
@@ -28781,6 +29362,34 @@
       "source": "archive",
       "sha256": "87282d4f44fa634bd79723317e735589698bcabb0c7854aa51539ba451e21125",
       "palette": "Void Violet"
+    },
+    "5065": {
+      "file": "current-art/5065.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "3161df981f8c6a2c60acd0f638182cc855868438c4247411eef70935eb098dbd",
+      "palette": "Spectral Gold"
+    },
+    "5066": {
+      "file": "current-art/5066.svg",
+      "block": 12077015,
+      "source": "archive",
+      "sha256": "8a2795af7786b17ee81f78e00ebf00db3f423816e0b68914e3f69c95291f676a",
+      "palette": "Spectral Reactor Red"
+    },
+    "5067": {
+      "file": "current-art/5067.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "22510c7fd519440bcdcdd2820809545821c47d9739edd88c089a66a6e2666625",
+      "palette": "Orange CRT"
+    },
+    "5068": {
+      "file": "current-art/5068.svg",
+      "block": 12077020,
+      "source": "archive",
+      "sha256": "b30be4aafdf122cd6a47a4a32159ce208dccfe4f7cb22c52fa72523c21017a71",
+      "palette": "Spectral Electric Cyan"
     },
     "5080": {
       "file": "current-art/5080.svg",
@@ -29005,6 +29614,20 @@
       "source": "archive",
       "sha256": "b966f135e565f8ca11eb7b3212a5519f177d43de354840256068ee4b1b6d3003",
       "palette": "Spectral Hot Magenta"
+    },
+    "5198": {
+      "file": "current-art/5198.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "94ba260cdc3ea760d6190c23d0f07e32e83f5644a70f31b09f3078efb8a21c41",
+      "palette": "Spectral Ice White"
+    },
+    "5200": {
+      "file": "current-art/5200.svg",
+      "block": 12077227,
+      "source": "archive",
+      "sha256": "3fddbba347de6bacee1d798b0ef404f0f017408228bc0e28025ae37fadec5155",
+      "palette": "Ice White"
     },
     "5220": {
       "file": "current-art/5220.svg",
@@ -29418,6 +30041,20 @@
       "source": "archive",
       "sha256": "276dc330e43576ba69779c399974e4676bc9e08d6ed5d7cf70f14d7f81490cb9",
       "palette": "Void Violet"
+    },
+    "5354": {
+      "file": "current-art/5354.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "a9de1abce0c00331ad6879d020e1f526a6a076b5bfc37a1d74a4eae41c2dd7c1",
+      "palette": "Spectral Orange CRT"
+    },
+    "5355": {
+      "file": "current-art/5355.svg",
+      "block": 12076964,
+      "source": "archive",
+      "sha256": "bc8b5659c7ea7e2f6910d5453d7c3daf36addd3e3c727842c57594c931b5f3a5",
+      "palette": "Orange CRT"
     },
     "5360": {
       "file": "current-art/5360.svg",
@@ -29957,6 +30594,34 @@
       "source": "archive",
       "sha256": "7d294bf50187b6516481385c96e4b51433bc737344cb478641e2e9ae1068e1b2",
       "palette": "RGB"
+    },
+    "5627": {
+      "file": "current-art/5627.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "9e1905aab1c2e7447c950363f337b4715b0dbd7d505b350bdd2f72f656419977",
+      "palette": "Hot Magenta"
+    },
+    "5628": {
+      "file": "current-art/5628.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "110f53d966b516b7b7eb993224d66368e7b362a483974b1a5c0c081d125e8636",
+      "palette": "Gold"
+    },
+    "5629": {
+      "file": "current-art/5629.svg",
+      "block": 12076984,
+      "source": "archive",
+      "sha256": "c000bcb0d26ad752d4a287d2bf0482a5a4c5489f8c7273c9b9ee28599cdff888",
+      "palette": "Reactor Red"
+    },
+    "5630": {
+      "file": "current-art/5630.svg",
+      "block": 12076995,
+      "source": "archive",
+      "sha256": "70cae2ab9da86dff9551673a5110546868dac2c8c980f7d3512d873768deb7be",
+      "palette": "Spectral Gold"
     },
     "5632": {
       "file": "current-art/5632.svg",
@@ -31084,6 +31749,34 @@
       "source": "archive",
       "sha256": "e2949204b03a02557eae8527f23da14d8b24483e23ca46dde33dba82ab3ddeb3",
       "palette": "Spectral Orange CRT"
+    },
+    "6099": {
+      "file": "current-art/6099.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "64c6538f7d4aa8e3fd211a0b6e2ed5bf2f9c4eb92c6acaa8336b7377f77d7cdd",
+      "palette": "Spectral Acid Lime"
+    },
+    "6100": {
+      "file": "current-art/6100.svg",
+      "block": 12076952,
+      "source": "archive",
+      "sha256": "9fdcf7eb6ee76967fcc6c50ae49d66184dcc21f80c92b67df572ccaa94b6bc23",
+      "palette": "Hot Magenta"
+    },
+    "6101": {
+      "file": "current-art/6101.svg",
+      "block": 12076962,
+      "source": "archive",
+      "sha256": "0ce7c60ec863a2776dac794cf27f513038f32b29a2a5d7be736caa1249aa7f4a",
+      "palette": "Spectral Electric Cyan"
+    },
+    "6102": {
+      "file": "current-art/6102.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "8fd693a5bee917b658679539e47ae90376748fbe31b7ac3ccaa44470756db8fe",
+      "palette": "Spectral Electric Cyan"
     },
     "6115": {
       "file": "current-art/6115.svg",
@@ -32526,6 +33219,20 @@
       "source": "archive",
       "sha256": "daaed0da7690a0a08e63880d921ea3b2e8784e2faf81a46e07e50e82e33f9de3",
       "palette": "Spectral Gold"
+    },
+    "6726": {
+      "file": "current-art/6726.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "285aafd48e58634c7cb626429091cfa77b86dfc8cddbc8b5570a5e3d8cf4f236",
+      "palette": "Acid Lime"
+    },
+    "6727": {
+      "file": "current-art/6727.svg",
+      "block": 12076982,
+      "source": "archive",
+      "sha256": "84e6346ab67bd7d9807e4324067935e0deb3613f0aa4edee0c941a747b74d120",
+      "palette": "Void Violet"
     },
     "6731": {
       "file": "current-art/6731.svg",
@@ -34109,6 +34816,48 @@
       "sha256": "32ca16cb2b7fde80920bc67d224e0412f310fe009e97aaee0dad7199cd8f2a6b",
       "palette": "Spectral Electric Cyan"
     },
+    "7540": {
+      "file": "current-art/7540.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "869ce678653c37f62750551c0652b549233cdb4c6f6ee8f3cb8d5bcfed380181",
+      "palette": "Spectral Ice White"
+    },
+    "7541": {
+      "file": "current-art/7541.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "5c5f6a8ab0b3dabad43841130cd4d4d0d5df3da10d1406a19c5205c7b4ad6b70",
+      "palette": "Orange CRT"
+    },
+    "7542": {
+      "file": "current-art/7542.svg",
+      "block": 12077052,
+      "source": "archive",
+      "sha256": "600dc6324143d5b90728063d112e6f74733dab0a415335fbf069bab8e07264de",
+      "palette": "Spectral Reactor Red"
+    },
+    "7543": {
+      "file": "current-art/7543.svg",
+      "block": 12077091,
+      "source": "archive",
+      "sha256": "08eabdbd6ee7399b3b7763ffc98834af2d85adadd3fc33230116868b3db72822",
+      "palette": "Acid Lime"
+    },
+    "7544": {
+      "file": "current-art/7544.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "f5e4bf23f09610397bddba014d516bf54ec3750c956b797c5eca56087f49bf22",
+      "palette": "Orange CRT"
+    },
+    "7545": {
+      "file": "current-art/7545.svg",
+      "block": 12077071,
+      "source": "archive",
+      "sha256": "af15feddc8d2e9de9f481b776de0485a11201a3c8738a9312fd94d75f66a9860",
+      "palette": "RGB"
+    },
     "7546": {
       "file": "current-art/7546.svg",
       "block": 12076818,
@@ -34984,6 +35733,34 @@
       "sha256": "955751b781be954de469bd267e10d2de3d3600b25f8ce8c0ac8630b4930cae23",
       "palette": "Hot Magenta"
     },
+    "7964": {
+      "file": "current-art/7964.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "a295633b6621620cb74c1bb4d9cc2b9c6b4c59b56ecadbf2845af5485f64a385",
+      "palette": "Reactor Red"
+    },
+    "7965": {
+      "file": "current-art/7965.svg",
+      "block": 12077011,
+      "source": "archive",
+      "sha256": "edd3e97fd572e4fe46f6359af66e663a04d05ca18f3767f3a49d0cd0c9533501",
+      "palette": "Spectral Orange CRT"
+    },
+    "7966": {
+      "file": "current-art/7966.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "67fd9bd67d561f912dcbdeab2bee6762a43d191185297ddeb131b6e98976410c",
+      "palette": "Spectral Electric Cyan"
+    },
+    "7967": {
+      "file": "current-art/7967.svg",
+      "block": 12077023,
+      "source": "archive",
+      "sha256": "2f2abfe75c32838c9e6ef36f41fdbc970e1ad9aa2cae54088cc287ca7dd12581",
+      "palette": "Spectral Hot Magenta"
+    },
     "7976": {
       "file": "current-art/7976.svg",
       "block": 12076818,
@@ -35571,6 +36348,20 @@
       "source": "archive",
       "sha256": "d8a1596c5b42aba7d6ef7ef5754b5a68dadfd79e36f1a67ad7c1602cd5b6fe39",
       "palette": "Void Violet"
+    },
+    "8284": {
+      "file": "current-art/8284.svg",
+      "block": 12076980,
+      "source": "archive",
+      "sha256": "15090af1bd0e8c428284e6dc93191be6aba94d08c00773d15c83452c5d1e8d79",
+      "palette": "Spectral Electric Cyan"
+    },
+    "8285": {
+      "file": "current-art/8285.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "4077571fd87d4a47f146040a12444dbfa6fbfa7597afe3563d4dfde97c78081e",
+      "palette": "Acid Lime"
     },
     "8311": {
       "file": "current-art/8311.svg",
@@ -36174,6 +36965,13 @@
       "sha256": "7cbdf8ce8172377b987c50f329dec02a00c67d25c6b681f5e6eebaa9efea532f",
       "palette": "Spectral Void Violet"
     },
+    "8606": {
+      "file": "current-art/8606.svg",
+      "block": 12076989,
+      "source": "archive",
+      "sha256": "5ec1d6f44293d6718be4eadabdfb7ff41a54aef344ffe94ad256c7b779953979",
+      "palette": "Gold"
+    },
     "8607": {
       "file": "current-art/8607.svg",
       "block": 12070416,
@@ -36187,6 +36985,13 @@
       "source": "chain",
       "sha256": "c049f094c4626f093710193ec209ff8c5957beab494abc78c218c8173375d10f",
       "palette": "Gold"
+    },
+    "8609": {
+      "file": "current-art/8609.svg",
+      "block": 12077231,
+      "source": "chain",
+      "sha256": "6220f7ffa27f0d923821915e5b776cf258d0d09bf96e12aecd3234ff06b97deb",
+      "palette": "Hot Magenta"
     },
     "8614": {
       "file": "current-art/8614.svg",
