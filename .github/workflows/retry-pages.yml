@@ -1,0 +1,63 @@
+name: Recover a failed Pages deployment
+
+on:
+  workflow_run:
+    workflows: [Publish family album]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: ID of the latest publisher to check for a one-time deployment retry
+        type: string
+        required: true
+
+permissions: {}
+
+jobs:
+  recover:
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event.workflow_run.conclusion == 'failure' &&
+        github.event.workflow_run.run_attempt == 1 &&
+        github.event.workflow_run.head_repository.full_name == github.repository))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    concurrency:
+      group: family-album-recovery-${{ inputs.run_id || github.event.workflow_run.id }}
+      cancel-in-progress: false
+    steps:
+      - name: Re-run only the failed deployment of an already checked artifact
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_RUN: ${{ inputs.run_id || github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          [[ "$TARGET_RUN" =~ ^[0-9]+$ ]]
+          api="repos/$GITHUB_REPOSITORY/actions"
+          expected=$(gh api "$api/workflows/pages.yml" --jq .id)
+          eligible() {
+            gh api "$api/runs/$TARGET_RUN" | jq -e --arg repo "$GITHUB_REPOSITORY" --argjson workflow "$expected" '
+              .workflow_id == $workflow and .head_repository.full_name == $repo and .head_branch == "main" and
+              .status == "completed" and .conclusion == "failure" and .run_attempt == 1' > /dev/null
+          }
+          if ! eligible; then echo 'Run does not qualify for deployment recovery.'; exit 0; fi
+          gh api "$api/runs/$TARGET_RUN/attempts/1/jobs?per_page=50" > "$RUNNER_TEMP/first-attempt.json"
+          if ! jq -e 'any(.jobs[]; .name == "package" and .conclusion == "success") and
+            any(.jobs[]; .name == "deploy" and .conclusion == "failure")' "$RUNNER_TEMP/first-attempt.json" > /dev/null; then
+            echo 'The candidate did not pass validation or its deployment did not fail.'
+            exit 0
+          fi
+          # Give the Pages backend time to release the previous deployment.
+          sleep 90
+          latest=$(gh api "$api/workflows/pages.yml/runs?branch=main&per_page=1" --jq '.workflow_runs[0].id')
+          if [[ "$latest" != "$TARGET_RUN" ]] || ! eligible; then
+            echo 'A newer publication or retry has superseded this run.'
+            exit 0
+          fi
+          gh api --method POST "$api/runs/$TARGET_RUN/rerun-failed-jobs"
+          echo "Requested a fresh deployment attempt for verified run $TARGET_RUN."

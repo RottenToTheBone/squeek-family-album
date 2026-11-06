@@ -114,10 +114,6 @@ jobs:
     steps:
       - name: Publish the static archive
         id: site
-        continue-on-error: true
-        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
-      - name: Retry the same validated Pages artifact once
-        if: ${{ !cancelled() && steps.site.outcome == 'failure' }}
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
       - name: Read back the published index from the custom domain
         env:

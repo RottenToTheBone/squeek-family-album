@@ -22,7 +22,7 @@ The home page opens the current collection at the merge of #7458 and #7453. Both
 
 ## Refresh and check
 
-The fallback timer is **Family album cloud clock** in Actions. Its dedicated `family-album-clock` environment allows the `main` branch and requires a 30-minute wait. Start the clock once with **Run workflow**. Each tick checks the configured delay and elapsed time before it can queue a successor. Disable that workflow to stop the fallback. It uses the repository's temporary Actions token and requires no external credential or running local computer.
+The fallback timer is **Family album cloud clock** in Actions. Its dedicated `family-album-clock` environment allows the `main` branch and requires a 30-minute wait. Start the clock once with **Run workflow**. Each tick checks the configured delay and elapsed time before it can queue a successor. Disable that workflow to stop the fallback. It uses the repository's temporary Actions token and requires no external credential or running local computer. If Pages rejects a validated artifact, **Recover a failed Pages deployment** can re-run that deployment once after a short delay. Validation failures and superseded runs do not qualify.
 
 Refresh the current snapshot with `python -B scripts/refresh_archive.py --onchain`. This requires Python 3.10+ and the `requests` package. It reads public Sepolia RPCs and writes to `dist/data/current.json` and `dist/current-art/`. Omit `--onchain` to use the official economy and player APIs as the event source with the same receipt checks. The historical manifest and portraits reside separately in `dist/data/archive.json` and `dist/art/`.
 
