@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-07T04:49:24.000Z",
-  "safeBlock": 12081399,
-  "safeBlockHash": "0xcc34b7ba7fe23882bd82ef504a0e5271c39ebd38848a5c0b6ad35372f1bc8d26",
+  "asOf": "2026-11-07T05:21:24.000Z",
+  "safeBlock": 12081557,
+  "safeBlockHash": "0x1ab4cd4eea56988d5841ddf3ae36bac281201301e847d949acd1380eb784b5d1",
   "issued": 9999,
-  "burned": 1840,
-  "live": 8159,
+  "burned": 1843,
+  "live": 8156,
   "events": [
     {
       "survivor": 942,
@@ -16569,6 +16569,33 @@
       "logIndex": 57,
       "tx": "0xd36180d4035c574629598ae7d8685666433137f3b7756e000645bc17c7b4c23b",
       "at": "2026-11-07T04:35:00.000Z"
+    },
+    {
+      "survivor": 8580,
+      "donor": 8581,
+      "level": 2,
+      "block": 12081480,
+      "logIndex": 14,
+      "tx": "0x7e42144c54bd70ee8828d8edbcbfe8c17cec3ce060b5577d797840c786978dd2",
+      "at": "2026-11-07T05:05:48.000Z"
+    },
+    {
+      "survivor": 4098,
+      "donor": 8579,
+      "level": 2,
+      "block": 12081492,
+      "logIndex": 4,
+      "tx": "0x073ef4f84323718640f92eb0acb931607b85f53cc3ac80474ffb68575c42db4b",
+      "at": "2026-11-07T05:08:12.000Z"
+    },
+    {
+      "survivor": 3281,
+      "donor": 3282,
+      "level": 2,
+      "block": 12081509,
+      "logIndex": 55,
+      "tx": "0x8ecf73446a563b6eca71ff60f02a9c422cc3d80112076c8b50fa4f901ef73c93",
+      "at": "2026-11-07T05:11:48.000Z"
     }
   ],
   "portraits": {
@@ -28214,6 +28241,22 @@
       "sha256": "02664331d29a5e8d7da25f9c6eba5945e9e61e2527debc9187a21c79702e7927",
       "palette": "Spectral Orange CRT"
     },
+    "3281": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/3281.svg",
+      "block": 12081557,
+      "source": "chain",
+      "sha256": "8f65c60635302b5a878b30a7a207c77ee4eadcadc712ddc24038c1dfd15342cb",
+      "palette": "Hot Magenta",
+      "pack": "current-packs/25.json"
+    },
+    "3282": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/3282.svg",
+      "block": 12081508,
+      "source": "archive",
+      "sha256": "7bfc093c9043fa9096aac5e2cadc3b6d1790fc19f24fe48ae7391f4e12751b69",
+      "palette": "Spectral Reactor Red",
+      "pack": "current-packs/25.json"
+    },
     "3283": {
       "file": "current-art/3283.svg",
       "block": 12077231,
@@ -30648,6 +30691,14 @@
       "source": "archive",
       "sha256": "84f5e64e20ccfe7302a5e5c6b6ef7617218f48d350154a9679eb7f2fa43f8bb1",
       "palette": "Spectral Orange CRT"
+    },
+    "4098": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/4098.svg",
+      "block": 12081557,
+      "source": "chain",
+      "sha256": "781f69c25f8e3bd4d53fa1796ad6ac93261c77e5d785a6294f3d9d011b34a13f",
+      "palette": "Spectral Gold",
+      "pack": "current-packs/32.json"
     },
     "4101": {
       "file": "current-art/4101.svg",
@@ -41813,6 +41864,30 @@
       "source": "chain",
       "sha256": "556fbff81d4261a21a02b611c7ca814d73072818fe87aca8c303fd890fad552c",
       "palette": "Spectral Gold"
+    },
+    "8579": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/8579.svg",
+      "block": 12081491,
+      "source": "archive",
+      "sha256": "ed79411457db9df03c84ed09e12ae192c17fe82e43a22ca4ac29fcf02f5af0f4",
+      "palette": "Spectral Ice White",
+      "pack": "current-packs/67.json"
+    },
+    "8580": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/8580.svg",
+      "block": 12081557,
+      "source": "chain",
+      "sha256": "89a6301de2c300ea91996be174bff66b3b819cd9f8b1cda98539b8c5d552ec0e",
+      "palette": "Gold",
+      "pack": "current-packs/67.json"
+    },
+    "8581": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/8581.svg",
+      "block": 12081479,
+      "source": "archive",
+      "sha256": "4bd97acf36148a26f5d0380d267de63a2899e6f506a61069c949a46c1cc88ffa",
+      "palette": "Gold",
+      "pack": "current-packs/67.json"
     },
     "8591": {
       "file": "current-art/8591.svg",
