@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-07T11:58:12.000Z",
-  "safeBlock": 12083515,
-  "safeBlockHash": "0xafea53785d4b8183180cc59222dc070d42e84638ba1cd151f344fa8f283160fb",
+  "asOf": "2026-11-07T12:23:48.000Z",
+  "safeBlock": 12083641,
+  "safeBlockHash": "0x55fb34a82c4b57ee587aef295e937148523922e319903b6af8aef69fde4c1b2d",
   "issued": 9999,
-  "burned": 1973,
-  "live": 8026,
+  "burned": 1974,
+  "live": 8025,
   "events": [
     {
       "survivor": 942,
@@ -17766,6 +17766,15 @@
       "logIndex": 30,
       "tx": "0xdd9016e718d46230eae46deffe8161d3e5bfba7e3b97860f6bff89e580037c83",
       "at": "2026-11-07T11:52:36.000Z"
+    },
+    {
+      "survivor": 3473,
+      "donor": 3475,
+      "level": 2,
+      "block": 12083550,
+      "logIndex": 7,
+      "tx": "0xed7473d35c31c68eb67515435f1971fea322a6e91edbbeaf0cbfb3245eba3509",
+      "at": "2026-11-07T12:05:24.000Z"
     }
   ],
   "portraits": {
@@ -31081,12 +31090,28 @@
       "sha256": "528ccab25eb2bc5f3ce6de3dd6d355b001d85d915230a8ad92a075d86578c0e8",
       "palette": "Spectral Gold"
     },
+    "3473": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/3473.svg",
+      "block": 12083641,
+      "source": "chain",
+      "sha256": "8a30efdeba606823e46424dd78fc0d0600b7939c6f05e3bae455b688d02d621c",
+      "palette": "RGB",
+      "pack": "current-packs/27.json"
+    },
     "3474": {
       "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/3474.svg",
       "block": 12083431,
       "source": "archive",
       "sha256": "0743c71562f727485097740e0db7397249913d65940ad6904fb9392cf9e46ceb",
       "palette": "Spectral Acid Lime",
+      "pack": "current-packs/27.json"
+    },
+    "3475": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/3475.svg",
+      "block": 12083549,
+      "source": "archive",
+      "sha256": "8e56789c8f3098e7accdfb0e43a8f02e18b619bedd9019e6fb2e7704ef3e2ad1",
+      "palette": "RGB",
       "pack": "current-packs/27.json"
     },
     "3476": {
