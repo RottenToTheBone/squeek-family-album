@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-07T17:24:36.000Z",
-  "safeBlock": 12085124,
-  "safeBlockHash": "0x9cdea5b698dd1bb2d4e5899a158aa0c2f937c593b4b89361a995185b12c45029",
+  "asOf": "2026-11-07T17:56:36.000Z",
+  "safeBlock": 12085281,
+  "safeBlockHash": "0xc46b732f040423fd27dff2f0da2888c21720924c713c60517e2a800752597e1b",
   "issued": 9999,
-  "burned": 2037,
-  "live": 7962,
+  "burned": 2038,
+  "live": 7961,
   "events": [
     {
       "survivor": 942,
@@ -18342,6 +18342,15 @@
       "logIndex": 81,
       "tx": "0x3a8e485ec30c511ea53fa69a2829e7280bc5b856e2838dd2416ea51a12c25e6e",
       "at": "2026-11-07T17:15:12.000Z"
+    },
+    {
+      "survivor": 5148,
+      "donor": 5151,
+      "level": 2,
+      "block": 12085244,
+      "logIndex": 168,
+      "tx": "0x72ec1c94b8a0cededfbc04476925d492ad903c8410aade7909ea5c75e4b5756d",
+      "at": "2026-11-07T17:49:12.000Z"
     }
   ],
   "portraits": {
@@ -37093,6 +37102,14 @@
       "palette": "Spectral Ice White",
       "pack": "current-packs/40.json"
     },
+    "5148": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/5148.svg",
+      "block": 12085281,
+      "source": "chain",
+      "sha256": "935cea78d8355ddb567ea2332142f876fecdd2119a7e9ead4c88edb1f3c360e1",
+      "palette": "Gold",
+      "pack": "current-packs/40.json"
+    },
     "5149": {
       "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/5149.svg",
       "block": 12085076,
@@ -37107,6 +37124,14 @@
       "source": "chain",
       "sha256": "977c0c911d09ca8191aa01240166547122068c3e5d2c779ada10dce2d19d66d3",
       "palette": "Electric Cyan",
+      "pack": "current-packs/40.json"
+    },
+    "5151": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/5151.svg",
+      "block": 12085243,
+      "source": "archive",
+      "sha256": "269aade952de8d3f33702d2f27a6bd8066f1d2eafe12eecbb2d37651dfcb3ca0",
+      "palette": "Spectral Acid Lime",
       "pack": "current-packs/40.json"
     },
     "5152": {
