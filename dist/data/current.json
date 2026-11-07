@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-06T23:23:00.000Z",
-  "safeBlock": 12079785,
-  "safeBlockHash": "0xb072c65afcaa0185ddf0d603a6550a233b3bf53d26edd28db318206332f4850c",
+  "asOf": "2026-11-06T23:48:36.000Z",
+  "safeBlock": 12079911,
+  "safeBlockHash": "0x2c7f60df1d6f9e89ae9ed9c18b1b1a2da2d81dfaab8a11d515f22f5d4dcf5e47",
   "issued": 9999,
-  "burned": 1760,
-  "live": 8239,
+  "burned": 1763,
+  "live": 8236,
   "events": [
     {
       "survivor": 942,
@@ -15849,6 +15849,33 @@
       "logIndex": 171,
       "tx": "0x613f33d49bfbbded337462cb8d4d2475a9ed3ce5229b845f879746ab922e9a94",
       "at": "2026-11-06T23:19:12.000Z"
+    },
+    {
+      "survivor": 6706,
+      "donor": 6707,
+      "level": 2,
+      "block": 12079865,
+      "logIndex": 277,
+      "tx": "0xcb3a28be9b1ad5bb443111ccfb8d17d6e40bae9b9e381368fd142a14559b61f5",
+      "at": "2026-11-06T23:39:24.000Z"
+    },
+    {
+      "survivor": 6708,
+      "donor": 6710,
+      "level": 2,
+      "block": 12079868,
+      "logIndex": 163,
+      "tx": "0x853b1820fb569497cab634c1a0c1ff5a1dc60a300057378244d9cbd9927db1c0",
+      "at": "2026-11-06T23:40:00.000Z"
+    },
+    {
+      "survivor": 2067,
+      "donor": 2068,
+      "level": 2,
+      "block": 12079886,
+      "logIndex": 2,
+      "tx": "0xbcccede529f57632928fddac3b45c6ec86c0e8d7c6c5092731a02a752fb89464",
+      "at": "2026-11-06T23:43:36.000Z"
     }
   ],
   "portraits": {
@@ -23345,6 +23372,22 @@
       "source": "archive",
       "sha256": "03c82627c7a101d4829c2a9f13482ba57b1fb2015d0401c93fbc7d0fa2718309",
       "palette": "Void Violet"
+    },
+    "2067": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/2067.svg",
+      "block": 12079911,
+      "source": "chain",
+      "sha256": "99d5ec06348491bfd4beb190a80490cc4809adff81a355596c3a6025f2c5db92",
+      "palette": "Spectral Acid Lime",
+      "pack": "current-packs/16.json"
+    },
+    "2068": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/2068.svg",
+      "block": 12079885,
+      "source": "archive",
+      "sha256": "b6dd44fa5557f4589220a10852ebd02dc48ff21902cf2dc89383e0a7a6b8ab9a",
+      "palette": "Spectral Acid Lime",
+      "pack": "current-packs/16.json"
     },
     "2073": {
       "file": "current-art/2073.svg",
@@ -35640,6 +35683,38 @@
       "source": "chain",
       "sha256": "c01a81a401630b8f6415df76aa3bf9be72ca1323e46387f736944cb7af7c4a43",
       "palette": "Hot Magenta"
+    },
+    "6706": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/6706.svg",
+      "block": 12079911,
+      "source": "chain",
+      "sha256": "b1a41977654d9655494b322c29528265e2921355fc3e6437b669fa3b490853d1",
+      "palette": "Spectral Hot Magenta",
+      "pack": "current-packs/52.json"
+    },
+    "6707": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/6707.svg",
+      "block": 12079864,
+      "source": "archive",
+      "sha256": "14e0de58d924921739a293b85d2483f6794ff208ee3c7b3319a74ba78ecd7969",
+      "palette": "Electric Cyan",
+      "pack": "current-packs/52.json"
+    },
+    "6708": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/6708.svg",
+      "block": 12079911,
+      "source": "chain",
+      "sha256": "7d4107e71b212ec7532fdc9f351086e4ce39e33fc8ec1392d399990fd9e39ee1",
+      "palette": "Spectral Acid Lime",
+      "pack": "current-packs/52.json"
+    },
+    "6710": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/6710.svg",
+      "block": 12079867,
+      "source": "archive",
+      "sha256": "08284234e7b17303d197dd459bf6af0f874f2b0cdbbb64f1b18db0483df5369e",
+      "palette": "Spectral RGB",
+      "pack": "current-packs/52.json"
     },
     "6711": {
       "file": "current-art/6711.svg",
