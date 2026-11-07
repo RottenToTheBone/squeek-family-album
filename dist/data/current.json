@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-07T19:58:12.000Z",
-  "safeBlock": 12085885,
-  "safeBlockHash": "0x3daaccc116ad29fdf0da9f4c5818ec6d29f4b20fadf396b4a6f1c13a558494ae",
+  "asOf": "2026-11-07T20:30:12.000Z",
+  "safeBlock": 12086042,
+  "safeBlockHash": "0x875a12281846f0c1e7ec83626535147a6faf175f808d3d7ce40471ff323e3b4d",
   "issued": 9999,
-  "burned": 2086,
-  "live": 7913,
+  "burned": 2087,
+  "live": 7912,
   "events": [
     {
       "survivor": 942,
@@ -18783,6 +18783,15 @@
       "logIndex": 21,
       "tx": "0x7be48bf01a89f2bf6f33a532af96fd3a3bfccb95253c3d3cf110d2febc218de9",
       "at": "2026-11-07T19:56:48.000Z"
+    },
+    {
+      "survivor": 8666,
+      "donor": 8664,
+      "level": 2,
+      "block": 12086039,
+      "logIndex": 41,
+      "tx": "0x58d2df2ee9cfd6cb6105b94ba206816c25d84567f96a695d48e393f325307292",
+      "at": "2026-11-07T20:29:36.000Z"
     }
   ],
   "portraits": {
@@ -48042,12 +48051,28 @@
       "palette": "Electric Cyan",
       "pack": "current-packs/67.json"
     },
+    "8664": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/8664.svg",
+      "block": 12086038,
+      "source": "archive",
+      "sha256": "472340a835393ecbcde2858fccce051be56f059490c62eb57382410b50958a62",
+      "palette": "Spectral Electric Cyan",
+      "pack": "current-packs/67.json"
+    },
     "8665": {
       "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/8665.svg",
       "block": 12078967,
       "source": "chain",
       "sha256": "822abee9dbe2069d1751ec28a9ef1952af7d256b7be5cd3a37322c45b45ec070",
       "palette": "Reactor Red",
+      "pack": "current-packs/67.json"
+    },
+    "8666": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/8666.svg",
+      "block": 12086042,
+      "source": "chain",
+      "sha256": "be2fc8c321b1ea85553d8dbc702d90a63b5b73806e0285d299904b3783068a79",
+      "palette": "Spectral Gold",
       "pack": "current-packs/67.json"
     },
     "8667": {
