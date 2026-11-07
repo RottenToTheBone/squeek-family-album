@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-07T05:21:24.000Z",
-  "safeBlock": 12081557,
-  "safeBlockHash": "0x1ab4cd4eea56988d5841ddf3ae36bac281201301e847d949acd1380eb784b5d1",
+  "asOf": "2026-11-07T05:53:24.000Z",
+  "safeBlock": 12081716,
+  "safeBlockHash": "0xfca3d0af8c778e0b3bcf63cbd89d09d3dfaa3f4790b9a69825f5fdf04318eb43",
   "issued": 9999,
-  "burned": 1843,
-  "live": 8156,
+  "burned": 1844,
+  "live": 8155,
   "events": [
     {
       "survivor": 942,
@@ -16596,6 +16596,15 @@
       "logIndex": 55,
       "tx": "0x8ecf73446a563b6eca71ff60f02a9c422cc3d80112076c8b50fa4f901ef73c93",
       "at": "2026-11-07T05:11:48.000Z"
+    },
+    {
+      "survivor": 5271,
+      "donor": 5012,
+      "level": 2,
+      "block": 12081658,
+      "logIndex": 250,
+      "tx": "0x4f681b7a6e83faf42e2a35863a31b51b3cf7810ffb2fe6492b0a98d6f015b7bc",
+      "at": "2026-11-07T05:41:48.000Z"
     }
   ],
   "portraits": {
@@ -32993,6 +33002,14 @@
       "sha256": "582e30f638e7e29eca78be00edcf72441fa081c0e978aaa0ec4a3d8c86b32ec3",
       "palette": "Spectral Acid Lime"
     },
+    "5012": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/5012.svg",
+      "block": 12081657,
+      "source": "archive",
+      "sha256": "bee72a1e16163aa74f6c77b258149c4ce125ff60fef4ff5f12a4e7046f7f3520",
+      "palette": "Spectral RGB",
+      "pack": "current-packs/39.json"
+    },
     "5013": {
       "file": "current-art/5013.svg",
       "block": 12077682,
@@ -33720,6 +33737,14 @@
       "source": "archive",
       "sha256": "520e6650ea900a01ddd6ad972d3cfc3daea8e15f878f29ef19411e1435dc544f",
       "palette": "Void Violet"
+    },
+    "5271": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/5271.svg",
+      "block": 12081716,
+      "source": "chain",
+      "sha256": "574b687bcd37328347d6fa3b46b2fd81e35485d1baa4ed8cae93837c247b47ef",
+      "palette": "Reactor Red",
+      "pack": "current-packs/41.json"
     },
     "5272": {
       "file": "current-art/5272.svg",
