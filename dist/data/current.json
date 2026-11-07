@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-07T04:23:48.000Z",
-  "safeBlock": 12081272,
-  "safeBlockHash": "0xd60214eea36b75301612f9acd04c986e1b690cef90c5991260f6b5f6c3ed9298",
+  "asOf": "2026-11-07T04:49:24.000Z",
+  "safeBlock": 12081399,
+  "safeBlockHash": "0xcc34b7ba7fe23882bd82ef504a0e5271c39ebd38848a5c0b6ad35372f1bc8d26",
   "issued": 9999,
-  "burned": 1839,
-  "live": 8160,
+  "burned": 1840,
+  "live": 8159,
   "events": [
     {
       "survivor": 942,
@@ -16560,6 +16560,15 @@
       "logIndex": 203,
       "tx": "0x5be82cf1c6350d696deaf31c4fe44b08ef82f7b008bdf4650fa821c5daaad769",
       "at": "2026-11-07T04:19:36.000Z"
+    },
+    {
+      "survivor": 3610,
+      "donor": 3612,
+      "level": 2,
+      "block": 12081328,
+      "logIndex": 57,
+      "tx": "0xd36180d4035c574629598ae7d8685666433137f3b7756e000645bc17c7b4c23b",
+      "at": "2026-11-07T04:35:00.000Z"
     }
   ],
   "portraits": {
@@ -29269,12 +29278,28 @@
       "palette": "Hot Magenta",
       "pack": "current-packs/28.json"
     },
+    "3610": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/3610.svg",
+      "block": 12081399,
+      "source": "chain",
+      "sha256": "d45dcb2d4de2bdb61f616687b37369f81138251860a106a1858f7f4b70232ba7",
+      "palette": "Spectral Hot Magenta",
+      "pack": "current-packs/28.json"
+    },
     "3611": {
       "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/3611.svg",
       "block": 12080672,
       "source": "chain",
       "sha256": "e1bae07770416c33b670b8862665d2c2b0311872377d51567bfe91d8ac27ed5c",
       "palette": "Spectral Hot Magenta",
+      "pack": "current-packs/28.json"
+    },
+    "3612": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/3612.svg",
+      "block": 12081327,
+      "source": "archive",
+      "sha256": "62ebf796ea8aad09bf665d31d1ba542db6b35b065178736589c59504fc5db5da",
+      "palette": "Orange CRT",
       "pack": "current-packs/28.json"
     },
     "3620": {
