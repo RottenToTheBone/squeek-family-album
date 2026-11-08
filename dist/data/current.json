@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-08T08:01:24.000Z",
-  "safeBlock": 12089342,
-  "safeBlockHash": "0xccc3d7ac358d9f1976476778ebae17eb858e1f91e0ac199e2da97d14676d9347",
+  "asOf": "2026-11-08T08:33:24.000Z",
+  "safeBlock": 12089494,
+  "safeBlockHash": "0x0ec11643a2f0a76c389bb8a5a39be1253e9fc3f829e2e4f11e40047b3c4af3a5",
   "issued": 9999,
-  "burned": 2201,
-  "live": 7798,
+  "burned": 2204,
+  "live": 7795,
   "events": [
     {
       "survivor": 942,
@@ -19818,6 +19818,33 @@
       "logIndex": 4,
       "tx": "0x4fbd7f0a5ba905f11224ad92162b914efca3da2de04ef0b44d8a249da59f8c1f",
       "at": "2026-11-08T07:59:24.000Z"
+    },
+    {
+      "survivor": 7470,
+      "donor": 7471,
+      "level": 2,
+      "block": 12089475,
+      "logIndex": 237,
+      "tx": "0xce12e4d50c11ab573cb9d1806255a0d64761dfac007215abb5c8cae8a1bfe190",
+      "at": "2026-11-08T08:29:36.000Z"
+    },
+    {
+      "survivor": 6055,
+      "donor": 6054,
+      "level": 2,
+      "block": 12089477,
+      "logIndex": 170,
+      "tx": "0x04f757592fa43d600e4035416fa9f61b98f93ed367eb5cc64182fd29aaec9c2c",
+      "at": "2026-11-08T08:30:00.000Z"
+    },
+    {
+      "survivor": 7473,
+      "donor": 7472,
+      "level": 2,
+      "block": 12089478,
+      "logIndex": 138,
+      "tx": "0xf9261b1f428d3d11769212e5288ce0bbd0e02a3a4252ecd1f45d850f9f2e0a8b",
+      "at": "2026-11-08T08:30:12.000Z"
     }
   ],
   "portraits": {
@@ -43258,6 +43285,22 @@
       "sha256": "78ab83c4b8c90af823149853829bf4deb9cfcfe4054ba5654cabc9e4e07bae8c",
       "palette": "Spectral Reactor Red"
     },
+    "6054": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/6054.svg",
+      "block": 12089476,
+      "source": "archive",
+      "sha256": "e5b6656488db2a0299db93ec4e811dec4a5691d59abfd8ee15ac859d0556cf67",
+      "palette": "Spectral Acid Lime",
+      "pack": "current-packs/47.json"
+    },
+    "6055": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/6055.svg",
+      "block": 12089494,
+      "source": "chain",
+      "sha256": "1dd4715adca6ef278943411d1d1e767934199ef50f92a87b78e041f65fcd602b",
+      "palette": "Spectral Reactor Red",
+      "pack": "current-packs/47.json"
+    },
     "6072": {
       "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/6072.svg",
       "block": 12082159,
@@ -47435,6 +47478,38 @@
       "source": "archive",
       "sha256": "27225595f132509dbe7cc04c4c51259305ef91cbe2e995f00240f731097131a0",
       "palette": "Orange CRT"
+    },
+    "7470": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/7470.svg",
+      "block": 12089494,
+      "source": "chain",
+      "sha256": "add5cfed988149dc3968975db25cff70fa798ef392803201be89775e579d461b",
+      "palette": "Hot Magenta",
+      "pack": "current-packs/58.json"
+    },
+    "7471": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/7471.svg",
+      "block": 12089474,
+      "source": "archive",
+      "sha256": "17acad29f33e29cb72e469c557cfd59789f35c8845cedd4b0b85d1d6ed93c2b1",
+      "palette": "Spectral Orange CRT",
+      "pack": "current-packs/58.json"
+    },
+    "7472": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/7472.svg",
+      "block": 12089477,
+      "source": "archive",
+      "sha256": "9d16e7f48f0f394c3bd9797d2af528495d5c8ad22c51d317e8acd96f06079cd3",
+      "palette": "RGB",
+      "pack": "current-packs/58.json"
+    },
+    "7473": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/7473.svg",
+      "block": 12089494,
+      "source": "chain",
+      "sha256": "088503d6e24328deb03c8b0a7485a1f07f4478bab4c9ea47736270fcf064cefa",
+      "palette": "Acid Lime",
+      "pack": "current-packs/58.json"
     },
     "7495": {
       "file": "current-art/7495.svg",
