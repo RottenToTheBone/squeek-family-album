@@ -6,6 +6,23 @@ import { CURRENT, HISTORICAL, deploymentFor } from './receipts.js';
 import { compareUrl, comparisonPanel } from './compare.js';
 
 const $ = (id) => document.getElementById(id);
+const motionPreference = matchMedia('(prefers-reduced-motion: no-preference)');
+function stopImageMotion(root) {
+  for (const animation of root.getAnimations?.() ?? []) {
+    if (animation.id === 'album-image') animation.cancel();
+  }
+}
+motionPreference.addEventListener('change', () => {
+  if (!motionPreference.matches) stopImageMotion(document);
+});
+function animateImage(image, from) {
+  if (!motionPreference.matches || !image.animate) return;
+  stopImageMotion(image);
+  image.animate(
+    [{ transform: from, opacity: 0.62 }, { transform: 'none', opacity: 1 }],
+    { id: 'album-image', duration: 220, easing: 'cubic-bezier(.22,.7,.25,1)' },
+  );
+}
 const staticCopy = [...document.querySelectorAll('[data-zh]')].map((el) => [el, el.textContent]);
 const params = () => new URL(location.href).searchParams;
 function routeEdition() {
@@ -95,7 +112,7 @@ function renderNotices() {
       : '';
   $('token-input').setAttribute('aria-invalid', String(!!inputError));
 }
-const comparison = comparing ? comparisonPanel({ tr, lang: () => language, recordUrl, openCard }) : null;
+const comparison = comparing ? comparisonPanel({ tr, lang: () => language, recordUrl, openCard, animateImage }) : null;
 if (comparing) {
   for (const selector of ['.intro', '.record-bar', '#status', '#selection-status', '#workbench', '.ledger'])
     document.querySelector(selector).hidden = true;
@@ -217,15 +234,21 @@ function portraitHeader() {
   $('plate-palette').textContent = selectedArt?.palette?.toUpperCase() || 'DOT GRID / SEPOLIA';
 }
 function setSelected(node, changeURL = true, reveal = false) {
+  const userChangedNode = changeURL && selected?.key !== node.key;
+  if (changeURL) {
+    setRoute(node.id, node.key);
+    $('token-input').value = node.id;
+    if (!userChangedNode && selectedArt) {
+      if (reveal) openPortrait();
+      return;
+    }
+  }
   selected = node;
   editionLinks(node.id);
   selectedArt = null;
   const call = ++selectionNo;
   document.title = 'Squeek #' + node.id + ' · Family Album';
-  if (changeURL) {
-    setRoute(node.id, node.key);
-    $('token-input').value = node.id;
-  }
+  stopImageMotion($('hero-art'));
   $('share').disabled = true;
   $('enlarge').disabled = true;
   $('hero-art').hidden = true;
@@ -251,6 +274,7 @@ function setSelected(node, changeURL = true, reveal = false) {
       portraitHeader();
       $('selection-status').textContent = img.alt + ' · ' + $('art-state').textContent;
       if (reveal) openPortrait();
+      if (userChangedNode) animateImage(reveal ? $('full-art') : img, 'translateY(5px)');
     })
     .catch(() => {
       if (call !== selectionNo) return;
@@ -589,13 +613,17 @@ async function openCard({ url, title, kind, alt, filename, draw }) {
     if (ticket !== shareNo || !$('share-dialog').open) return;
     if (shareBlob) URL.revokeObjectURL(shareBlob);
     shareBlob = URL.createObjectURL(blob);
-    $('card-preview').src = shareBlob;
-    $('card-preview').alt = alt;
-    $('card-preview').hidden = false;
+    const preview = $('card-preview');
+    preview.src = shareBlob;
+    preview.alt = alt;
     $('save-card').href = shareBlob;
     $('save-card').download = filename;
     $('save-card').hidden = false;
+    await preview.decode();
+    if (ticket !== shareNo || !$('share-dialog').open) return;
+    preview.hidden = false;
     $('card-status').textContent = '';
+    animateImage(preview, 'translateY(7px)');
   } catch {
     if (ticket === shareNo)
       $('card-status').textContent = tr(

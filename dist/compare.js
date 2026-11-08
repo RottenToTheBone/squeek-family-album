@@ -20,7 +20,7 @@ export function compareUrl(keep, donor, at, language) {
   return url.href;
 }
 
-export function comparisonPanel({ tr, lang, recordUrl, openCard }) {
+export function comparisonPanel({ tr, lang, recordUrl, openCard, animateImage }) {
   let published, publishedIndex, latest, latestIndex;
   let pair, sample, message = [], generation = 0, edited = false, waiting = false;
   const messages = {
@@ -215,6 +215,8 @@ export function comparisonPanel({ tr, lang, recordUrl, openCard }) {
     $('compare-donor').value = pair.donor.id;
     navigate(pair, 'pushState');
     renderPair();
+    animateImage($('keep-art'), 'translateX(12%)');
+    animateImage($('donor-art'), 'translateX(-12%)');
   });
   $('compare-share').addEventListener('click', () => {
     if (!pair) return;

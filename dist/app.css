@@ -1107,6 +1107,7 @@ html[lang='zh-Hans'] h2 {
 .compare-mat {
   display: grid;
   place-items: center;
+  overflow: hidden;
   margin: 12px 0;
   background: radial-gradient(#a6ad934f 1px, transparent 1px) 0 0/9px 9px;
 }
