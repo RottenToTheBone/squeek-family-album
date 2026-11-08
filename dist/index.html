@@ -52,6 +52,9 @@
           <p class="lede" data-zh="追溯一只 Squeek 的合并家谱，找回已经销毁的链上原画。">
             Trace a Squeek back to its originals. Recover the onchain portraits of the ones that were burned.
           </p>
+          <a id="compare-open" class="compare-open" href="?release=current&amp;view=compare">
+            <span data-zh="合并前对比">Compare before merging</span> <span aria-hidden="true">→</span>
+          </a>
         </div>
         <div class="lookup">
           <nav class="editions" aria-label="Collection" id="editions">
@@ -182,6 +185,54 @@
         </div>
         <div id="ledger-body"></div>
       </section>
+      <section id="compare-panel" class="compare-panel" aria-labelledby="compare-title" hidden>
+        <a id="compare-back" class="compare-back" href="./"><span aria-hidden="true">←</span> <span data-zh="返回家谱">Back to the album</span></a>
+        <div class="compare-heading">
+          <h1 id="compare-title" data-zh="合并前对比">Before the merge.</h1>
+          <p class="lede" data-zh="对比当前系列中两只同级 Squeek 的原画和家谱，选择想保留的编号。">Compare the portraits and families of two same-level Squeeks from the current collection. Choose the ID you would keep.</p>
+        </div>
+        <form id="compare-form" novalidate>
+          <div class="compare-fields">
+            <label for="compare-keep"><span data-zh="拟保留的编号">ID to keep</span>
+              <span class="compare-input"><span aria-hidden="true">#</span><input id="compare-keep" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="24" aria-describedby="compare-status"></span>
+            </label>
+            <label for="compare-donor"><span data-zh="拟销毁的编号">ID to burn</span>
+              <span class="compare-input"><span aria-hidden="true">#</span><input id="compare-donor" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="24" aria-describedby="compare-status"></span>
+            </label>
+            <button id="compare-submit" type="submit" class="primary" data-zh="对比原画">Compare portraits</button>
+          </div>
+          <button id="compare-example" type="button" class="compare-example" disabled data-zh="试试两只存续的 Squeek">Try two surviving Squeeks</button>
+        </form>
+        <p id="compare-status" class="compare-status" role="status" aria-live="polite"></p>
+        <div id="compare-result" hidden>
+          <div class="compare-toolbar">
+            <h2 data-zh="合并预览">Merge preview</h2>
+            <button id="compare-swap" type="button" class="secondary"><span aria-hidden="true">⇄</span> <span data-zh="交换保留者">Swap survivor</span></button>
+          </div>
+          <div class="compare-plates">
+            <article class="compare-plate">
+              <h3><span data-zh="拟保留">Would survive</span> <b id="keep-id"></b></h3>
+              <div class="compare-mat"><img id="keep-art" alt=""></div>
+              <div class="compare-detail"><span id="keep-level"></span><a id="keep-family" data-zh="查看家谱">View family</a></div>
+              <details class="compare-lineage" open>
+                <summary data-zh="此区块的家谱">Family at this block</summary><ul id="keep-lineage"></ul>
+              </details>
+            </article>
+            <article class="compare-plate donor-plate">
+              <h3><span data-zh="拟销毁">Would burn</span> <b id="donor-id"></b></h3>
+              <div class="compare-mat"><img id="donor-art" alt=""></div>
+              <div class="compare-detail"><span id="donor-level"></span><a id="donor-family" data-zh="查看家谱">View family</a></div>
+              <details class="compare-lineage" open>
+                <summary data-zh="此区块的家谱">Family at this block</summary><ul id="donor-lineage"></ul>
+              </details>
+            </article>
+          </div>
+          <div class="compare-export">
+            <div><p id="compare-outcome" aria-live="polite" aria-atomic="true"></p><p class="compare-scope" data-zh="仅作预览。实际合并还要满足持有、托管、冷却时间及合并开关等链上条件。">Preview only. Actual merges also depend on ownership, custody, cooldowns and the collection’s merge switch.</p></div>
+            <button id="compare-share" type="button" class="primary" data-zh="导出预览卡">Export preview card</button>
+          </div>
+        </div>
+      </section>
       <footer>
         <div>
           <span class="foot-mark">✳</span
@@ -237,7 +288,7 @@
     </dialog>
     <dialog id="share-dialog" aria-labelledby="card-title">
       <div class="modal-top">
-        <span class="eyebrow" data-zh="分享家谱卡">SHARE FAMILY CARD</span
+        <span id="card-kind" class="eyebrow" data-zh="分享家谱卡">SHARE FAMILY CARD</span
         ><button class="close" data-close aria-label="Close">×</button>
       </div>
       <h2 id="card-title" data-zh="家谱卡">Family card</h2>

@@ -10,6 +10,12 @@ From the project directory run `npm start` or `python -m http.server 4179 --bind
 
 The home page opens the current collection at the merge of #7458 and #7453. Both numbers open the same family. Select #7453 to see its original portrait at block 12,076,747, one block before it burned. **Share family card** exports a 1120 × 716 PNG with the selected portrait and its family. **Historical archive · Recover #8925** opens the earlier four-original family at block 12,051,304. Shared links preserve the selected collection and stage. Older unversioned token links still open the historical archive.
 
+## Compare before merging
+
+Open the comparison from the home page to view two current-collection Squeeks side by side. Enter two surviving IDs at the same level, choose which to keep, and switch them to compare the other outcome. The preview card identifies the survivor, the donor and the Sepolia block used for the comparison. Wallet ownership, custody, cooldowns and the merge switch determine whether a holder can execute the merge.
+
+Scan a preview PNG to reopen the same pair, survivor choice, language and block. Scan a family PNG to reopen the selected collection, Squeek and family stage. [Try a comparison](https://squeek.machinepaystack.com/?release=core-sepolia-20261103&view=compare&keep=942&donor=944&at=12091474&lang=en) · [See #7458 and #7453 one block before their merge](https://squeek.machinepaystack.com/?release=core-sepolia-20261103&view=compare&keep=7458&donor=7453&at=12076747&lang=en)
+
 ## How the records are built
 
 - The scheduled update reads a finalized Sepolia block and fetches merge logs from the pinned NFT contract for release `core-sepolia-20261103`. For a staked merge, the collection and staking contract can emit two logs in one transaction. The album verifies both and uses the staking log's index, so the same merge has the same shared link as in the official player feed. The total must match onchain supply. The browser can add newer merges from that feed after checking their receipts.

@@ -3,6 +3,7 @@ import { livePortrait, lostPortrait, refreshIndex, txLink } from './chain.js';
 import { familyCard } from './share.js';
 import { packedPortrait } from './packed-art.js';
 import { CURRENT, HISTORICAL, deploymentFor } from './receipts.js';
+import { compareUrl, comparisonPanel } from './compare.js';
 
 const $ = (id) => document.getElementById(id);
 const staticCopy = [...document.querySelectorAll('[data-zh]')].map((el) => [el, el.textContent]);
@@ -16,6 +17,7 @@ function routeEdition() {
   return release ?? (route.has('id') || route.has('stage') ? 'archive' : 'current');
 }
 const edition = routeEdition();
+const comparing = params().get('view') === 'compare';
 const historical = edition === 'archive';
 const deployment = historical ? HISTORICAL : CURRENT;
 // Pin the featured transaction stage even if its survivor merges again later.
@@ -93,6 +95,14 @@ function renderNotices() {
       : '';
   $('token-input').setAttribute('aria-invalid', String(!!inputError));
 }
+const comparison = comparing ? comparisonPanel({ tr, lang: () => language, recordUrl, openCard }) : null;
+if (comparing) {
+  for (const selector of ['.intro', '.record-bar', '#status', '#selection-status', '#workbench', '.ledger'])
+    document.querySelector(selector).hidden = true;
+  $('compare-panel').hidden = false;
+  document.querySelector('.skip').href = '#compare-title';
+  $('compare-title').tabIndex = -1;
+}
 function localize() {
   document.documentElement.lang = language === 'zh' ? 'zh-Hans' : 'en';
   for (const [node, en] of staticCopy) node.textContent = tr(en, node.dataset.zh);
@@ -103,6 +113,12 @@ function localize() {
   $('editions').setAttribute('aria-label', tr('Collection', '藏品版本'));
   $('history-example').href = recordUrl(8925, 'o-8925', 'archive');
   $('history-example').hidden = historical;
+  $('compare-open').href = compareUrl(null, null, null, language);
+  if (comparison) {
+    document.title = tr('Before the merge · Squeek Family Album', '合并前对比 · 仓鼠家谱');
+    document.querySelector('.skip').textContent = tr('Skip to comparison', '跳到合并预览');
+    comparison.localize();
+  }
   $(historical ? 'archive-edition' : 'current-edition').setAttribute('aria-current', 'page');
   editionLinks();
   $('enlarge').setAttribute('aria-label', tr('Enlarge original portrait', '放大原始画像'));
@@ -499,17 +515,23 @@ for (const role of ['survivor', 'donor']) {
   button.addEventListener('click', () => openRecord(id, role === 'survivor' ? featured.stage : 'o-' + id, 'pushState'));
 }
 window.addEventListener('popstate', () => {
-  if (routeEdition() !== edition) { location.reload(); return; }
+  if (routeEdition() !== edition || (params().get('view') === 'compare') !== comparing) { location.reload(); return; }
   const l = params().get('lang');
   if (['en', 'zh'].includes(l)) language = l;
   localize();
-  navigateFromUrl();
+  if (comparison) comparison.fromRoute();
+  else navigateFromUrl();
 });
 $('lang').addEventListener('click', () => {
   language = tr('zh', 'en');
   try {
     localStorage.setItem('squeek-album-language', language);
   } catch {}
+  if (comparison) {
+    comparison.changeLanguage();
+    localize();
+    return;
+  }
   const incoming = params();
   const id = selected?.id ?? tokenNumber(incoming.get('id'), archive?.issued ?? 9999);
   const pendingStage = incoming.get('stage');
@@ -543,25 +565,35 @@ function openPortrait() {
   $('art-dialog').showModal();
 }
 $('enlarge').addEventListener('click', openPortrait);
-$('share').addEventListener('click', async () => {
+$('share').addEventListener('click', () => {
   if (!family || !selectedArt) return;
-  const ticket = ++shareNo,
-    id = selected.id;
-  shareUrl = recordUrl(id, selected.key);
+  const id = selected.id;
+  const card = { selected, family, portrait: selectedArt, artFor, historical, deployment, zh: language === 'zh' };
+  openCard({
+    url: recordUrl(id, selected.key), title: tr('Family card', '家谱卡'), kind: tr('SHARE FAMILY CARD', '分享家谱卡'),
+    alt: tr('Family card for Squeek #', 'Squeek 家谱卡 #') + id,
+    filename: 'squeek-' + edition + '-family-' + id + '.png', draw: () => familyCard(card),
+  });
+});
+async function openCard({ url, title, kind, alt, filename, draw }) {
+  const ticket = ++shareNo;
+  shareUrl = url;
+  $('card-title').textContent = title;
+  $('card-kind').textContent = kind;
   $('card-preview').hidden = true;
   $('save-card').hidden = true;
   $('card-status').textContent = tr('Drawing the original portraits…', '正在绘制家谱卡…');
   $('share-dialog').showModal();
   try {
-    const blob = await familyCard({ selected, family, portrait: selectedArt, artFor, historical, deployment, zh: language === 'zh' });
+    const blob = await draw();
     if (ticket !== shareNo || !$('share-dialog').open) return;
     if (shareBlob) URL.revokeObjectURL(shareBlob);
     shareBlob = URL.createObjectURL(blob);
     $('card-preview').src = shareBlob;
-    $('card-preview').alt = tr('Family card for Squeek #', 'Squeek 家谱卡 #') + id;
+    $('card-preview').alt = alt;
     $('card-preview').hidden = false;
     $('save-card').href = shareBlob;
-    $('save-card').download = 'squeek-' + edition + '-family-' + id + '.png';
+    $('save-card').download = filename;
     $('save-card').hidden = false;
     $('card-status').textContent = '';
   } catch {
@@ -571,7 +603,7 @@ $('share').addEventListener('click', async () => {
         '未能生成图片，可以复制档案链接。',
       );
   }
-});
+}
 $('share-dialog').addEventListener('close', () => {
   if ($('share-dialog').open) return;
   shareNo++;
@@ -600,6 +632,7 @@ new ResizeObserver((entries) => {
   }
 }).observe($('tree-viewport'));
 localize();
+if (comparison) comparison.fromRoute();
 try {
   if (edition !== 'archive' && edition !== 'current') throw new Error('Unknown collection');
   const response = await fetch(historical ? './data/archive.json' : './data/current.json');
@@ -609,7 +642,9 @@ try {
   index = snapshotIndex(bundled);
   archive = bundled;
   renderFreshness();
-  navigateFromUrl();
+  if (comparison) {
+    if (!historical) comparison.setSnapshot(archive, index);
+  } else navigateFromUrl();
   if (!historical) refreshIndex(archive)
     .then((latest) => {
       const changed = latest.events.length !== archive.events.length;
@@ -620,8 +655,9 @@ try {
       if (changed) {
         artPromises.clear();
         verifiedLive.clear();
-        navigateFromUrl();
+        if (!comparison) navigateFromUrl();
       }
+      if (comparison) comparison.setSnapshot(archive, index);
       renderFreshness();
       renderNotices();
     })
@@ -632,4 +668,5 @@ try {
 } catch {
   notice = 'seed';
   renderNotices();
+  if (comparison && edition === 'current') comparison.unavailable();
 }

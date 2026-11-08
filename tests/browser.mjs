@@ -6,6 +6,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 import { browserRegressions } from './browser-regressions.mjs';
+import { scanCard } from './card-scan.mjs';
+import { compareRegressions } from './compare-browser.mjs';
 import { CURRENT, HISTORICAL } from '../dist/receipts.js';
 
 const qa = fileURLToPath(new URL('../.qa/', import.meta.url));
@@ -79,6 +81,15 @@ async function exportFeaturedCard(page, id) {
   const png = await readFile(dest);
   assert.equal(png.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
   assert.deepEqual([png.readUInt32BE(16), png.readUInt32BE(20)], [1120, 716]);
+  const stage = await page.locator('.tree-node[aria-pressed=true]').getAttribute('data-key');
+  const lang = await page.locator('html').getAttribute('lang');
+  const route = await scanCard(page, png, { release: CURRENT.release, id, stage, lang: lang.startsWith('zh') ? 'zh' : 'en' }, base);
+  const scanned = watch(await page.context().newPage());
+  await scanned.goto(route);
+  await ready(scanned, id);
+  assert.equal(await scanned.locator('.tree-node[aria-pressed=true]').getAttribute('data-key'), stage);
+  assert.equal(await scanned.locator('html').getAttribute('lang'), lang);
+  await scanned.close();
   await page.keyboard.press('Escape');
 }
 async function fit(page) {
@@ -144,7 +155,9 @@ try {
   assert.equal(new URL(link).searchParams.get('stage'), 'o-8925');
   await p.keyboard.press('Escape');
   const deep = watch(await ctx.newPage());
-  await deep.goto(link);
+  const historicalRoute = await scanCard(p, png, { release: HISTORICAL.release, id: 8925, stage: 'o-8925', lang: 'en' }, base);
+  assert.equal(new URL(historicalRoute).search, new URL(link).search);
+  await deep.goto(historicalRoute);
   await ready(deep, 8925);
   assert.equal(await deep.locator('[aria-pressed=true]').getAttribute('data-key'), 'o-8925');
   await deep.close();
@@ -312,6 +325,7 @@ try {
     console.log('Same-origin pack restored #' + packedDonor + ', exported its card, and rejected a corrupted original.');
   }
   await browserRegressions(browser, base, bundled);
+  await compareRegressions({ browser, base, qa, ready, fit, accessibility, watch });
   assert.deepEqual(errors, []);
   console.log(
     'Desktop, mobile, keyboard, original image, ledger, PNG, clipboard, deep link, language and offline checks passed',

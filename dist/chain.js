@@ -180,7 +180,7 @@ function tokenMetadata(hex) {
 export async function lostPortrait(id, event, seed) {
   return contractPortrait(id, event.block - 1, seed, 'archive');
 }
-async function contractPortrait(id, block, seed, source) {
+export async function contractPortrait(id, block, seed, source) {
   const deployment = deploymentFor(seed);
   for (const rpc of ARCHIVES) {
     try {

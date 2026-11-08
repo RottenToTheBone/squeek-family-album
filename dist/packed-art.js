@@ -53,6 +53,13 @@ async function original(bytes, id, record) {
   return { ...record, url: svgImage('data:image/svg+xml;base64,' + btoa(binary), id) };
 }
 
+export async function bundledPortrait(id, record, safeBlock) {
+  if (record.pack) return packedPortrait(id, record, safeBlock);
+  const path = 'current-art/' + id + '.svg';
+  if (record.file !== path) throw new Error('Unexpected original path');
+  return original(await read(path, 1_000_000), id, record);
+}
+
 export async function packedPortrait(id, record, safeBlock) {
   const path = 'current-packs/' + Math.floor(id / 128) + '.json';
   if (!Number.isInteger(id) || id < 1 || id > 9999 || !Number.isSafeInteger(safeBlock) ||

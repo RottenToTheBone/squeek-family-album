@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 
-STATIC = ("index.html", "app.css", "app.js", "chain.js", "lineage.js", "receipts.js", "share.js",
+STATIC = ("index.html", "app.css", "app.js", "chain.js", "lineage.js", "receipts.js", "share.js", "compare.js", "qr.js",
           "svg.js", "packed-art.js", "mark.svg", "cover.png", "social-cover.png",
           "data/archive.json", "data/current.json")
 
