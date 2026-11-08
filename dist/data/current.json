@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-08T02:03:00.000Z",
-  "safeBlock": 12087667,
-  "safeBlockHash": "0xecc1ef0ad24866c9ac51461080ba40152000bce80ee29dfe28b1b80cfa3d49a4",
+  "asOf": "2026-11-08T03:00:36.000Z",
+  "safeBlock": 12087941,
+  "safeBlockHash": "0x537cb582ee24173e397705cb304400793dc8cd126bf2aa6a857444496ca9a1f2",
   "issued": 9999,
-  "burned": 2113,
-  "live": 7886,
+  "burned": 2114,
+  "live": 7885,
   "events": [
     {
       "survivor": 942,
@@ -19026,6 +19026,15 @@
       "logIndex": 41,
       "tx": "0x601d5affa62e3a281d9f444d85c89b2f9f763922cfd33e6ff77ef1b2973596e8",
       "at": "2026-11-08T01:35:12.000Z"
+    },
+    {
+      "survivor": 3639,
+      "donor": 3637,
+      "level": 2,
+      "block": 12087878,
+      "logIndex": 2193,
+      "tx": "0xe601d2c9c3e294f33333920a1cdb17ebfa2b4aaad68d68b81f83fbf0e01e42ec",
+      "at": "2026-11-08T02:47:48.000Z"
     }
   ],
   "portraits": {
@@ -34117,12 +34126,28 @@
       "sha256": "77abdac2b37b9ec58702f4aef4a2274fce857f6825622a665866cc033122d27b",
       "palette": "Spectral Electric Cyan"
     },
+    "3637": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/3637.svg",
+      "block": 12087877,
+      "source": "archive",
+      "sha256": "9be0b2b1192cb8f7d3fc6c4be122ee42fd9c00236e157d08bde448c9f9c0fff7",
+      "palette": "Electric Cyan",
+      "pack": "current-packs/28.json"
+    },
     "3638": {
       "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/3638.svg",
       "block": 12080165,
       "source": "chain",
       "sha256": "de7eb04e5e65622357e87dee35db59f10a2549c86e2fc2db8f08a981092a8870",
       "palette": "Void Violet",
+      "pack": "current-packs/28.json"
+    },
+    "3639": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/3639.svg",
+      "block": 12087941,
+      "source": "chain",
+      "sha256": "bfa19d82936fbe7e29adcd00ebfbd3dda9c0c5f821af96a9916551aa6b6a618d",
+      "palette": "Spectral Hot Magenta",
       "pack": "current-packs/28.json"
     },
     "3640": {
