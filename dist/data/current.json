@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-08T12:04:36.000Z",
-  "safeBlock": 12090481,
-  "safeBlockHash": "0xaf7cabb2f5a8335ef8c80fdf94bee779f2143e38d0a006f0cd0fd68750b79761",
+  "asOf": "2026-11-08T12:36:12.000Z",
+  "safeBlock": 12090630,
+  "safeBlockHash": "0xe3fd9deedd0a31f49d4cb716337a0d0f90c7cefd7db408c44cb126a8d51152dc",
   "issued": 9999,
-  "burned": 2240,
-  "live": 7759,
+  "burned": 2241,
+  "live": 7758,
   "events": [
     {
       "survivor": 942,
@@ -20169,6 +20169,15 @@
       "logIndex": 340,
       "tx": "0xc02d16124d937253cb050c0df87fc7d33bad7ad02abe5652995124ba68059247",
       "at": "2026-11-08T12:03:12.000Z"
+    },
+    {
+      "survivor": 8241,
+      "donor": 8239,
+      "level": 2,
+      "block": 12090580,
+      "logIndex": 314,
+      "tx": "0x20af11a4d9247c6fd20f3d3940e20b273ff5c40b89a2561315900b66ea9ac08f",
+      "at": "2026-11-08T12:25:48.000Z"
     }
   ],
   "portraits": {
@@ -50568,11 +50577,27 @@
       "palette": "Hot Magenta",
       "pack": "current-packs/64.json"
     },
+    "8239": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/8239.svg",
+      "block": 12090579,
+      "source": "archive",
+      "sha256": "a99be79fba92b6182291610d1f1b5ca527f52ec3df032160b8708686678b1e81",
+      "palette": "Spectral Electric Cyan",
+      "pack": "current-packs/64.json"
+    },
     "8240": {
       "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/8240.svg",
       "block": 12090314,
       "source": "archive",
       "sha256": "72c18933786bc50938802e2340207765951fa143ad4946607c2bbb32e68a15e7",
+      "palette": "Hot Magenta",
+      "pack": "current-packs/64.json"
+    },
+    "8241": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/8241.svg",
+      "block": 12090630,
+      "source": "chain",
+      "sha256": "f55a5452041115e4e6bb77c78a45e162dd570e0fba31d4d5592b0cd26b14107a",
       "palette": "Hot Magenta",
       "pack": "current-packs/64.json"
     },
