@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-08T22:06:12.000Z",
-  "safeBlock": 12093303,
-  "safeBlockHash": "0xae0da7fad4633962d41c7f58e54115ce72591e6e2d4da2687d59b4a46efc254e",
+  "asOf": "2026-11-08T22:38:00.000Z",
+  "safeBlock": 12093449,
+  "safeBlockHash": "0x98fb9ff55335b732a97ac8b125223294457e2e1bbe4caa0ca52c1d9be6f4642f",
   "issued": 9999,
-  "burned": 2284,
-  "live": 7715,
+  "burned": 2285,
+  "live": 7714,
   "events": [
     {
       "survivor": 942,
@@ -20565,6 +20565,15 @@
       "logIndex": 224,
       "tx": "0x69e4e5febc2404bf62056fcda1133d6bd9e5d13dc36d9a10ec1082a1ec004acd",
       "at": "2026-11-08T21:47:12.000Z"
+    },
+    {
+      "survivor": 678,
+      "donor": 680,
+      "level": 3,
+      "block": 12093335,
+      "logIndex": 110,
+      "tx": "0x53d1d959ae5625223b0183b2431d4059678a6bff0370bbe38a8743a6d1ff2a0c",
+      "at": "2026-11-08T22:12:48.000Z"
     }
   ],
   "portraits": {
@@ -24108,8 +24117,8 @@
     },
     "680": {
       "file": "current-art/680.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12093334,
+      "source": "archive",
       "sha256": "fe79b5b7ea17606ebeccbdc0b6c87328f72d4db750dd61e2db124ea42d359eb7",
       "palette": "Spectral Ice White"
     },
