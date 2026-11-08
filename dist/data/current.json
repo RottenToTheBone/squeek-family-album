@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-08T18:09:24.000Z",
-  "safeBlock": 12092196,
-  "safeBlockHash": "0x459da70c02e399f1caba2a08204cb1dcf14eb6b8f4519e88f962a4bea9732acd",
+  "asOf": "2026-11-08T18:35:00.000Z",
+  "safeBlock": 12092317,
+  "safeBlockHash": "0x4f65dea060ff16cf2a96cdf824aba6d98b3219f4bdaa11eb7f6ce9d1441c69fd",
   "issued": 9999,
-  "burned": 2276,
-  "live": 7723,
+  "burned": 2277,
+  "live": 7722,
   "events": [
     {
       "survivor": 942,
@@ -20493,6 +20493,15 @@
       "logIndex": 39,
       "tx": "0x12798c85fc661217fdd4934de4d8c2b76925276dc51423db3c15c9d7cf447125",
       "at": "2026-11-08T18:00:24.000Z"
+    },
+    {
+      "survivor": 4969,
+      "donor": 4970,
+      "level": 2,
+      "block": 12092237,
+      "logIndex": 235,
+      "tx": "0xe604dc07bb346010edd8cac8133001e4cd0abc81415b3d4d436bcb78377e8160",
+      "at": "2026-11-08T18:17:48.000Z"
     }
   ],
   "portraits": {
@@ -41390,6 +41399,22 @@
       "source": "archive",
       "sha256": "a7ac524f8f161d3a8ce1b938e152ce7cbd70604ddd14baee8db8c51007150bc3",
       "palette": "Spectral Acid Lime"
+    },
+    "4969": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/4969.svg",
+      "block": 12092317,
+      "source": "chain",
+      "sha256": "038f50dcc8b65cba609e1968a905c4a38374baddba6547ca329a1f2c09aee85f",
+      "palette": "Spectral Void Violet",
+      "pack": "current-packs/38.json"
+    },
+    "4970": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/4970.svg",
+      "block": 12092236,
+      "source": "archive",
+      "sha256": "caa9e6ec5ecedeb73dd3b86eb6da77f7499d94fe4ee43ff2d2d01e7f97673a71",
+      "palette": "Void Violet",
+      "pack": "current-packs/38.json"
     },
     "4981": {
       "file": "current-art/4981.svg",
