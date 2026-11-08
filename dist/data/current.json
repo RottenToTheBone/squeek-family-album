@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-08T03:32:36.000Z",
-  "safeBlock": 12088087,
-  "safeBlockHash": "0x982538281a8a98a02fa3f73613a19c2a2a00a96c90ece0e5bc4ee26e71b3bdb9",
+  "asOf": "2026-11-08T03:58:12.000Z",
+  "safeBlock": 12088204,
+  "safeBlockHash": "0xcdbf03609e32c6d9bf7ccc4282f3dee4107593409aa443b62939a4c30493cdc9",
   "issued": 9999,
-  "burned": 2118,
-  "live": 7881,
+  "burned": 2119,
+  "live": 7880,
   "events": [
     {
       "survivor": 942,
@@ -19071,6 +19071,15 @@
       "logIndex": 79,
       "tx": "0x75193da7a2d073f904bc9d16f32c53f7dd45ef2bfe08626e80e4d0de17d065be",
       "at": "2026-11-08T03:32:12.000Z"
+    },
+    {
+      "survivor": 7954,
+      "donor": 7955,
+      "level": 2,
+      "block": 12088164,
+      "logIndex": 10,
+      "tx": "0x096c95e4c3cce65f3b5815fd441b87f28ebb9a552eef4cd728adb39d27047ca1",
+      "at": "2026-11-08T03:49:24.000Z"
     }
   ],
   "portraits": {
@@ -46877,6 +46886,22 @@
       "source": "archive",
       "sha256": "22b2e80e2ddf1362c3442a13ffd7334148938d09d40be881c4fbfd233e0d8dfe",
       "palette": "Ice White"
+    },
+    "7954": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/7954.svg",
+      "block": 12088204,
+      "source": "chain",
+      "sha256": "46778697b553873245ef7b0cb5ffa3ca18228da22251a3fd97f11c8a6999e4a1",
+      "palette": "Spectral Gold",
+      "pack": "current-packs/62.json"
+    },
+    "7955": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/7955.svg",
+      "block": 12088163,
+      "source": "archive",
+      "sha256": "84daa3eadd16c48341ce0b28a5d36f074d16f59ad3b70396fa5d4225245fd20f",
+      "palette": "Spectral Hot Magenta",
+      "pack": "current-packs/62.json"
     },
     "7956": {
       "file": "current-art/7956.svg",
