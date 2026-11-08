@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-08T07:03:36.000Z",
-  "safeBlock": 12089078,
-  "safeBlockHash": "0xc47fd08877ebb8da76e5126ed1b752bb7969306b86d83aed8730de92d8fdf99f",
+  "asOf": "2026-11-08T07:29:24.000Z",
+  "safeBlock": 12089200,
+  "safeBlockHash": "0x5ce177d1ac8a463f59011eb6e467b835b5759d15f1030f98c14cd228335fce59",
   "issued": 9999,
-  "burned": 2193,
-  "live": 7806,
+  "burned": 2194,
+  "live": 7805,
   "events": [
     {
       "survivor": 942,
@@ -19746,6 +19746,15 @@
       "logIndex": 72,
       "tx": "0x74521f5154184347822d96e48f677b764a9564c33bc64d280d3ac87fb7c81a89",
       "at": "2026-11-08T06:35:12.000Z"
+    },
+    {
+      "survivor": 3851,
+      "donor": 3852,
+      "level": 2,
+      "block": 12089089,
+      "logIndex": 235,
+      "tx": "0x44399af7fb9c2925d3f3d2d2435c8f7ac8d7a1b877cd30f20b0130151df9967f",
+      "at": "2026-11-08T07:06:12.000Z"
     }
   ],
   "portraits": {
@@ -36425,6 +36434,22 @@
       "source": "archive",
       "sha256": "8bd5ed1d425c223940eb5d0233a63b2400c7a8e28c2938274b6dc05b91297739",
       "palette": "Spectral Hot Magenta"
+    },
+    "3851": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/3851.svg",
+      "block": 12089200,
+      "source": "chain",
+      "sha256": "d9b08c3f12c7616ba4c20a170a7aede027b507e069579db3aee18a6e827aa675",
+      "palette": "Reactor Red",
+      "pack": "current-packs/30.json"
+    },
+    "3852": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/3852.svg",
+      "block": 12089088,
+      "source": "archive",
+      "sha256": "f8b45db1fa33566a4b89dd63e2d9206d983a8dd151670b9096b847d3dd530672",
+      "palette": "Spectral Hot Magenta",
+      "pack": "current-packs/30.json"
     },
     "3855": {
       "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/3855.svg",
