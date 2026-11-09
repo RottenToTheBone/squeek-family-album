@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-09T03:07:00.000Z",
-  "safeBlock": 12094735,
-  "safeBlockHash": "0x3097849ecfb0e0c63c578b8b74de3eb37bab20a6cfa9fa6c5efe8912afb31e2f",
+  "asOf": "2026-11-09T03:39:00.000Z",
+  "safeBlock": 12094895,
+  "safeBlockHash": "0x843ff934e40bcffd70d3c2e328a72467958415ff8ce3c418c039ca6b7d5a79af",
   "issued": 9999,
-  "burned": 2357,
-  "live": 7642,
+  "burned": 2361,
+  "live": 7638,
   "events": [
     {
       "survivor": 942,
@@ -21222,6 +21222,42 @@
       "logIndex": 175,
       "tx": "0xd85670344449a12a11c05cf720eb1c3d0512717e6523ef0eae52239119ef04a2",
       "at": "2026-11-09T03:05:36.000Z"
+    },
+    {
+      "survivor": 1047,
+      "donor": 1046,
+      "level": 2,
+      "block": 12094804,
+      "logIndex": 222,
+      "tx": "0xf2b77726501d7a0a2ad279d3ee2f34d7d085688f645c5061f54fa7d3ac0a67fe",
+      "at": "2026-11-09T03:20:48.000Z"
+    },
+    {
+      "survivor": 1048,
+      "donor": 1050,
+      "level": 2,
+      "block": 12094828,
+      "logIndex": 244,
+      "tx": "0xd472f65bf653496a82b71157ca772fee0a552c059fb21478122005e4cb7970b2",
+      "at": "2026-11-09T03:25:36.000Z"
+    },
+    {
+      "survivor": 7136,
+      "donor": 7138,
+      "level": 3,
+      "block": 12094849,
+      "logIndex": 81,
+      "tx": "0xc793eac0da061e8934988af434ae1ad7fdd9b170916068a3ed489b5b87a24aad",
+      "at": "2026-11-09T03:29:48.000Z"
+    },
+    {
+      "survivor": 1238,
+      "donor": 1241,
+      "level": 3,
+      "block": 12094868,
+      "logIndex": 145,
+      "tx": "0x4612fddba901315cdb2949820e608554dadcb11b81847dbdf5248ef9d3e72842",
+      "at": "2026-11-09T03:33:36.000Z"
     }
   ],
   "portraits": {
@@ -26567,12 +26603,44 @@
       "sha256": "faec085e51549aa4e19ea8e913c0b641a1058b42bcfdb746f1d8f4da27623d41",
       "palette": "Electric Cyan"
     },
+    "1046": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/1046.svg",
+      "block": 12094803,
+      "source": "archive",
+      "sha256": "9123e0e8d3c7b4489f342f7568502680ddccea2504eb0da14128a7e2d19e8b49",
+      "palette": "Hot Magenta",
+      "pack": "current-packs/8.json"
+    },
+    "1047": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/1047.svg",
+      "block": 12094895,
+      "source": "chain",
+      "sha256": "e426c8f3d65f898d7e1ab159bef28a7ae68fec50d7eb579f732f3f740af39a5c",
+      "palette": "Acid Lime",
+      "pack": "current-packs/8.json"
+    },
+    "1048": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/1048.svg",
+      "block": 12094895,
+      "source": "chain",
+      "sha256": "0322a649f29be9efab2127f505425d3d9f732edc0d3440dd59e1905acb02e147",
+      "palette": "Gold",
+      "pack": "current-packs/8.json"
+    },
     "1049": {
       "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/1049.svg",
       "block": 12094590,
       "source": "archive",
       "sha256": "d47318ab51a2d36376581cd5e232b4cd249de314670f9267afe32d7dbe74eaf9",
       "palette": "Spectral Reactor Red",
+      "pack": "current-packs/8.json"
+    },
+    "1050": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/1050.svg",
+      "block": 12094827,
+      "source": "archive",
+      "sha256": "bcbbda493c0fdba9a3a09943da20a5019c92fe92a5b2a9c8bc1e2ba271204928",
+      "palette": "Spectral Ice White",
       "pack": "current-packs/8.json"
     },
     "1051": {
@@ -27286,8 +27354,8 @@
     },
     "1241": {
       "file": "current-art/1241.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12094867,
+      "source": "archive",
       "sha256": "7348fc27b509db64b627db90531258a521da68b577765beb9d000cb65568b291",
       "palette": "Reactor Red"
     },
@@ -48999,8 +49067,8 @@
     },
     "7138": {
       "file": "current-art/7138.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12094848,
+      "source": "archive",
       "sha256": "833cd7ce5136461a02a38582ca60f638185c1b1a893d6f649212896342fc393d",
       "palette": "Spectral Reactor Red"
     },
