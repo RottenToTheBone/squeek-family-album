@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-08T23:55:00.000Z",
-  "safeBlock": 12093815,
-  "safeBlockHash": "0x4b339e4ca478fb0b9ab9fc9c6b557f31de19b2dd68fa7c0289980d4c46525c02",
+  "asOf": "2026-11-09T00:39:48.000Z",
+  "safeBlock": 12094024,
+  "safeBlockHash": "0x8cf58322f0d2640b7e9b3f990df0d51e70a844591d1e4e25ff2863825af80be8",
   "issued": 9999,
-  "burned": 2309,
-  "live": 7690,
+  "burned": 2318,
+  "live": 7681,
   "events": [
     {
       "survivor": 942,
@@ -20790,6 +20790,87 @@
       "logIndex": 35,
       "tx": "0xdaee2682270701f4eea36839ee4eb34a073ec106546b1db07a01526d27b76c18",
       "at": "2026-11-08T23:47:12.000Z"
+    },
+    {
+      "survivor": 7995,
+      "donor": 7993,
+      "level": 3,
+      "block": 12093893,
+      "logIndex": 5,
+      "tx": "0x2f1c4c5e021c84205204579a439b3d72f051ebd97713da685a727b5d1f1a6ea0",
+      "at": "2026-11-09T00:11:36.000Z"
+    },
+    {
+      "survivor": 5241,
+      "donor": 5242,
+      "level": 3,
+      "block": 12093915,
+      "logIndex": 44,
+      "tx": "0x0c7d732d4a2ef3e78083666805047ffd13436c28a5d413a08d5ce4b40573833b",
+      "at": "2026-11-09T00:16:24.000Z"
+    },
+    {
+      "survivor": 5244,
+      "donor": 5503,
+      "level": 3,
+      "block": 12093922,
+      "logIndex": 86,
+      "tx": "0x8dfb6032cca9b4b9dec51e082013be7a4c48524f9169754d10f9bc954ece5a0c",
+      "at": "2026-11-09T00:17:48.000Z"
+    },
+    {
+      "survivor": 5702,
+      "donor": 5734,
+      "level": 3,
+      "block": 12093930,
+      "logIndex": 84,
+      "tx": "0xa65c391650848d9e2cca03078f3563a1f0a3b55917ad3af395c03463ed38c7ac",
+      "at": "2026-11-09T00:19:24.000Z"
+    },
+    {
+      "survivor": 6012,
+      "donor": 5504,
+      "level": 3,
+      "block": 12093935,
+      "logIndex": 117,
+      "tx": "0xf2e69f665c54e206f138295fdaa065c492907a26a9ade2a88371d4f462c7dcc2",
+      "at": "2026-11-09T00:20:24.000Z"
+    },
+    {
+      "survivor": 5894,
+      "donor": 5704,
+      "level": 3,
+      "block": 12093941,
+      "logIndex": 32,
+      "tx": "0x6fac1b63534eb7cbd7dadde30eb710aea7b094ecaa76a9c427079a2c5cd1810d",
+      "at": "2026-11-09T00:21:36.000Z"
+    },
+    {
+      "survivor": 6128,
+      "donor": 5733,
+      "level": 3,
+      "block": 12093946,
+      "logIndex": 162,
+      "tx": "0x2f2ab00c1dadc6ac4989ba4b5d70d3c87735468798d977d1b8ffbf6b412e56ec",
+      "at": "2026-11-09T00:22:48.000Z"
+    },
+    {
+      "survivor": 6014,
+      "donor": 5897,
+      "level": 3,
+      "block": 12093950,
+      "logIndex": 22,
+      "tx": "0x2193a52701f8600cd5d81bd38a05c861948a1b0b4a9bad2059a96e2da131a65b",
+      "at": "2026-11-09T00:23:36.000Z"
+    },
+    {
+      "survivor": 1855,
+      "donor": 1856,
+      "level": 2,
+      "block": 12093967,
+      "logIndex": 12,
+      "tx": "0xdd06be1be5edd3d52fda9bd509943379c83b6662ec85e1eb47650f37b1c4f905",
+      "at": "2026-11-09T00:27:24.000Z"
     }
   ],
   "portraits": {
@@ -30040,6 +30121,22 @@
       "source": "archive",
       "sha256": "b47e73c3659a40a09016e3ef7f4cea8634f379cc45a05c5dab01bf230abf1224",
       "palette": "Spectral Void Violet",
+      "pack": "current-packs/14.json"
+    },
+    "1855": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/1855.svg",
+      "block": 12094024,
+      "source": "chain",
+      "sha256": "674776a991a69ab4544dbb40e25b73afe6f12ab25f864b363ec939b9687ba791",
+      "palette": "Spectral Electric Cyan",
+      "pack": "current-packs/14.json"
+    },
+    "1856": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/1856.svg",
+      "block": 12093966,
+      "source": "archive",
+      "sha256": "d4108bc8656be9d282ee7051f26b41517f2485c7c55f9ad67b11396545cc59ab",
+      "palette": "Spectral Electric Cyan",
       "pack": "current-packs/14.json"
     },
     "1858": {
@@ -42788,8 +42885,8 @@
     },
     "5242": {
       "file": "current-art/5242.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12093914,
+      "source": "archive",
       "sha256": "bd9b7ca2b147c8219ff8a8c9534aa112464ae3172af5003ed708ee1da75309ad",
       "palette": "Spectral Electric Cyan"
     },
@@ -43639,15 +43736,15 @@
     },
     "5503": {
       "file": "current-art/5503.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12093921,
+      "source": "archive",
       "sha256": "58cea3ad0edfc45a08afea362370e4e67ee007ad9ebd0b080aa2cbed7b9c18ef",
       "palette": "RGB"
     },
     "5504": {
       "file": "current-art/5504.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12093934,
+      "source": "archive",
       "sha256": "af405fe8c55e7b6270f92354a1b36ca88287fedcf4df2d98162eb5e5a0f0d06d",
       "palette": "Ice White"
     },
@@ -44134,8 +44231,8 @@
     },
     "5704": {
       "file": "current-art/5704.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12093940,
+      "source": "archive",
       "sha256": "1859920a34e9d095d5ed005577e1e13d0d67bfbb49726aa7176575b7f6cdf32c",
       "palette": "Spectral Acid Lime"
     },
@@ -44219,15 +44316,15 @@
     },
     "5733": {
       "file": "current-art/5733.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12093945,
+      "source": "archive",
       "sha256": "f5e27ebef97f480394f6e314ea70fe35a8ed2dd5d59020dbd5d394bc60aad49f",
       "palette": "Spectral Electric Cyan"
     },
     "5734": {
       "file": "current-art/5734.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12093929,
+      "source": "archive",
       "sha256": "957b5103cbc41ced6e899342bbac011eb3caa355fd15958f65d5f434a3a992ac",
       "palette": "Spectral Ice White"
     },
@@ -44855,8 +44952,8 @@
     },
     "5897": {
       "file": "current-art/5897.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12093949,
+      "source": "archive",
       "sha256": "4975e4cfa6373e7d6006474c0ceaf7cb546f449f3d2827291e410da50ef154d9",
       "palette": "Gold"
     },
@@ -51106,8 +51203,8 @@
     },
     "7993": {
       "file": "current-art/7993.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12093892,
+      "source": "archive",
       "sha256": "4b2b65412bf282562db062210a6695ee28c4e19e93a9c4afc714084e96b42bc9",
       "palette": "Electric Cyan"
     },
