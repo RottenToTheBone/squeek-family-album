@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-09T03:39:00.000Z",
-  "safeBlock": 12094895,
-  "safeBlockHash": "0x843ff934e40bcffd70d3c2e328a72467958415ff8ce3c418c039ca6b7d5a79af",
+  "asOf": "2026-11-09T04:11:00.000Z",
+  "safeBlock": 12095054,
+  "safeBlockHash": "0xd879b3ec8d4752e10b2d63b542b10d478e8c8d7b296137b198c1ce4f5aa81f82",
   "issued": 9999,
-  "burned": 2361,
-  "live": 7638,
+  "burned": 2362,
+  "live": 7637,
   "events": [
     {
       "survivor": 942,
@@ -21258,6 +21258,15 @@
       "logIndex": 145,
       "tx": "0x4612fddba901315cdb2949820e608554dadcb11b81847dbdf5248ef9d3e72842",
       "at": "2026-11-09T03:33:36.000Z"
+    },
+    {
+      "survivor": 6730,
+      "donor": 6732,
+      "level": 3,
+      "block": 12095024,
+      "logIndex": 122,
+      "tx": "0xbaa9d66024289e25cfe43933aa6b1133c4a6621ec23c3a0e80cc4a0a88a4e48d",
+      "at": "2026-11-09T04:05:00.000Z"
     }
   ],
   "portraits": {
@@ -47771,8 +47780,8 @@
     },
     "6732": {
       "file": "current-art/6732.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12095023,
+      "source": "archive",
       "sha256": "f9a15c08b985dff0f987813210bdaf4ca8725a253e4e1ae02180ad8eb8e99a39",
       "palette": "Spectral Reactor Red"
     },
