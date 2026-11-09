@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-09T05:59:48.000Z",
-  "safeBlock": 12095593,
-  "safeBlockHash": "0x9aa1e68072e44dd37de349d994f04d1deda5f7b858814780a7efd4b0e97c9d7c",
+  "asOf": "2026-11-09T06:38:12.000Z",
+  "safeBlock": 12095784,
+  "safeBlockHash": "0x109bd3917b5ffc7a60e9561e9f2227c0a65be7a316ca3bf81ee8e04a3ccd1cf9",
   "issued": 9999,
-  "burned": 2410,
-  "live": 7589,
+  "burned": 2419,
+  "live": 7580,
   "events": [
     {
       "survivor": 942,
@@ -21699,6 +21699,87 @@
       "logIndex": 48,
       "tx": "0x49a546e453261d3e1c883ca8d6af5a8369f274da24f6762d07e34cf7cc2d3efe",
       "at": "2026-11-09T05:51:36.000Z"
+    },
+    {
+      "survivor": 6493,
+      "donor": 6495,
+      "level": 3,
+      "block": 12095651,
+      "logIndex": 4,
+      "tx": "0x84016440d425eedae0d803468afdb3e0846096ad91ab8534722235392bde8ea1",
+      "at": "2026-11-09T06:11:36.000Z"
+    },
+    {
+      "survivor": 1911,
+      "donor": 1914,
+      "level": 3,
+      "block": 12095653,
+      "logIndex": 121,
+      "tx": "0xe0a2120295c6b5af5b60969a22d5508b826a41492ccf0746b9520cf4ac791770",
+      "at": "2026-11-09T06:12:00.000Z"
+    },
+    {
+      "survivor": 3445,
+      "donor": 3446,
+      "level": 3,
+      "block": 12095691,
+      "logIndex": 5,
+      "tx": "0x68d4188727d2bd504a70debef32b501d43c9b1a1d6c7305196ad0dbdf09ee81d",
+      "at": "2026-11-09T06:19:36.000Z"
+    },
+    {
+      "survivor": 4403,
+      "donor": 4404,
+      "level": 2,
+      "block": 12095695,
+      "logIndex": 94,
+      "tx": "0x610d3fe74f97727e3576bfb0c14fb141bb983d5820d18af5f6fdf9dc5cd5ee0b",
+      "at": "2026-11-09T06:20:24.000Z"
+    },
+    {
+      "survivor": 4004,
+      "donor": 4006,
+      "level": 2,
+      "block": 12095699,
+      "logIndex": 11,
+      "tx": "0xfef949ed591f9fac7e1edf3cbc34601b841e9900326701828ce7f82b644b9032",
+      "at": "2026-11-09T06:21:12.000Z"
+    },
+    {
+      "survivor": 7495,
+      "donor": 7496,
+      "level": 3,
+      "block": 12095709,
+      "logIndex": 202,
+      "tx": "0x90786df500a06ad5bbf6acc88e4dc1af43ce166593e6771b06ed4ee161c5a88b",
+      "at": "2026-11-09T06:23:12.000Z"
+    },
+    {
+      "survivor": 8745,
+      "donor": 8743,
+      "level": 3,
+      "block": 12095723,
+      "logIndex": 66,
+      "tx": "0x6bc53ff12506dcba40b20018b8bc69527539e490dc1324efc021e79cd05a9cda",
+      "at": "2026-11-09T06:26:00.000Z"
+    },
+    {
+      "survivor": 3775,
+      "donor": 3777,
+      "level": 3,
+      "block": 12095733,
+      "logIndex": 90,
+      "tx": "0xed62cea13306fb98d5c5a8ea8a17851741ca4cb3f39ebcd0c6a455b5b3b4edcd",
+      "at": "2026-11-09T06:28:00.000Z"
+    },
+    {
+      "survivor": 8669,
+      "donor": 8667,
+      "level": 3,
+      "block": 12095774,
+      "logIndex": 140,
+      "tx": "0xeafc8fecc6eb3aa740ead35f38e29f449308645831dd8859d316e56e5750d217",
+      "at": "2026-11-09T06:36:12.000Z"
     }
   ],
   "portraits": {
@@ -31411,8 +31492,8 @@
     },
     "1914": {
       "file": "current-art/1914.svg",
-      "block": 12076946,
-      "source": "chain",
+      "block": 12095652,
+      "source": "archive",
       "sha256": "566edff8883050094dee59cf51fc6b1056d1f28a95b590d2804cf52a62802df0",
       "palette": "RGB"
     },
@@ -37612,8 +37693,8 @@
     },
     "3446": {
       "file": "current-art/3446.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12095690,
+      "source": "archive",
       "sha256": "0e0deb4a6b1c6d30a0c06e4a6f51186aee77293f9d92c971337984586d727557",
       "palette": "Spectral Reactor Red"
     },
@@ -38815,8 +38896,8 @@
     },
     "3777": {
       "file": "current-art/3777.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12095732,
+      "source": "archive",
       "sha256": "501705b6a21a29faedb0bf3e3d83e4613776d3f61a404740dd2567aa156f27bc",
       "palette": "Void Violet"
     },
@@ -39547,6 +39628,22 @@
       "source": "archive",
       "sha256": "cd74b6fe8345114e1ad3f30b5fb3202a2cd1728eb923372729edbc0ba519199b",
       "palette": "Spectral Hot Magenta",
+      "pack": "current-packs/31.json"
+    },
+    "4004": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/4004.svg",
+      "block": 12095784,
+      "source": "chain",
+      "sha256": "61838044a4de033718436579c8b6576a9aa6ddfccab5cf38775017ffd6747cd7",
+      "palette": "Void Violet",
+      "pack": "current-packs/31.json"
+    },
+    "4006": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/4006.svg",
+      "block": 12095698,
+      "source": "archive",
+      "sha256": "94f1540197c8c66a80966d0285ac4b81c3bb3749b0ca4fc70ee328dddcd08f11",
+      "palette": "Spectral Void Violet",
       "pack": "current-packs/31.json"
     },
     "4010": {
@@ -40919,6 +41016,22 @@
       "source": "chain",
       "sha256": "f7eced399afa090d85f875994eb93aad2ff76f7c8d98194115a1c0335c23400f",
       "palette": "Ice White",
+      "pack": "current-packs/34.json"
+    },
+    "4403": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/4403.svg",
+      "block": 12095784,
+      "source": "chain",
+      "sha256": "32b94d698a61806bea37cf9fd8e0cd4e1723958c8bf848d05af7d924b928bf04",
+      "palette": "Spectral Ice White",
+      "pack": "current-packs/34.json"
+    },
+    "4404": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/4404.svg",
+      "block": 12095694,
+      "source": "archive",
+      "sha256": "f2c8ec2419d30368665612ac8e6d690381ac83d73ee1968a64e75b11fd2e9ea2",
+      "palette": "Gold",
       "pack": "current-packs/34.json"
     },
     "4408": {
@@ -47782,8 +47895,8 @@
     },
     "6495": {
       "file": "current-art/6495.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12095650,
+      "source": "archive",
       "sha256": "e43615476a95816b3bd6ddc8fc8b366153c11fb2944babc413d50b3db91e6029",
       "palette": "Spectral Hot Magenta"
     },
@@ -50798,8 +50911,8 @@
     },
     "7496": {
       "file": "current-art/7496.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12095708,
+      "source": "archive",
       "sha256": "be0e6e918f2dc4c7fa783bb9c70e20b804963db67ab16a97fa3003efbf6b661c",
       "palette": "Spectral Reactor Red"
     },
@@ -54408,8 +54521,8 @@
     },
     "8667": {
       "file": "current-art/8667.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12095773,
+      "source": "archive",
       "sha256": "112cde7ef71413708a3e6d293092021c5c76efdc4837d5124ce4c092a8504c4f",
       "palette": "Ice White"
     },
@@ -54640,8 +54753,8 @@
     },
     "8743": {
       "file": "current-art/8743.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12095722,
+      "source": "archive",
       "sha256": "4c13e30e5bc8c41685bd5984b8a2b1a8c83635189c577423296dfec4b5350dc3",
       "palette": "Spectral Hot Magenta"
     },
