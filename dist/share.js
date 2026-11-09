@@ -28,6 +28,13 @@ export function comparisonLink({ keep, donor, at, zh }) {
   return publicLink({ release: CURRENT.release, view: 'compare', keep: tokenId(keep), donor: tokenId(donor), at }, zh);
 }
 
+export function replayLink({ event, zh }) {
+  const { block, logIndex } = event;
+  if (!Number.isSafeInteger(block) || block < 1 || !Number.isSafeInteger(logIndex) || logIndex < 0)
+    throw new Error('Invalid merge position');
+  return publicLink({ release: CURRENT.release, view: 'replay', event: 'm-' + block + '-' + logIndex, phase: 'after' }, zh);
+}
+
 async function imageAt(url) {
   const img = new Image();
   img.src = url;
@@ -238,5 +245,42 @@ export async function comparisonCard({ keep, donor, level, at, zh }) {
   text(word('Level ', '等级 ') + level + ' → ' + (level + 1), 775, 604, 22, mono, muted);
   text(word('Block ', '区块 ') + at, 775, 628, 17, mono, muted);
   text('SQUEEK FAMILY ALBUM  /  ' + CURRENT.release, 43, 679, 16);
+  return toPng(canvas);
+}
+
+export async function replayCard({ event, keep, donor, zh }) {
+  const link = replayLink({ event, zh });
+  if (keep.id !== event.survivor || donor.id !== event.donor || keep.id === donor.id ||
+      !Number.isInteger(event.level) || event.level < 2 || !/^0x[0-9a-f]{64}$/i.test(event.tx))
+    throw new Error('Merge and portraits do not match');
+  const [donorArt, keepArt] = await Promise.all([imageAt(donor.url), imageAt(keep.url)]);
+  const { canvas, c, text, word } = makeCard(zh);
+  const before = event.level - 1;
+  const block = value => value.toLocaleString(zh ? 'zh-CN' : 'en-US');
+
+  text(word('SQUEEK FAMILY ALBUM  /  MERGE RECORD', '仓鼠家谱  /  合并纪念卡'), 45, 72, 19);
+  text('ETHEREUM SEPOLIA', 877, 72, 17, mono, muted);
+  text(word('A portrait recovered.', '找回的原画'), 42, 154, 65, serif);
+
+  function portrait(image, id, x, color, caption, status) {
+    c.fillStyle = color;
+    c.fillRect(x, 184, 306, 330);
+    c.drawImage(image, x + 22, 204, 262, 262);
+    text(caption, x + 22, 494, 18, mono, paper);
+    text('#' + id, x, 571, 52, serif);
+    text(status, x + 2, 605, 20, mono, muted);
+  }
+  portrait(donorArt, donor.id, 43, '#293d2f', word('PRE-BURN ORIGINAL', '销毁前原画'),
+    word('Level ' + before + ' → burned', before + ' 级 → 已销毁'));
+  portrait(keepArt, keep.id, 382, '#485649', word('SURVIVING SQUEEK', '合并后保留'),
+    word('Level ' + before + ' → Level ' + event.level, before + ' 级 → ' + event.level + ' 级'));
+
+  await drawCode(c, link, 916, 199);
+  c.textAlign = 'center';
+  text(word('Scan to replay the merge', '扫码回看这次合并'), 916, 587, 19, mono, muted);
+  c.textAlign = 'left';
+  text(word('TRANSACTION', '交易凭据') + '  /  ' + word('Block ', '区块 ') + block(event.block) +
+    '  ·  ' + word('Log ', '日志 ') + event.logIndex, 45, 666, 16, mono, muted);
+  text(event.tx, 45, 690, 17);
   return toPng(canvas);
 }

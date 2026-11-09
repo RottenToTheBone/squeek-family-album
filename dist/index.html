@@ -52,9 +52,14 @@
           <p class="lede" data-zh="追溯一只 Squeek 的合并家谱，找回已经销毁的链上原画。">
             Trace a Squeek back to its originals. Recover the onchain portraits of the ones that were burned.
           </p>
-          <a id="compare-open" class="compare-open" href="?release=current&amp;view=compare">
-            <span data-zh="合并前对比">Compare before merging</span> <span aria-hidden="true">→</span>
-          </a>
+          <div class="intro-actions">
+            <a id="replay-open" class="primary" href="?release=core-sepolia-20261103&amp;view=replay&amp;event=m-12076748-87&amp;phase=after">
+              <span data-zh="找回 #7453 的原画">Recover #7453’s original portrait</span> <span aria-hidden="true">→</span>
+            </a>
+            <a id="compare-open" class="compare-open" href="?release=current&amp;view=compare">
+              <span data-zh="合并前对比">Compare before merging</span>
+            </a>
+          </div>
         </div>
         <div class="lookup">
           <nav class="editions" aria-label="Collection" id="editions">
@@ -184,6 +189,50 @@
           <h2 id="ledger-title" data-zh="合并明细">Merge ledger</h2>
         </div>
         <div id="ledger-body"></div>
+      </section>
+      <section id="replay-panel" class="replay-panel" aria-labelledby="replay-title" hidden>
+        <a id="replay-back" class="compare-back" href="./"><span aria-hidden="true">←</span> <span data-zh="返回家谱">Back to the album</span></a>
+        <header class="replay-heading">
+          <div class="eyebrow"><i class="line-id"></i><span data-zh="当前系列 · 合并回放">CURRENT COLLECTION · MERGE REPLAY</span></div>
+          <h1 id="replay-title" tabindex="-1" data-zh="找回 #7453 的原画">Recover #7453’s original portrait</h1>
+          <p class="lede" data-zh="合并后，#7458 保留了编号，#7453 被销毁。翻回前一个区块，还能看见两只 Squeek 当时的模样。">After the merge, #7458 kept its ID and #7453 was burned. Go back one block to see both Squeeks as they were.</p>
+        </header>
+        <p id="replay-status" class="replay-status" role="status"></p>
+        <div id="replay-result" hidden>
+          <div class="replay-toolbar">
+            <div id="replay-switch" class="replay-switch" role="group" aria-label="Replay phase">
+              <button type="button" id="replay-before" aria-controls="replay-frames" aria-pressed="false" data-zh="合并前">Before the merge</button>
+              <button type="button" id="replay-after" aria-controls="replay-frames" aria-pressed="false" data-zh="合并后">After the merge</button>
+            </div>
+            <span id="replay-phase-block" class="mono" aria-live="polite" aria-atomic="true"></span>
+          </div>
+          <div id="replay-frames" class="replay-frames">
+            <article class="replay-plate replay-plate-donor" aria-labelledby="replay-donor-title">
+              <div class="replay-plate-heading"><h2 id="replay-donor-title">#7453</h2><span id="replay-donor-state" class="replay-stamp"></span></div>
+              <div class="replay-mat"><img id="replay-donor-art" alt="" width="256" height="256"></div>
+              <div class="replay-caption"><p id="replay-donor-note"></p><a id="replay-original" download="squeek-7453-before-burn.svg"><span data-zh="保存原画 SVG">Save original SVG</span> ↓</a></div>
+            </article>
+            <article class="replay-plate replay-plate-survivor" aria-labelledby="replay-survivor-title">
+              <div class="replay-plate-heading"><h2 id="replay-survivor-title">#7458</h2><span id="replay-survivor-state" class="replay-stamp"></span></div>
+              <div class="replay-mat"><img id="replay-survivor-art" alt="" width="256" height="256"></div>
+              <div class="replay-caption"><p id="replay-survivor-note"></p><a id="replay-family"><span data-zh="查看家谱">View family</span> ↗</a></div>
+            </article>
+          </div>
+          <section class="replay-evidence" aria-labelledby="replay-evidence-title">
+            <div>
+              <h2 id="replay-evidence-title" data-zh="这次合并的交易凭据">The merge receipt</h2>
+              <p id="replay-receipt-meta"></p>
+              <a id="replay-receipt" target="_blank" rel="noopener noreferrer"><span data-zh="在 Etherscan 查看交易">View transaction on Etherscan</span> ↗</a>
+              <code id="replay-tx"></code>
+            </div>
+            <div class="replay-card-action">
+              <button id="replay-next" type="button" class="primary" data-zh="查看合并结果 →" hidden>See the outcome →</button>
+              <button id="replay-share" type="button" class="primary" data-zh="导出这次合并的纪念卡" disabled>Export the merge keepsake</button>
+              <p id="replay-card-note" data-zh="卡上保留两张原画，扫码可重看这笔合并。">Both portraits on one card. Scan it to revisit this merge.</p>
+            </div>
+          </section>
+        </div>
+        <a id="replay-history" class="history-example replay-history" href="?release=archive&amp;id=8925&amp;stage=o-8925"><span data-zh="历史家谱 · 找回 #8925 原画">Historical archive · Recover #8925</span> ↗</a>
       </section>
       <section id="compare-panel" class="compare-panel" aria-labelledby="compare-title" hidden>
         <a id="compare-back" class="compare-back" href="./"><span aria-hidden="true">←</span> <span data-zh="返回家谱">Back to the album</span></a>

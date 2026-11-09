@@ -4,6 +4,7 @@ import { familyCard } from './share.js';
 import { packedPortrait } from './packed-art.js';
 import { CURRENT, HISTORICAL, deploymentFor } from './receipts.js';
 import { compareUrl, comparisonPanel } from './compare.js';
+import { featuredReplay, replayUrl, replayPanel } from './replay.js';
 
 const $ = (id) => document.getElementById(id);
 const motionPreference = matchMedia('(prefers-reduced-motion: no-preference)');
@@ -34,13 +35,17 @@ function routeEdition() {
   return release ?? (route.has('id') || route.has('stage') ? 'archive' : 'current');
 }
 const edition = routeEdition();
-const comparing = params().get('view') === 'compare';
+const getView = () => {
+  const view = params().get('view');
+  return view === 'compare' || view === 'replay' ? view : 'family';
+};
+const view = getView();
 const historical = edition === 'archive';
 const deployment = historical ? HISTORICAL : CURRENT;
 // Pin the featured transaction stage even if its survivor merges again later.
 const featured = historical
   ? { survivor: 8923, donor: 8925, stage: null }
-  : { survivor: 7458, donor: 7453, stage: 'm-12076748-87' };
+  : { survivor: featuredReplay.survivor, donor: featuredReplay.donor, stage: 'm-' + featuredReplay.block + '-' + featuredReplay.logIndex };
 let language = params().get('lang');
 if (!['en', 'zh'].includes(language)) {
   try {
@@ -112,13 +117,14 @@ function renderNotices() {
       : '';
   $('token-input').setAttribute('aria-invalid', String(!!inputError));
 }
-const comparison = comparing ? comparisonPanel({ tr, lang: () => language, recordUrl, openCard, animateImage }) : null;
-if (comparing) {
+const panelOptions = { tr, lang: () => language, recordUrl, openCard, animateImage };
+const panel = view === 'compare' ? comparisonPanel(panelOptions) : view === 'replay' ? replayPanel(panelOptions) : null;
+if (panel) {
   for (const selector of ['.intro', '.record-bar', '#status', '#selection-status', '#workbench', '.ledger'])
     document.querySelector(selector).hidden = true;
-  $('compare-panel').hidden = false;
-  document.querySelector('.skip').href = '#compare-title';
-  $('compare-title').tabIndex = -1;
+  $(view + '-panel').hidden = false;
+  document.querySelector('.skip').href = '#' + view + '-title';
+  $(view + '-title').tabIndex = -1;
 }
 function localize() {
   document.documentElement.lang = language === 'zh' ? 'zh-Hans' : 'en';
@@ -131,10 +137,13 @@ function localize() {
   $('history-example').href = recordUrl(8925, 'o-8925', 'archive');
   $('history-example').hidden = historical;
   $('compare-open').href = compareUrl(null, null, null, language);
-  if (comparison) {
-    document.title = tr('Before the merge · Squeek Family Album', '合并前对比 · 仓鼠家谱');
-    document.querySelector('.skip').textContent = tr('Skip to comparison', '跳到合并预览');
-    comparison.localize();
+  $('replay-open').href = replayUrl('after', language);
+  if (panel) {
+    const replay = view === 'replay';
+    document.title = replay ? tr('Recover #7453 · Squeek Family Album', '找回 #7453 的原画 · 仓鼠家谱')
+      : tr('Before the merge · Squeek Family Album', '合并前对比 · 仓鼠家谱');
+    document.querySelector('.skip').textContent = replay ? tr('Skip to the merge replay', '跳到合并回放') : tr('Skip to comparison', '跳到合并预览');
+    panel.localize();
   }
   $(historical ? 'archive-edition' : 'current-edition').setAttribute('aria-current', 'page');
   editionLinks();
@@ -539,11 +548,11 @@ for (const role of ['survivor', 'donor']) {
   button.addEventListener('click', () => openRecord(id, role === 'survivor' ? featured.stage : 'o-' + id, 'pushState'));
 }
 window.addEventListener('popstate', () => {
-  if (routeEdition() !== edition || (params().get('view') === 'compare') !== comparing) { location.reload(); return; }
+  if (routeEdition() !== edition || getView() !== view) { location.reload(); return; }
   const l = params().get('lang');
   if (['en', 'zh'].includes(l)) language = l;
   localize();
-  if (comparison) comparison.fromRoute();
+  if (panel) panel.fromRoute();
   else navigateFromUrl();
 });
 $('lang').addEventListener('click', () => {
@@ -551,8 +560,8 @@ $('lang').addEventListener('click', () => {
   try {
     localStorage.setItem('squeek-album-language', language);
   } catch {}
-  if (comparison) {
-    comparison.changeLanguage();
+  if (panel) {
+    panel.changeLanguage();
     localize();
     return;
   }
@@ -660,7 +669,7 @@ new ResizeObserver((entries) => {
   }
 }).observe($('tree-viewport'));
 localize();
-if (comparison) comparison.fromRoute();
+if (panel) panel.fromRoute();
 try {
   if (edition !== 'archive' && edition !== 'current') throw new Error('Unknown collection');
   const response = await fetch(historical ? './data/archive.json' : './data/current.json');
@@ -670,10 +679,11 @@ try {
   index = snapshotIndex(bundled);
   archive = bundled;
   renderFreshness();
-  if (comparison) {
-    if (!historical) comparison.setSnapshot(archive, index);
+  if (panel) {
+    if (!historical) panel.setSnapshot(archive, index);
   } else navigateFromUrl();
-  if (!historical) refreshIndex(archive)
+  // The replay is a fixed past event. Today's index cannot change it.
+  if (!historical && view !== 'replay') refreshIndex(archive)
     .then((latest) => {
       const changed = latest.events.length !== archive.events.length;
       const nextIndex = changed ? snapshotIndex(latest) : index;
@@ -683,9 +693,9 @@ try {
       if (changed) {
         artPromises.clear();
         verifiedLive.clear();
-        if (!comparison) navigateFromUrl();
+        if (!panel) navigateFromUrl();
       }
-      if (comparison) comparison.setSnapshot(archive, index);
+      if (panel) panel.setSnapshot(archive, index);
       renderFreshness();
       renderNotices();
     })
@@ -696,5 +706,5 @@ try {
 } catch {
   notice = 'seed';
   renderNotices();
-  if (comparison && edition === 'current') comparison.unavailable();
+  if (panel && edition === 'current') panel.unavailable();
 }

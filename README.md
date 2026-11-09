@@ -8,7 +8,9 @@ Recover original Squeek artwork from before an NFT was burned, trace the family 
 
 From the project directory run `npm start` or `python -m http.server 4179 --bind 127.0.0.1 --directory dist`. Open [the English edition](http://127.0.0.1:4179/?lang=en) or [中文版](http://127.0.0.1:4179/?lang=zh). The application uses ordinary static files and has no production package dependencies.
 
-The home page opens the current collection at the merge of #7458 and #7453. Both numbers open the same family. Select #7453 to see its original portrait at block 12,076,747, one block before it burned. **Share family card** exports a 1120 × 716 PNG with the selected portrait and its family. **Historical archive · Recover #8925** opens the earlier four-original family at block 12,051,304. Shared links preserve the selected collection and stage. Older unversioned token links still open the historical archive.
+Choose **Recover #7453's original portrait** on the home page to replay its recorded merge with #7458. Switch between Sepolia blocks 12,076,747 and 12,076,748, inspect the transaction, and save a commemorative PNG. Its QR reopens that event's result in the selected language. The featured replay stays at these blocks even if #7458 merges again. To independently check the receipt, burn log and exact portrait bytes against two archive nodes, run `python -B scripts/verify_featured_replay.py`.
+
+The family tree below the home-page search still opens at #7458's merge. Select either original to export its 1120 × 716 family card. **Historical archive · Recover #8925** opens the earlier four-original family; #8925's portrait comes from block 12,051,304. Shared family links preserve the selected collection and stage. Older unversioned token links still open the historical archive.
 
 ## Compare before merging
 
