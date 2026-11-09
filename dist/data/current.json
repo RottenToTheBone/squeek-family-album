@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-09T00:39:48.000Z",
-  "safeBlock": 12094024,
-  "safeBlockHash": "0x8cf58322f0d2640b7e9b3f990df0d51e70a844591d1e4e25ff2863825af80be8",
+  "asOf": "2026-11-09T01:11:48.000Z",
+  "safeBlock": 12094169,
+  "safeBlockHash": "0x9ef3743a6413b12c08b4c4a46fd8f6d15ab984b05bc973690d0a65af01c087d7",
   "issued": 9999,
-  "burned": 2318,
-  "live": 7681,
+  "burned": 2325,
+  "live": 7674,
   "events": [
     {
       "survivor": 942,
@@ -20871,6 +20871,69 @@
       "logIndex": 12,
       "tx": "0xdd06be1be5edd3d52fda9bd509943379c83b6662ec85e1eb47650f37b1c4f905",
       "at": "2026-11-09T00:27:24.000Z"
+    },
+    {
+      "survivor": 6795,
+      "donor": 1439,
+      "level": 3,
+      "block": 12094035,
+      "logIndex": 435,
+      "tx": "0x39d6b995ab9be36520c076f43b729aabec027965517b1cd978113f839624abd5",
+      "at": "2026-11-09T00:42:12.000Z"
+    },
+    {
+      "survivor": 6793,
+      "donor": 1787,
+      "level": 3,
+      "block": 12094041,
+      "logIndex": 88,
+      "tx": "0x31840c61b8fcf2f69efec20da48c24208920a6d0517866615a260f9cc6f8afbb",
+      "at": "2026-11-09T00:43:24.000Z"
+    },
+    {
+      "survivor": 2489,
+      "donor": 1904,
+      "level": 3,
+      "block": 12094089,
+      "logIndex": 61,
+      "tx": "0xc9313c7c21774d5be353c7bc4d557d397440441a8660150d1c87b7e5640afba2",
+      "at": "2026-11-09T00:54:24.000Z"
+    },
+    {
+      "survivor": 6797,
+      "donor": 1905,
+      "level": 3,
+      "block": 12094093,
+      "logIndex": 240,
+      "tx": "0xfd95e86059b27867dee277a4818a1653fa2309583c74b0f8b0b2f91ec7b27144",
+      "at": "2026-11-09T00:55:24.000Z"
+    },
+    {
+      "survivor": 3037,
+      "donor": 3039,
+      "level": 3,
+      "block": 12094123,
+      "logIndex": 299,
+      "tx": "0x28820b43742003af0e0a54229df434e807530bd3c643636fd591acb79b175587",
+      "at": "2026-11-09T01:01:48.000Z"
+    },
+    {
+      "survivor": 3711,
+      "donor": 3712,
+      "level": 3,
+      "block": 12094146,
+      "logIndex": 7,
+      "tx": "0xdf8fba01cade43eebe6b7a034325f77e6e847b162496d16ecf78dd2d3735a01c",
+      "at": "2026-11-09T01:07:00.000Z"
+    },
+    {
+      "survivor": 3971,
+      "donor": 7784,
+      "level": 3,
+      "block": 12094161,
+      "logIndex": 107,
+      "tx": "0xac9ab094d0596865269d00513c5b73cadae2975b8519266346c8bef81c8c9c05",
+      "at": "2026-11-09T01:10:12.000Z"
     }
   ],
   "portraits": {
@@ -28130,8 +28193,8 @@
     },
     "1439": {
       "file": "current-art/1439.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12094034,
+      "source": "archive",
       "sha256": "e556d199deca344b1f3125c98b435521b0d64cd637e40cbecb74f07d3220b887",
       "palette": "RGB"
     },
@@ -29908,8 +29971,8 @@
     },
     "1787": {
       "file": "current-art/1787.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12094040,
+      "source": "archive",
       "sha256": "d59b77df39c921b13044ad06c8d45e27b2029e3cfb2c3cb982a55f921eb089fd",
       "palette": "Spectral RGB"
     },
@@ -30385,15 +30448,15 @@
     },
     "1904": {
       "file": "current-art/1904.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12094088,
+      "source": "archive",
       "sha256": "14eba121233cc491b5f2f34d46578a94f4f4befa94d6edbd4101366c492bd477",
       "palette": "Ice White"
     },
     "1905": {
       "file": "current-art/1905.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12094092,
+      "source": "archive",
       "sha256": "f411ad58b7d76600cd60a593a0a02d6a59f8e665e6e4942c91baed51ad14d195",
       "palette": "Orange CRT"
     },
@@ -35002,8 +35065,8 @@
     },
     "3039": {
       "file": "current-art/3039.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12094122,
+      "source": "archive",
       "sha256": "95bf318b2679a36025f94cf70c3bdd5bb4a668599b2db5a3fcb2c9a6381c1397",
       "palette": "Electric Cyan"
     },
@@ -37597,8 +37660,8 @@
     },
     "3712": {
       "file": "current-art/3712.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12094145,
+      "source": "archive",
       "sha256": "986fea7db4a3496cbf2d154b8ee3943122298eef5ce103c2a545e1fc48dc9d66",
       "palette": "Spectral Hot Magenta"
     },
@@ -50546,8 +50609,8 @@
     },
     "7784": {
       "file": "current-art/7784.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12094160,
+      "source": "archive",
       "sha256": "ab59eabeec6ccd72449472d802c235fc5e354007f8ae8d4b0318def882fd701b",
       "palette": "Void Violet"
     },
