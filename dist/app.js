@@ -267,7 +267,7 @@ function setSelected(node, changeURL = true, reveal = false) {
   portraitHeader();
   for (const b of $('tree-stage').querySelectorAll('button'))
     b.setAttribute('aria-pressed', String(b.dataset.key === node.key));
-  artFor(node.id)
+  return artFor(node.id)
     .then(async (art) => {
       if (call !== selectionNo) return;
       const img = $('hero-art');
@@ -466,6 +466,7 @@ async function openRecord(id, key, method) {
     return;
   }
   const ticket = ++requestNo;
+  const restoreShareFocus = selected?.id === id && document.activeElement === $('share');
   clearRecord();
   inputError = '';
   notice = '';
@@ -505,8 +506,13 @@ async function openRecord(id, key, method) {
     family.root;
   notice = '';
   renderNotices();
-  setSelected(focus, false);
+  const portraitReady = setSelected(focus, false);
   renderFamily();
+  if (restoreShareFocus) {
+    await portraitReady;
+    if (ticket === requestNo && selected === focus && document.activeElement === document.body)
+      $('share').focus({ preventScroll: true });
+  }
 }
 function navigateFromUrl() {
   if (!archive) return;
@@ -684,9 +690,14 @@ try {
   } else navigateFromUrl();
   // The replay is a fixed past event. Today's index cannot change it.
   if (!historical && view !== 'replay') refreshIndex(archive)
-    .then((latest) => {
+    .then(async (latest) => {
       const changed = latest.events.length !== archive.events.length;
       const nextIndex = changed ? snapshotIndex(latest) : index;
+      // Keep the family and its artwork together until the open card is dismissed.
+      const cardDialog = $('share-dialog');
+      while (changed && !panel && cardDialog.open) {
+        await new Promise(resolve => cardDialog.addEventListener('close', resolve, { once: true }));
+      }
       archive = latest;
       index = nextIndex;
       connection = 'live';

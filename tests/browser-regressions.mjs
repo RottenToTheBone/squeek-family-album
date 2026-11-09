@@ -1,6 +1,93 @@
 import { CURRENT } from '../dist/receipts.js';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+
+// Deliver one more verified merge at a controlled moment. The two originals
+// in #8925's family become part of #8923's four-original family.
+async function cardRefreshRegression(context, base, latest) {
+  const merge = latest.events.find(event => event.donor === 8925);
+  const initial = {
+    ...latest, events: latest.events.filter(event => event !== merge),
+    asOf: new Date(Date.parse(merge.at) - 12_000).toISOString(), safeBlock: merge.block - 1,
+    live: latest.live + 1, burned: latest.burned - 1,
+  };
+  await context.route('**/data/current.json', route => route.fulfill({ json: initial }));
+  await context.route('**/chain.js', route => route.fulfill({
+    contentType: 'text/javascript',
+    body: `export * from './chain.js?original';
+      export function refreshIndex() {
+        return new Promise(resolve => { window.deliverMerge = () => resolve(${JSON.stringify(latest)}); });
+      }`,
+  }));
+
+  const page = await context.newPage();
+  for (const moment of ['drawing', 'ready', 'back navigation']) {
+    await page.goto(base + '?release=current&id=1&lang=en');
+    await page.waitForFunction(() => document.querySelector('#selected-id').textContent === '#1' && !document.querySelector('#share').disabled);
+    await page.locator('#token-input').fill('8925');
+    await page.locator('#lookup-form button').click();
+    await page.waitForFunction(() => document.querySelector('#f-originals').textContent === '2');
+    const freshness = await page.locator('#freshness').innerText();
+    const dialog = page.locator('#share-dialog');
+    await page.locator('#share').click();
+    const preview = page.locator('#card-preview:not([hidden])');
+    await preview.waitFor();
+    const originalDigest = await preview.evaluate(async image => {
+      const data = await (await fetch(image.src)).arrayBuffer();
+      return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', data)), x => x.toString(16).padStart(2, '0')).join('');
+    });
+    if (moment === 'drawing') {
+      await page.keyboard.press('Escape');
+      await dialog.waitFor({ state: 'hidden' });
+      // Hold the asynchronous PNG encode exactly once, without changing the bytes.
+      await page.evaluate(() => {
+        const original = HTMLCanvasElement.prototype.toBlob;
+        HTMLCanvasElement.prototype.toBlob = function (...args) {
+          HTMLCanvasElement.prototype.toBlob = original;
+          window.finishCard = () => original.apply(this, args);
+        };
+      });
+      await page.locator('#share').click();
+      await page.waitForFunction(() => typeof window.finishCard === 'function');
+    }
+    await page.evaluate(async () => {
+      window.deliverMerge();
+      await new Promise(requestAnimationFrame);
+    });
+    assert.ok(await dialog.isVisible(), 'refresh dismissed the card during ' + moment);
+    assert.equal(await page.locator('#f-originals').innerText(), '2');
+    assert.equal(await page.locator('#freshness').innerText(), freshness);
+    if (moment === 'back navigation') {
+      await page.goBack();
+      await dialog.waitFor({ state: 'hidden' });
+      await page.waitForFunction(() => document.querySelector('#selected-id').textContent === '#1');
+      await page.goForward();
+    } else {
+      if (moment === 'drawing') await page.evaluate(() => window.finishCard());
+      await preview.waitFor();
+      const [file] = await Promise.all([page.waitForEvent('download'), page.locator('#save-card').click()]);
+      assert.equal(createHash('sha256').update(await readFile(await file.path())).digest('hex'), originalDigest);
+      if (moment === 'ready') {
+        // Keep the share button disabled across a frame as the updated portrait decodes.
+        await page.locator('#hero-art').evaluate(img => {
+          const decode = img.decode.bind(img);
+          img.decode = async () => {
+            await decode();
+            await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+          };
+        });
+      }
+      await page.keyboard.press('Escape');
+    }
+    await page.waitForFunction(() => !document.querySelector('#share-dialog').open &&
+      document.querySelector('#f-originals').textContent === '4' && document.querySelector('#selected-id').textContent === '#8925');
+    if (moment === 'ready')
+      await page.waitForFunction(() => document.activeElement === document.querySelector('#share') && !document.activeElement.disabled);
+    assert.notEqual(await page.locator('#freshness').innerText(), freshness);
+    assert.equal(await page.locator('.ledger-row a[href$="' + merge.tx + '"]').count(), 1);
+  }
+}
 
 // Vary only browser-local responses. The public site and the upstream services
 // do not receive fixture data.
@@ -190,6 +277,14 @@ export async function browserRegressions(browser, base, bundled) {
     );
   } finally {
     await c.close();
+  }
+
+  const refreshing = await make();
+  try {
+    await cardRefreshRegression(refreshing, base, seed);
+    console.log('Family-card PNG survived a merge during drawing and after it was ready. Closing and back navigation applied the new family.');
+  } finally {
+    await refreshing.close();
   }
 
   const encodeToken = (image) => {
