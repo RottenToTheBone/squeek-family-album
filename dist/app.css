@@ -1119,6 +1119,7 @@ html[lang='zh-Hans'] h2 {
 .compare-lineage summary:focus-visible { outline: 2px solid currentColor; }
 .compare-lineage ul { margin: 5px 0 0; padding: 0; list-style: none; max-height: 155px; overflow: auto; }
 .compare-lineage li { margin-top: 4px; font: 12px/1.5 var(--mono); }
+.compare-lineage li a { display: inline-block; min-width: 24px; min-height: 24px; padding-block: 3px; }
 .compare-export { align-items: start; margin-top: 18px; }
 .compare-export .primary { flex: none; }
 .compare-scope { font-size: 13px; margin-top: 3px; }
