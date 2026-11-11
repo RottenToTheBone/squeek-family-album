@@ -16,6 +16,20 @@ async function pairReady(page, keep, donor) {
   [keep, donor], { timeout: 22000 });
 }
 
+// Check every receipt, including rows below the scroll viewport and after wrapping.
+async function lineageTargets(page, hasHistory) {
+  for (const id of ['keep-lineage', 'donor-lineage']) {
+    const links = await page.locator('#' + id + ' a').evaluateAll((anchors) => anchors.map((a) => {
+      const { width, height } = a.getBoundingClientRect();
+      return { text: a.textContent, width, height };
+    }));
+    if (hasHistory) assert.ok(links.length > 0, `${id} is missing its merge receipts`);
+    for (const { text, width, height } of links) {
+      assert.ok(width >= 24 && height >= 24, `${id} ${text} target is ${width} × ${height}; expected at least 24 × 24`);
+    }
+  }
+}
+
 async function submitPair(page, keep, donor) {
   await page.locator('#compare-keep').fill(String(keep));
   await page.locator('#compare-donor').fill(String(donor));
@@ -124,6 +138,7 @@ export async function compareRegressions({ browser, base, qa, ready, fit, access
     else await page.goto(base + '?release=current&view=compare&keep=7458&donor=7453&at=12076747&lang=en');
     await pairReady(page, a, b);
     await fit(page);
+    await lineageTargets(page, livePair && livePair[0] > 1);
     await accessibility(page);
     await page.screenshot({ path: path.join(qa, 'merge-compare-desktop.png'), fullPage: true });
     await exportAndScan(page, base, qa, a, b, at, 'en');
@@ -138,6 +153,7 @@ export async function compareRegressions({ browser, base, qa, ready, fit, access
     await pairReady(page, b, a);
     await page.setViewportSize({ width: 320, height: 844 });
     await fit(page);
+    await lineageTargets(page, livePair && livePair[0] > 1);
     await accessibility(page);
     await page.screenshot({ path: path.join(qa, 'merge-compare-mobile.png'), fullPage: true });
     await exportAndScan(page, base, qa, b, a, at, 'zh');
