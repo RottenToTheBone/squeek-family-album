@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-11T09:05:24.000Z",
-  "safeBlock": 12110749,
-  "safeBlockHash": "0x82fb99d9f94e79840cf2f64fe9a48d87e6d980d2662dfd6390b59fd9cf599f44",
+  "asOf": "2026-11-11T09:31:00.000Z",
+  "safeBlock": 12110875,
+  "safeBlockHash": "0xc6ef203155e8bb1a4eeb281d06a75ce29fec80f5aafe713b318a199f4f98c4ae",
   "issued": 9999,
-  "burned": 2545,
-  "live": 7454,
+  "burned": 2546,
+  "live": 7453,
   "events": [
     {
       "survivor": 942,
@@ -22914,6 +22914,15 @@
       "logIndex": 128,
       "tx": "0x1dd589ed4184bdd981c5489f10a5989705213a81e198e80d592fe3b4d724062c",
       "at": "2026-11-11T08:47:12.000Z"
+    },
+    {
+      "survivor": 256,
+      "donor": 258,
+      "level": 3,
+      "block": 12110761,
+      "logIndex": 94,
+      "tx": "0xc372e5f6a2e41139527a1537c6db581560a683fcf41ae1816ea77e5dd5454908",
+      "at": "2026-11-11T09:07:48.000Z"
     }
   ],
   "portraits": {
@@ -24041,8 +24050,8 @@
     },
     "258": {
       "file": "current-art/258.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12110760,
+      "source": "archive",
       "sha256": "1115edf505a88eef9fe303fc7b84b479ae63da4262bec4137a655ee3de8e3cb5",
       "palette": "Gold"
     },
