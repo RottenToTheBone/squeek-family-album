@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-11T09:31:00.000Z",
-  "safeBlock": 12110875,
-  "safeBlockHash": "0xc6ef203155e8bb1a4eeb281d06a75ce29fec80f5aafe713b318a199f4f98c4ae",
+  "asOf": "2026-11-11T12:04:36.000Z",
+  "safeBlock": 12111634,
+  "safeBlockHash": "0x12699eed059314e07519417a5d90e3299b7fc61361c3232f6767201f7b071d4e",
   "issued": 9999,
-  "burned": 2546,
-  "live": 7453,
+  "burned": 2547,
+  "live": 7452,
   "events": [
     {
       "survivor": 942,
@@ -22923,6 +22923,15 @@
       "logIndex": 94,
       "tx": "0xc372e5f6a2e41139527a1537c6db581560a683fcf41ae1816ea77e5dd5454908",
       "at": "2026-11-11T09:07:48.000Z"
+    },
+    {
+      "survivor": 1100,
+      "donor": 5268,
+      "level": 3,
+      "block": 12111618,
+      "logIndex": 435,
+      "tx": "0x008815025b9a7885705b9072a8c255a7b83692cde5dac318604151712269cac6",
+      "at": "2026-11-11T12:01:24.000Z"
     }
   ],
   "portraits": {
@@ -45444,8 +45453,8 @@
     },
     "5268": {
       "file": "current-art/5268.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12111617,
+      "source": "archive",
       "sha256": "654aae6bbce6f2e75174060ff254ed47d2d0826ec9b5e3bc28c5d9f845160acc",
       "palette": "Spectral Orange CRT"
     },
