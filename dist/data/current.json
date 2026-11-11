@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-11T06:31:48.000Z",
-  "safeBlock": 12109986,
-  "safeBlockHash": "0x6a6d064422f3dc196f56abf3ba3f02c193e8984a8b898e4138456aae486051fc",
+  "asOf": "2026-11-11T07:29:24.000Z",
+  "safeBlock": 12110274,
+  "safeBlockHash": "0x96874918cea34e9301d70f3063cbeae9217636bfc630dcdeab9484ba438dcdc6",
   "issued": 9999,
-  "burned": 2542,
-  "live": 7457,
+  "burned": 2544,
+  "live": 7455,
   "events": [
     {
       "survivor": 942,
@@ -22887,6 +22887,24 @@
       "logIndex": 19,
       "tx": "0x43cb2bb27da79d3370e602bfbf0fbb84e2f026822a0b0eac4b78d29df4f9a0b8",
       "at": "2026-11-11T04:25:12.000Z"
+    },
+    {
+      "survivor": 1470,
+      "donor": 1473,
+      "level": 3,
+      "block": 12110237,
+      "logIndex": 7,
+      "tx": "0xb6d3adef3ef820032dc2d7424c1703e60606cca1956015e713c4e91edba2ed59",
+      "at": "2026-11-11T07:22:00.000Z"
+    },
+    {
+      "survivor": 8580,
+      "donor": 4098,
+      "level": 3,
+      "block": 12110273,
+      "logIndex": 109,
+      "tx": "0x3ef109331c91b8949d969ba9ed0b3b6444fe6870658c6d98a45928ee97919949",
+      "at": "2026-11-11T07:29:12.000Z"
     }
   ],
   "portraits": {
@@ -30414,8 +30432,8 @@
     },
     "1473": {
       "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/1473.svg",
-      "block": 12082599,
-      "source": "chain",
+      "block": 12110236,
+      "source": "archive",
       "sha256": "8e38bd38f707f5582cc42bfee7ee147d3dc5a8382e8e858e7cf8fca06d363342",
       "palette": "Spectral Reactor Red",
       "pack": "current-packs/11.json"
@@ -41265,8 +41283,8 @@
     },
     "4098": {
       "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/4098.svg",
-      "block": 12081557,
-      "source": "chain",
+      "block": 12110272,
+      "source": "archive",
       "sha256": "781f69c25f8e3bd4d53fa1796ad6ac93261c77e5d785a6294f3d9d011b34a13f",
       "palette": "Spectral Gold",
       "pack": "current-packs/32.json"
