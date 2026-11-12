@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-11T12:04:36.000Z",
-  "safeBlock": 12111634,
-  "safeBlockHash": "0x12699eed059314e07519417a5d90e3299b7fc61361c3232f6767201f7b071d4e",
+  "asOf": "2026-11-12T00:46:12.000Z",
+  "safeBlock": 12115372,
+  "safeBlockHash": "0x7562a00126a2b2b0fb464973158be93b7b769b7ee493d2e8bc02601da35234f6",
   "issued": 9999,
-  "burned": 2547,
-  "live": 7452,
+  "burned": 2549,
+  "live": 7450,
   "events": [
     {
       "survivor": 942,
@@ -22932,6 +22932,24 @@
       "logIndex": 435,
       "tx": "0x008815025b9a7885705b9072a8c255a7b83692cde5dac318604151712269cac6",
       "at": "2026-11-11T12:01:24.000Z"
+    },
+    {
+      "survivor": 6174,
+      "donor": 6176,
+      "level": 3,
+      "block": 12115181,
+      "logIndex": 495,
+      "tx": "0xac9f115f936486594bf1d299c89d3e2eb6b3e9e9dcba5d079a65fa477dadc9e7",
+      "at": "2026-11-12T00:07:36.000Z"
+    },
+    {
+      "survivor": 3850,
+      "donor": 3851,
+      "level": 3,
+      "block": 12115250,
+      "logIndex": 417,
+      "tx": "0xef81e7f4d928fa2a36ab3ce81d66c7e85663a689b267558c3e1c50202c0b9de4",
+      "at": "2026-11-12T00:21:36.000Z"
     }
   ],
   "portraits": {
@@ -40254,8 +40272,8 @@
     },
     "3851": {
       "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/3851.svg",
-      "block": 12089200,
-      "source": "chain",
+      "block": 12115249,
+      "source": "archive",
       "sha256": "d9b08c3f12c7616ba4c20a170a7aede027b507e069579db3aee18a6e827aa675",
       "palette": "Reactor Red",
       "pack": "current-packs/30.json"
@@ -48258,8 +48276,8 @@
     },
     "6176": {
       "file": "current-art/6176.svg",
-      "block": 12076818,
-      "source": "chain",
+      "block": 12115180,
+      "source": "archive",
       "sha256": "babbbe352393c84404bad8a08fd96b67e236fdeed93e5e46aad6167f4ae9b865",
       "palette": "Spectral Reactor Red"
     },
