@@ -3,12 +3,12 @@
   "chainId": 11155111,
   "collection": "0xc4c7982657f00509548f3a3a41db7fa439a6856b",
   "releaseId": "core-sepolia-20261103",
-  "asOf": "2026-11-12T08:33:24.000Z",
-  "safeBlock": 12117685,
-  "safeBlockHash": "0xc8bca49b7488b49099105fc56e3ee206379ddc819610c021cb092ecb1acd74d6",
+  "asOf": "2026-11-12T09:31:00.000Z",
+  "safeBlock": 12117971,
+  "safeBlockHash": "0xfde5b4cab8197ed4de7d1e82fb42bf273e95ded9ee2dc7fd4d945f42f1dcfb09",
   "issued": 9999,
-  "burned": 2559,
-  "live": 7440,
+  "burned": 2562,
+  "live": 7437,
   "events": [
     {
       "survivor": 942,
@@ -23040,6 +23040,33 @@
       "logIndex": 290,
       "tx": "0x86269cd13bece9263e450c4169aa8da22fea1abc8ec110fa5439f9e754735b10",
       "at": "2026-11-12T08:31:36.000Z"
+    },
+    {
+      "survivor": 5534,
+      "donor": 5535,
+      "level": 2,
+      "block": 12117693,
+      "logIndex": 307,
+      "tx": "0x282950f738d0d129b18a64224f116eb7d1c8789d573415944d42c7f7d3a5af15",
+      "at": "2026-11-12T08:35:00.000Z"
+    },
+    {
+      "survivor": 5946,
+      "donor": 5947,
+      "level": 2,
+      "block": 12117716,
+      "logIndex": 423,
+      "tx": "0xea20da18c4b484a3b34d54cf0ab77634d675ec7574e7513853a49c4d6a26cfa5",
+      "at": "2026-11-12T08:39:36.000Z"
+    },
+    {
+      "survivor": 5948,
+      "donor": 5949,
+      "level": 2,
+      "block": 12117721,
+      "logIndex": 227,
+      "tx": "0x3e35ee74b59e322f8958747a96b991e371ca9bdd19cca679c43f63f9d6e5147b",
+      "at": "2026-11-12T08:40:36.000Z"
     }
   ],
   "portraits": {
@@ -46493,6 +46520,22 @@
       "palette": "Spectral Void Violet",
       "pack": "current-packs/43.json"
     },
+    "5534": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/5534.svg",
+      "block": 12117971,
+      "source": "chain",
+      "sha256": "e9cb2ae9df75868b4d1710d2435af2bd51aa70966561a259cdec0cb0e83ad072",
+      "palette": "Spectral Reactor Red",
+      "pack": "current-packs/43.json"
+    },
+    "5535": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/5535.svg",
+      "block": 12117692,
+      "source": "archive",
+      "sha256": "19f81eefcc1ba10a2c14e60743976527008e9f5cb8b93db659c464800fd6f220",
+      "palette": "Spectral Ice White",
+      "pack": "current-packs/43.json"
+    },
     "5546": {
       "file": "current-art/5546.svg",
       "block": 12076818,
@@ -47720,6 +47763,38 @@
       "source": "archive",
       "sha256": "fc3c379ba3ccd0da0348d075d1a841aa11e4d207d9b46dadd37682a1a2afba8b",
       "palette": "Spectral Reactor Red"
+    },
+    "5946": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/5946.svg",
+      "block": 12117971,
+      "source": "chain",
+      "sha256": "509e0a736c4cbcc1521ba481219f76a0c018687723351a15f66a5cd63294b8c2",
+      "palette": "Void Violet",
+      "pack": "current-packs/46.json"
+    },
+    "5947": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/5947.svg",
+      "block": 12117715,
+      "source": "archive",
+      "sha256": "036f666cbd58c9efdf00fd5f36a94c8d13c8c8436d3cdbcaa554e6912ea991e5",
+      "palette": "Spectral Orange CRT",
+      "pack": "current-packs/46.json"
+    },
+    "5948": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/5948.svg",
+      "block": 12117971,
+      "source": "chain",
+      "sha256": "c8bee8bb3ed2d876a2898d3de7cce758f9bdde3b56bd7394e89df9a1927c4b29",
+      "palette": "Spectral Acid Lime",
+      "pack": "current-packs/46.json"
+    },
+    "5949": {
+      "file": "https://raw.githubusercontent.com/RottenToTheBone/squeek-family-album/main/dist/current-art/5949.svg",
+      "block": 12117720,
+      "source": "archive",
+      "sha256": "c4754cb4a033d2dccda27988f4982286784d03e7aaa3e6b4b5520b886a1235cd",
+      "palette": "Orange CRT",
+      "pack": "current-packs/46.json"
     },
     "5950": {
       "file": "current-art/5950.svg",
